@@ -9,93 +9,97 @@
 #-------------------------------------------------------------------------------
 #!/usr/bin/env python
 
-from Tkinter import *
-from re import compile, IGNORECASE          # expressions régulières
-
-class GUI_Solinette(Tk):
+class GUI_Solinette:
     u""" Interfaz gráfica para la la Solinette """
     def __init__(self):
-        Tk.__init__(self)
-        self.title(u"Parámetros de conexión a la base PostGIS")
-        self.iconbitmap('Icone_Solinette.ico')
-        self.resizable(width = False, height = False)
-        self.geometry("350x200+300+0")
-        self.host = StringVar()
-        self.port = IntVar()
-        self.dbnb = StringVar()
-        self.usua = StringVar()
-        self.mdpa = StringVar()
+        # inicialización ventana
+        self.root = Tk()
+        # Parámetros ventana
+        self.root.title(u"Parámetros de conexión a la base PostGIS")
+        self.root.iconbitmap('Icone_Solinette.ico')
+        self.root.resizable(width = False, height = False)
+        self.root.geometry("350x200+300+0")
+
+        # Variables
+        self.root.host = StringVar()
+        self.root.port = IntVar()
+        self.root.dbnb = StringVar()
+        self.root.usua = StringVar()
+        self.root.mdpa = StringVar()
 
         # Etiquetas
-        Label(self,
+        Label(self.root,
               text = u'CONEXIÓN A LA BASE POSTGIS').grid(row = 0,
-                                                         column = 1,
-                                                         columnspan = 2,
+                                                         column = 0,
+                                                         columnspan = 3,
                                                          padx = 2,
                                                          pady = 2,
                                                          sticky = N+W+S+E)
-        Label(self, text = u'Host: ').grid(row = 1,
+        Label(self.root, text = u'Host: ').grid(row = 1,
                                            column = 1,
                                            padx = 2,
                                            pady = 2,
                                            sticky = W)
-        Label(self, text = u'Puerto: ').grid(row = 2,
+        Label(self.root, text = u'Puerto: ').grid(row = 2,
                                              column = 1,
                                              padx = 2,
                                              pady = 2,
                                              sticky = W)
-        Label(self, text = u'Base de datos: ').grid(row = 3,
+        Label(self.root, text = u'Base de datos: ').grid(row = 3,
                                                     column = 1,
                                                     padx = 2,
                                                     pady = 2,
                                                     sticky = W)
-        Label(self, text = u'Usuario: ').grid(row = 4,
+        Label(self.root, text = u'Usuario: ').grid(row = 4,
                                               column = 1,
                                               padx = 2,
                                               pady = 2,
                                               sticky = W)
-        Label(self, text = u'Contraseña: ').grid(row = 5,
+        Label(self.root, text = u'Contraseña: ').grid(row = 5,
                                                  column = 1,
                                                  padx = 2,
                                                  pady = 2,
                                                  sticky = W)
 
         # Formulario
-        self.H = Entry(self, textvariable = self.host)
-        self.H.grid(row = 1,
+        self.root.H = Entry(self.root, textvariable = self.root.host)
+        self.root.H.grid(row = 1,
                     column = 2,
                     padx = 2,
                     pady = 2,
                     sticky = W+E)
-        self.P = Entry(self, textvariable = self.port)
-        self.P.grid(row = 2,
+        self.root.P = Entry(self.root, textvariable = self.root.port)
+        self.root.P.delete(0, END)
+        self.root.P.insert(0, 5432)
+        self.root.P.grid(row = 2,
                     column = 2,
                     padx = 2,
                     pady = 2,
                     sticky = W+E)
-        self.D = Entry(self, textvariable = self.dbnb)
-        self.D.grid(row = 3,
+        self.root.D = Entry(self.root, textvariable = self.root.dbnb)
+        self.root.D.grid(row = 3,
                     column = 2,
                     padx = 2,
                     pady = 2,
                     sticky = W+E)
-        self.U = Entry(self, textvariable = self.usua)
-        self.U.grid(row = 4,
+        self.root.U = Entry(self.root, textvariable = self.root.usua)
+        self.root.U.insert(0, 'postgres')
+        self.root.U.grid(row = 4,
                     column = 2,
                     padx = 2,
                     pady = 2,
                     sticky = W+E)
-        self.M = Entry(self, textvariable = self.mdpa, show='*')
-        self.M.grid(row = 5,
+        self.root.M = Entry(self.root, textvariable = self.root.mdpa, show='*')
+        self.root.M.grid(row = 5,
                     column = 2,
                     padx = 2,
                     pady = 2,
-                    sticky = E+W)
+                    sticky = W+E)
         # Imagen
-        self.icone = PhotoImage(file = r'Sources\Icone_Solinette.GIF')
-        Label(self, borderwidth = 2,
+        self.root.icone = PhotoImage(file = r'Sources\Icone_Solinette.GIF')
+        Label(self.root, borderwidth = 2,
                     relief = 'ridge',
-                    image = self.icone).grid(row = 1,
+                    image = self.root.icone).grid(row = 1,
                                              rowspan = 5,
                                              column = 0,
                                              padx = 2,
@@ -103,7 +107,7 @@ class GUI_Solinette(Tk):
                                              sticky = W)
 
         # Validación
-        Button(self, text = u'Conectarse',
+        Button(self.root, text = u'Conectarse',
                      relief='groove',
                      borderwidth = 3,
                      command=self.check_campos).grid(row = 6,
@@ -112,29 +116,47 @@ class GUI_Solinette(Tk):
                                                      padx = 2,
                                                      pady = 2,
                                                      sticky = N+W+S+E)
+        # Inicialización
+        self.root.mainloop()
 
-    def check_campos(self):
+    def check_campos():
         u""" Verifica que los campos del formulario son bien rellenos """
-        renum = compile('[0:9]')
+        # conteo de los errores
+        err = 0
+
+        # checkeo de los campos
         if self.host.get() == u'':
             self.H.configure(background = 'red')
+            err = err +1
         if self.port.get() == 0:
             self.P.configure(background = 'red')
+            err = err +1
         if self.dbnb.get() == u'':
             self.D.configure(background = 'red')
+            err = err +1
         if self.usua.get() == u'':
             self.U.configure(background = 'red')
+            err = err +1
         if self.mdpa.get() == u'':
             self.M.configure(background = 'red')
-        print 'check'
+            err = err +1
 
+        # Acción según si hay error(es) o no
+        if err != 0:
+            print 'champ(s) non rempli(s)'
+        else:
+            renvoi()
 
+    def renvoi():
+        host = self.host.get()
+        # Fin de fonction
+        return host
 
 
 
 
 if __name__ == '__main__':
+    from Tkinter import *
     test = GUI_Solinette()
-    test.mainloop()
 
 
