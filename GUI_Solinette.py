@@ -1,5 +1,7 @@
-﻿#-------------------------------------------------------------------------------
-# Name:        module1
+﻿# -*- coding: UTF-8 -*-
+#!/usr/bin/env python
+#-------------------------------------------------------------------------------
+# Name:
 # Purpose:
 #
 # Author:      Julien M.
@@ -7,108 +9,93 @@
 # Created:     03/09/2012
 # Updated:
 #-------------------------------------------------------------------------------
-#!/usr/bin/env python
 
-class GUI_Solinette:
+
+###################################
+##### Libraries importation #######
+###################################
+
+# standard library
+from Tkinter import *
+from tkMessageBox import showerror
+
+# third party
+
+###################################
+####### Classes definition ########
+###################################
+
+class SolinetteGUI(Tk):
     u""" Interfaz gráfica para la la Solinette """
     def __init__(self):
-        # inicialización ventana
-        self.root = Tk()
-        # Parámetros ventana
-        self.root.title(u"Parámetros de conexión a la base PostGIS")
-        self.root.iconbitmap('Icone_Solinette.ico')
-        self.root.resizable(width = False, height = False)
-        self.root.geometry("350x200+300+0")
-
+        # basicos
+        Tk.__init__(self)   # constructor of parent graphic class
+        self.title(u'Parámetros de conexión a la base PostGIS')
+        self.iconbitmap('Icone_Solinette.ico')
+        self.resizable(width = False, height = False)
+        self.geometry("350x200+300+0")
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
         # Variables
-        self.root.host = StringVar()
-        self.root.port = IntVar()
-        self.root.dbnb = StringVar()
-        self.root.usua = StringVar()
-        self.root.mdpa = StringVar()
-
+        self.host = StringVar()
+        self.port = IntVar()
+        self.dbnb = StringVar()
+        self.usua = StringVar()
+        self.mdpa = StringVar()
         # Etiquetas
-        Label(self.root,
-              text = u'CONEXIÓN A LA BASE POSTGIS').grid(row = 0,
-                                                         column = 0,
-                                                         columnspan = 3,
-                                                         padx = 2,
-                                                         pady = 2,
-                                                         sticky = N+W+S+E)
-        Label(self.root, text = u'Host: ').grid(row = 1,
+        Label(self, text = u'CONEXIÓN A LA BASE POSTGIS').grid(row = 0,
+                                                               column = 0,
+                                                               columnspan = 3,
+                                                               padx = 2,
+                                                               pady = 2,
+                                                               sticky = N+W+S+E)
+        Label(self, text = u'Host: ').grid(row = 1,
                                            column = 1,
                                            padx = 2,
                                            pady = 2,
                                            sticky = W)
-        Label(self.root, text = u'Puerto: ').grid(row = 2,
+        Label(self, text = u'Puerto: ').grid(row = 2,
                                              column = 1,
                                              padx = 2,
                                              pady = 2,
                                              sticky = W)
-        Label(self.root, text = u'Base de datos: ').grid(row = 3,
+        Label(self, text = u'Base de datos: ').grid(row = 3,
                                                     column = 1,
                                                     padx = 2,
                                                     pady = 2,
                                                     sticky = W)
-        Label(self.root, text = u'Usuario: ').grid(row = 4,
+        Label(self, text = u'Usuario: ').grid(row = 4,
                                               column = 1,
                                               padx = 2,
                                               pady = 2,
                                               sticky = W)
-        Label(self.root, text = u'Contraseña: ').grid(row = 5,
+        Label(self, text = u'Contraseña: ').grid(row = 5,
                                                  column = 1,
                                                  padx = 2,
                                                  pady = 2,
                                                  sticky = W)
 
         # Formulario
-        self.root.H = Entry(self.root, textvariable = self.root.host)
-        self.root.H.grid(row = 1,
-                    column = 2,
-                    padx = 2,
-                    pady = 2,
-                    sticky = W+E)
-        self.root.P = Entry(self.root, textvariable = self.root.port)
-        self.root.P.delete(0, END)
-        self.root.P.insert(0, 5432)
-        self.root.P.grid(row = 2,
-                    column = 2,
-                    padx = 2,
-                    pady = 2,
-                    sticky = W+E)
-        self.root.D = Entry(self.root, textvariable = self.root.dbnb)
-        self.root.D.grid(row = 3,
-                    column = 2,
-                    padx = 2,
-                    pady = 2,
-                    sticky = W+E)
-        self.root.U = Entry(self.root, textvariable = self.root.usua)
-        self.root.U.insert(0, 'postgres')
-        self.root.U.grid(row = 4,
-                    column = 2,
-                    padx = 2,
-                    pady = 2,
-                    sticky = W+E)
-        self.root.M = Entry(self.root, textvariable = self.root.mdpa, show='*')
-        self.root.M.grid(row = 5,
-                    column = 2,
-                    padx = 2,
-                    pady = 2,
-                    sticky = W+E)
-        # Imagen
-        self.root.icone = PhotoImage(file = r'Sources\Icone_Solinette.GIF')
-        Label(self.root, borderwidth = 2,
-                    relief = 'ridge',
-                    image = self.root.icone).grid(row = 1,
-                                             rowspan = 5,
-                                             column = 0,
-                                             padx = 2,
-                                             pady = 2,
-                                             sticky = W)
+        self.H = Entry(self, textvariable = self.host)
+        self.P = Entry(self, textvariable = self.port)
+        self.D = Entry(self, textvariable = self.dbnb)
+        self.U = Entry(self, textvariable = self.usua)
+        self.M = Entry(self, textvariable = self.mdpa, show='*')
 
+        # Imagen
+        self.icone = PhotoImage(file = r'sources\Icone_Solinette.GIF')
+        Label(self, borderwidth = 2, relief = 'ridge',
+                                     image = self.icone).grid(row = 1,
+                                                              rowspan = 5,
+                                                              column = 0,
+                                                              padx = 2,
+                                                              pady = 2,
+                                                              sticky = W)
         # Validación
-        Button(self.root, text = u'Conectarse',
-                     relief='groove',
+        Button(self, text = u'Conectarse',
+                     relief='ridge',
                      borderwidth = 3,
                      command=self.check_campos).grid(row = 6,
                                                      column = 1,
@@ -116,15 +103,26 @@ class GUI_Solinette:
                                                      padx = 2,
                                                      pady = 2,
                                                      sticky = N+W+S+E)
-        # Inicialización
-        self.root.mainloop()
+        # pre relleno
+        self.H.insert(0, 'localhost')
+        self.P.delete(0, END)
+        self.P.insert(0, '5432')
+        self.U.insert(0, 'postgres')
+        # organización de los elementos
+        self.H.grid(row = 1, column = 2, padx = 2, pady = 2, sticky = W+E)
+        self.P.grid(row = 2, column = 2, padx = 2, pady = 2, sticky = W+E)
+        self.D.grid(row = 3, column = 2, padx = 2, pady = 2, sticky = W+E)
+        self.U.grid(row = 4, column = 2, padx = 2, pady = 2, sticky = W+E)
+        self.M.grid(row = 5, column = 2, padx = 2, pady = 2, sticky = W+E)
 
-    def check_campos():
+    def check_campos(self):
         u""" Verifica que los campos del formulario son bien rellenos """
         # conteo de los errores
         err = 0
 
         # checkeo de los campos
+        for widget in self.children:
+            print widget.name
         if self.host.get() == u'':
             self.H.configure(background = 'red')
             err = err +1
@@ -143,7 +141,8 @@ class GUI_Solinette:
 
         # Acción según si hay error(es) o no
         if err != 0:
-            print 'champ(s) non rempli(s)'
+            showerror(title = u'Error: campo(s) vacío(s)',
+                      message = u'Rellenar todos los campos')
         else:
             renvoi()
 
@@ -153,10 +152,12 @@ class GUI_Solinette:
         return host
 
 
-
+###################################
+### Main program initialization ###
+###################################
 
 if __name__ == '__main__':
-    from Tkinter import *
-    test = GUI_Solinette()
+    app = SolinetteGUI()
+    app.mainloop()
 
 
