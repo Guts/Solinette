@@ -1,6 +1,33 @@
 # -*- coding: cp1252 -*-
+#!/usr/bin/env python
+#-------------------------------------------------------------------------------
+# Name :       Solinette
+# Purpose :
+# Authors :    Pierre Vernier et Julien M.
+# Python :     2.7.x
+# Encoding:    latin1
+# Created :    19/12/2011
+# Updated :    23/03/2013
+# Version :    1.4.2
+#-------------------------------------------------------------------------------
 
-# Declaracion de las funciones
+###################################
+##### Libraries and modules #######
+###################################
+
+# standard library
+
+
+# external library
+import psycopg2
+
+
+# custom modules
+
+
+###################################
+###### Functions definition #######
+###################################
 
 def construc_lista(lista):
     """Función para pasar de una lista de tuples (resultado de psycopg2)
@@ -250,33 +277,9 @@ def entre_puntos(cadena, tuplo):
 
 
 
-############################################################
-########## Fin de la definicion de las funciones ###########
-############################################################
-
-
-
-
-############################################################
-################### Inicio del programa ####################
-############################################################
-
-import psycopg2
-
-# Este comentario en bloque es a quitar en la version final. Aca solo para los tests
-
-conn = psycopg2.connect('host=localhost port=5432 dbname=geolocalizacion user=postgres password=pacivur')
-curs = conn.cursor()
-
-
-# encoding, muy importante
-cons_encoding = "set client_encoding to 'LATIN1';"
-curs.execute(cons_encoding)
-
-
-
-#####################################################################################################
-# Variables a llenar por el usuario antes de lanzar el programa
+####################################
+######### Global variables #########
+####################################
 
 # nombre de las 2 tablas
 tabla_direcciones = 'empresas_mml'
@@ -303,7 +306,28 @@ col_ubigeo_via = '"UBIGEO"' # 'ubigeo'
 col_ubigeo2_via = 'ubigeo2'
 col_dist_izq = '"IZQESQUEMA"' # 'izqesquema'
 col_dist_der = '"DERESQUEMA"' # 'deresquema'
-#####################################################################################################
+
+####################################
+########### Main program ###########
+####################################
+
+
+
+# Este comentario en bloque es a quitar en la version final. Aca solo para los tests
+
+conn = psycopg2.connect('host=localhost port=5432 dbname=geolocalizacion user=postgres password=pacivur')
+curs = conn.cursor()
+
+
+# encoding, muy importante
+cons_encoding = "set client_encoding to 'LATIN1';"
+curs.execute(cons_encoding)
+
+
+
+
+
+################################################################################
 
 # A continuacion para agregar un campo id si no hay. No es obligatorio
 '''
