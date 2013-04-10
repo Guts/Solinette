@@ -164,7 +164,9 @@ class SolinetteGUI(Toplevel):
                       message = u'Rellenar todos los campos')
             return err
         else:
-            return err
+##             self.host, self.port, self.mdpa, self.dbnb, self.usua
+            return
+
 
 
     def testconnexion(self):
