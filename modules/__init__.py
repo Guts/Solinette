@@ -1,1 +1,1 @@
-﻿
+﻿from Solinette_GUI import SolinetteGUI
