@@ -61,7 +61,10 @@ class Solinette(Tk):
         self.tabl = Entry(self, width = 35)
 
         # Basic buttons
-        settings = Button(self, text = 'GO', command = self.settings)
+        settings = Button(self,
+                          text = 'Parametros de conexión a la base de datos PostgreSQL',
+                          command = self.settings)
+
         self.val = Button(self, text = u'Dale!',
                                 relief= 'raised',
                                 command = self.bell)
@@ -84,10 +87,6 @@ class Solinette(Tk):
         can.grid(row = 5, column = 3, sticky = N+S+W+E, padx = 2, pady = 5)
 
         settings.grid(row= 7, column = 1)
-
-##        # test
-##        settings = SolinetteGUI
-##        settings().grid(row = 7, column = 0)
 
     def setpathtarg(self):
         """ ...browse and insert the path of target folder """
@@ -122,10 +121,9 @@ class Solinette(Tk):
 
 
     def settings(self):
-        params = SolinetteGUI
-        params()
+        params = SolinetteGUI()
         print params.renvoi.h
-        return params.renvoi.h
+        return params.renvoi()
 
 if __name__ == '__main__':
     app = Solinette()
