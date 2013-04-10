@@ -32,7 +32,7 @@ class SolinetteGUI(Toplevel):
         # basicos
         Toplevel.__init__(self)   # constructor of parent graphic class
         self.title(u'Parámetros de conexión a la base PostGIS')
-        self.iconbitmap('..\Icone_Solinette.ico')
+##        self.iconbitmap('../icone_Solinette.ico')
         self.resizable(width = False, height = False)
         self.geometry("350x200+300+0")
         self.columnconfigure(0, weight=1)
@@ -85,15 +85,15 @@ class SolinetteGUI(Toplevel):
         self.U = Entry(self, textvariable = self.usua)
         self.M = Entry(self, textvariable = self.mdpa, show='*')
 
-        # Imagen
-        self.icone = PhotoImage(file = r'..\sources\Icone_Solinette.GIF')
-        Label(self, borderwidth = 2, relief = 'ridge',
-                                     image = self.icone).grid(row = 1,
-                                                              rowspan = 5,
-                                                              column = 0,
-                                                              padx = 1,
-                                                              pady = 1,
-                                                              sticky = W)
+##        # Imagen
+##        self.icone = PhotoImage(file = r'..\sources\Icone_Solinette.GIF')
+##        Label(self, borderwidth = 2, relief = 'ridge',
+##                                     image = self.icone).grid(row = 1,
+##                                                              rowspan = 5,
+##                                                              column = 0,
+##                                                              padx = 1,
+##                                                              pady = 1,
+##                                                              sticky = W)
         # Botones básicos
         Button(self, text = u'Cancelar',
                      relief = 'flat',
