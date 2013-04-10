@@ -22,9 +22,10 @@ from tkMessageBox import showerror, showinfo
 from ttk import Combobox
 
 from os import environ as env, path
+import csv
 
 # external library
-import xlrd
+import xlrd, xlwt
 import psycopg2 as pg
 
 ###################################
@@ -242,7 +243,7 @@ class Solinette(Tk):
         return err
 
     def testconnexion(self):
-        """ testing connection settings """
+        u""" testing connection settings """
         try:
             conn = pg.connect(host = self.host.get(), dbname = self.dbnb.get(),
                               port = self.port.get(), user = self.usua.get(),
@@ -250,8 +251,7 @@ class Solinette(Tk):
             # información al usuario
             showinfo(title = u'Prueba de conexión ',
                      message = u'Prueba de conexión terminó con éxito')
-            self.val.conf(text='¡Dale!')
-            print conn.server_version
+            self.val.config(text='¡Dale!')
             # clausura de la conexión
             conn.close()
 
@@ -263,14 +263,64 @@ class Solinette(Tk):
         except ImportError , e:
             return None
 
+    def iduxls(self, xlspath):
+        u""" add an ID column to an Excel 2003 file (.xls) """
+        outbook = xlwt.Workbook(encoding = 'utf8')
+        outsheet = outbook.add_sheet(unicode('solinette'), cell_overwrite_ok = True)
+        with xlrd.open_workbook(xlspath, encoding_override='utf8') as inbook:
+            insh = inbook.sheet_by_index(0)
+            for lig in range(0,insh.nrows):
+                outsheet.write(lig, 0, unicode(lig))
+                for col in range(insh.ncols):
+                    outsheet.write(lig, col+1, insh.cell(lig, col).value)
+
+        # name the ID column
+        outsheet.write(0, 0, 'SOL_IDU')
+        # save the output excel file
+        outbook.save('temp\\PrSolinette_' + path.basename(xlspath))
+        # End of function
+        return outbook
+
+
+    def xls2csv(self, xlspath):
+        u""" export an Excel 2003 file (.xls) to a CSV file
+        see: http://stackoverflow.com/a/10803229 """
+        with xlrd.open_workbook(xlspath) as book:
+            sheet = book.sheet_by_index(0)
+            with open('temp/' + path.splitext(path.basename(xlspath))[0] + '.csv', 'wb') as f:
+                out = csv.writer(f, delimiter='\t', dialect = 'excel')
+                for row in range(sheet.nrows):
+                    try:
+                        out.writerow(sheet.row_values(row))
+                    except:
+                         out.writerow([unicode(s).encode("utf-8") for s in row])
+
+        # End of function
+        return book, f
+
     def process(self):
+        u""" makes ones tests before getting variables needed to process """
+        # check of empty entries
         if self.check_campos() != 0:
             return
+
+        # test connection settings
         self.testconnexion()
+
+        # test versions of PostgreSQL and PostGIS
+
+        # create a new xls with an universal ID
+        self.iduxls(self.target.get())
+        # export xls to csv
+        self.xls2csv(self.target.get())
+
+        # End of function
         return self.target.get(), self.ddl_dir.get(), self.ddl_dis.get(), \
                 self.host.get(), self.port.get(), self.usua.get(), \
                 self.mdpa.get(), self.dbnb.get(), self.tabl.get()
 
+
+################################################################################
 if __name__ == '__main__':
     app = Solinette()
     app.mainloop()
