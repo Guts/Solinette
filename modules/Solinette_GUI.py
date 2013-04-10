@@ -26,11 +26,11 @@ import psycopg2 as pg
 ####### Classes definition ########
 ###################################
 
-class SolinetteGUI(Tk):
+class SolinetteGUI(Toplevel):
     u""" Interfaz gráfica para la la Solinette """
     def __init__(self):
         # basicos
-        Tk.__init__(self)   # constructor of parent graphic class
+        Toplevel.__init__(self)   # constructor of parent graphic class
         self.title(u'Parámetros de conexión a la base PostGIS')
         self.iconbitmap('..\Icone_Solinette.ico')
         self.resizable(width = False, height = False)
@@ -128,6 +128,7 @@ class SolinetteGUI(Tk):
         self.P.delete(0, END)
         self.P.insert(0, '5432')
         self.U.insert(0, 'postgres')
+
         # organización de los elementos
         self.H.grid(row = 1, column = 2, padx = 2, pady = 2, sticky = W+E)
         self.P.grid(row = 2, column = 2, padx = 2, pady = 2, sticky = W+E)
@@ -204,7 +205,9 @@ class SolinetteGUI(Tk):
 ###################################
 
 if __name__ == '__main__':
-    app = SolinetteGUI()
+    app = Tk()
+    app.withdraw()
+    SolinetteGUI()
     app.mainloop()
 
 
