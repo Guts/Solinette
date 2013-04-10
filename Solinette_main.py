@@ -55,6 +55,7 @@ class Solinette(Tk):
 
         # Variables
         inutile = ['Esperando que se elige ela rchivo Excel']
+        self.typcols = []
         self.host = StringVar()
         self.port = IntVar()
         self.dbnb = StringVar()
@@ -189,14 +190,18 @@ class Solinette(Tk):
         return self.xls
 
     def licolumns(self):
+        u""" litsing columns names and types from Excel file """
         book = xlrd.open_workbook(self.target.get())   # lectura del archivo
         if book.nsheets > 1:
             print book.sheets()
         ish = 0
         sheet = book.sheet_by_index(ish)    # ouverture de la feuille 1
-        cols = [sheet.cell(0, cl).value for cl in range(sheet.ncols)]
+        # names of columns (first row/line)
+        cols = sheet.row_values(0)
         self.ddl_dir['values'] = cols
         self.ddl_dis['values'] = cols
+        # types of columns
+        self.typcols = list(sheet.row_types(1))
         # End of function
         return
 
@@ -277,7 +282,7 @@ class Solinette(Tk):
         # name the ID column
         outsheet.write(0, 0, 'SOL_IDU')
         # save the output excel file
-        outbook.save('temp\\PrSolinette_' + path.basename(xlspath))
+        outbook.save('temp\\ParaSolinette_' + path.basename(xlspath))
         # End of function
         return outbook
 
@@ -293,7 +298,7 @@ class Solinette(Tk):
                     try:
                         out.writerow(sheet.row_values(row))
                     except:
-                         out.writerow([unicode(s).encode("utf-8") for s in row])
+                         out.writerow([unicode(s).encode("utf-8") for s in sheet.row_values(row)])
 
         # End of function
         return book, f
@@ -311,13 +316,14 @@ class Solinette(Tk):
 
         # create a new xls with an universal ID
         self.iduxls(self.target.get())
+
         # export xls to csv
         self.xls2csv(self.target.get())
 
         # End of function
         return self.target.get(), self.ddl_dir.get(), self.ddl_dis.get(), \
                 self.host.get(), self.port.get(), self.usua.get(), \
-                self.mdpa.get(), self.dbnb.get(), self.tabl.get()
+                self.mdpa.get(), self.dbnb.get(), self.tabl.get(), self.typcols
 
 
 ################################################################################
@@ -325,3 +331,22 @@ if __name__ == '__main__':
     app = Solinette()
     app.mainloop()
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+##1 'XL_CELL_TEXT',cell_contents(sheet,1)
+##2 'XL_CELL_NUMBER',cell_contents(sheet,2)
+##3 'XL_CELL_DATE',cell_contents(sheet,3)
+##0 'XL_CELL_BLANK',cell_contents(sheet,6)
+##4 'XL_CELL_BOOLEAN',cell_contents(sheet,4)
+##5 'XL_CELL_ERROR',cell_contents(sheet,5)
