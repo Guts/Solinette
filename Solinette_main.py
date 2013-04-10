@@ -36,57 +36,107 @@ class Solinette(Tk):
     def __init__(self):
         # basics settings
         Tk.__init__(self)               # constructor of parent graphic class
+        self.title(u'Solinette: geolocalizar direcciones en Lima y Callo')
+        self.iconbitmap('icone_Solinette.ico')
+        self.resizable(width = False, height = False)
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+
+        # Frames
+        self.FrPath = LabelFrame(self,
+                            text = u'1: las direcciones para geolocalizar',
+                            padx = 5, pady = 5)
+        self.FrAttr = LabelFrame(self,
+                            text = u'2: columnas indispensables',
+                            padx = 5, pady = 5)
+        self.FrConn = LabelFrame(self,
+                            text = u'3: parámetros de conexión a la base de datos',
+                            padx=5, pady=5)
+
+
+        # Variables
         inutile = ['Esperando que se elige ela rchivo Excel']
-        # Hola
-        Label(self, text = 'Hola! '
-                    + env.get(u'USERNAME')).grid(row = 0, column = 0,
-                                                 columnspan = 2, sticky = N+S+W+E,
-                                                 padx = 2, pady = 1)
+
+
+
+            ## Frame 1
         # target folder
-        labtarg = Label(self, text = u'Archivo Excel (.xls): ')
-        self.target = Entry(self, width = 35)
-        self.browsetarg = Button(self,
+        labtarg = Label(self.FrPath, text = u'Archivo Excel (.xls): ')
+        self.target = Entry(self.FrPath, width = 35)
+        self.browsetarg = Button(self.FrPath,
                                  text = 'Explorar',
                                  command = self.setpathtarg)
 
+        # widgets placement
+        labtarg.grid(row = 1, column = 1, columnspan = 1, sticky = N+S+W+E, padx = 2, pady = 2)
+        self.target.grid(row = 1, column = 2, columnspan = 1, sticky = N+S+W+E, padx = 2, pady = 2)
+        self.browsetarg.grid(row = 1, column = 3, columnspan = 1, sticky = N+S+W+E, padx = 2, pady = 2)
+
+            ## Frame 2
         # Drop-down lists of columns
-        labdir = Label(self, text = u'Columna dirección: ')
-        self.ddl_dir = Combobox(self, values = inutile)
-##        self.ddl_dir.current(0)
-        labdis = Label(self, text = u'Columna distrito: ')
-        self.ddl_dis = Combobox(self, values = inutile)
+        labdir = Label(self.FrAttr, text = u'Columna dirección: ')
+        self.ddl_dir = Combobox(self.FrAttr, values = inutile)
+        labdis = Label(self.FrAttr, text = u'Columna distrito: ')
+        self.ddl_dis = Combobox(self.FrAttr, values = inutile)
 
         # nombre de la tabla en PostgreSQL
-        labtabl = Label(self, text = u'Nombre de la tabla: ')
-        self.tabl = Entry(self, width = 35)
+        labtabl = Label(self.FrAttr, text = u'Nombre de la tabla: ')
+        self.tabl = Entry(self.FrAttr, width = 35)
 
-        # Basic buttons
-        settings = Button(self,
+        # widgets placement
+        labdir.grid(row = 1, column = 1, sticky = N+S+W+E, padx = 2, pady = 2)
+        self.ddl_dir.grid(row = 1, column = 2, sticky = N+S+W+E, padx = 2, pady = 2)
+        labdis.grid(row = 2, column = 1, sticky = N+S+W+E, padx = 2, pady = 2)
+        self.ddl_dis.grid(row = 2, column = 2, sticky = N+S+W+E, padx = 2, pady = 2)
+        labtabl.grid(row = 3, column = 1, sticky = N+S+W+E, padx = 2, pady = 2)
+        self.tabl.grid(row = 3, column = 2, columnspan = 2, sticky = N+S+W+E, padx = 2, pady = 2)
+
+            ## Frame 3
+        settings = Button(self.FrConn,
                           text = 'Parametros de conexión a la base de datos PostgreSQL',
                           command = self.settings)
 
+
+        # widgets placement
+        settings.grid(row= 1, column = 1, sticky = N+S+W+E, padx = 2, pady = 2)
+
+            ## Global frame
+        # Hola
+        Label(self, text = 'Hola! '
+                    + env.get(u'USERNAME')).grid(row = 0, column = 0,
+                                                 columnspan = 2, sticky = W+E,
+                                                 padx = 2, pady = 5)
+        # Imagen
+        self.icone = PhotoImage(file = r'sources/logo_Solinette.GIF')
+        Label(self, borderwidth = 2, relief = 'ridge',
+                                     image = self.icone).grid(row = 1,
+                                                              rowspan = 5,
+                                                              column = 0,
+                                                              padx = 1,
+                                                              pady = 1,
+                                                              sticky = W)
+
+        # Basic buttons
         self.val = Button(self, text = u'Dale!',
                                 relief= 'raised',
-                                command = self.bell)
+                                command = self.bell,
+                                state = DISABLED)
         can = Button(self, text = 'Cancel (quit)',
                                 relief= 'groove',
                                 command = self.destroy)
 
         # widgets placement
-        labtarg.grid(row = 1, column = 1, columnspan = 1)
-        self.target.grid(row = 1, column = 2, columnspan = 1)
-        self.browsetarg.grid(row = 1, column = 3, columnspan = 1)
-        labdir.grid(row = 2, column = 1)
-        self.ddl_dir.grid(row = 2, column = 2)
-        labdis.grid(row = 3, column = 1)
-        self.ddl_dis.grid(row = 3, column = 2)
-        labtabl.grid(row = 4, column = 1)
-        self.tabl.grid(row = 4, column = 2, columnspan = 2)
+        self.FrPath.grid(row = 2, column = 1, sticky = N+S+W+E, padx = 2, pady = 2)
+##        self.FrAttr.grid(row = 3, column = 1, sticky = N+S+W+E, padx = 2, pady = 2)
+##        self.FrConn.grid(row = 4, column = 1, sticky = N+S+W+E, padx = 2, pady = 2)
+
         self.val.grid(row = 5, column = 1, columnspan = 2,
                             sticky = N+S+W+E, padx = 2, pady = 5)
-        can.grid(row = 5, column = 3, sticky = N+S+W+E, padx = 2, pady = 5)
+        can.grid(row = 5, column = 0, sticky = N+S+W+E, padx = 2, pady = 5)
 
-        settings.grid(row= 7, column = 1)
+
 
     def setpathtarg(self):
         """ ...browse and insert the path of target folder """
@@ -97,13 +147,13 @@ class Solinette(Tk):
                                    initialdir = '../Sources')
 
         if path.splitext(self.xls)[1] == '.xls':
-##            try:
             self.target.insert(0, self.xls)
             self.licolumns()
+            self.browsetarg.config(state=DISABLED)
+            self.FrAttr.grid(row = 3, column = 1, sticky = N+S+W+E, padx = 2, pady = 2)
+            self.FrConn.grid(row = 4, column = 1, sticky = N+S+W+E, padx = 2, pady = 2)
             self.tabl.insert(0, path.basename(self.xls).split('.')[0])
-##            except:
-##                showerror(title = 'Error de archivo',
-##                          message = u'Ningun archivo indicado')
+            self.val.config(state = ACTIVE)
         # end of function
         return self.xls
 
