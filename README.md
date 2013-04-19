@@ -12,5 +12,5 @@ To do list:
 - [x] exporter en csv
 - [ ] système d'aide avec des infobulles
 - [ ] passer le script de la Solinette en classe
-- [ ] récupérer les paramètres retournés par la classe graphique
+- [X] récupérer les paramètres retournés par la classe graphique
 - [ ] tester avec différents fichiers
