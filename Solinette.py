@@ -23,7 +23,7 @@ import psycopg2
 
 
 # custom modules
-
+from Solinette_main import SolinetteGUI
 
 ###################################
 ###### Functions definition #######
@@ -280,6 +280,42 @@ def entre_puntos(cadena, tuplo):
 ####################################
 ######### Global variables #########
 ####################################
+
+app = SolinetteGUI()
+app.mainloop()
+params = app.dico_param
+
+
+#######################ANCIENNE VERSION#########################################
+conn = psycopg2.connect(host=params['pg_host'],
+        port=params['pg_port'],
+        dbname=params['pg_bd'],
+        user=params['pg_usuario'],
+        password=params['pg_pwd'])
+
+curs = conn.cursor()
+
+
+# encoding, muy importante
+cons_encoding = "set client_encoding to 'LATIN1';"
+curs.execute(cons_encoding)
+
+
+# A continuacion para agregar un campo id si no hay. No es obligatorio
+'''
+cons_sequence = "CREATE TEMPORARY SEQUENCE serial_id START 1;"
+curs.execute(cons_sequence)
+
+cons_add_id = "ALTER TABLE " + tabla_direcciones + " ADD COLUMN "+ col_id + " int;"
+curs.execute(cons_add_id)
+
+cons_fill_id = "UPDATE " + tabla_direcciones + " SET "+ col_id + " = nextval('serial_id');"
+curs.execute(cons_fill_id)'''
+################################################################################
+
+
+
+
 
 # nombre de las 2 tablas
 tabla_direcciones = 'empresas_mml'

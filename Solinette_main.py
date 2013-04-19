@@ -32,7 +32,7 @@ import psycopg2 as pg
 ####### Classes definition ########
 ###################################
 
-class Solinette(Tk):
+class SolinetteGUI(Tk):
     def __init__(self):
         # basics settings
         Tk.__init__(self)               # constructor of parent graphic class
@@ -297,7 +297,7 @@ class Solinette(Tk):
         # save the output excel file
         outbook.save('temp\\ParaSolinette_' + path.basename(xlspath))
         # End of function
-        return outbook
+        return outbook, 'temp\\ParaSolinette_' + path.basename(xlspath)
 
 
     def quit(self):
@@ -334,19 +334,20 @@ class Solinette(Tk):
 
         # create a new xls with an universal ID
         self.iduxls(self.target.get())
-
+        excel = self.iduxls(self.target.get())[1]
         # export xls to csv
-        self.xls2csv(self.target.get())
+        self.xls2csv(excel)
+        archivo = self.xls2csv(excel)[1]
 
         # End of function
-        self.dico_param['archivo'] = self.target.get()
+        self.dico_param['archivo'] = archivo.name
         self.dico_param['direccion'] = self.ddl_dir.get()
         self.dico_param['distrito'] = self.ddl_dis.get()
         self.dico_param['pg_host'] = self.host.get()
         self.dico_param['pg_port'] = self.port.get()
         self.dico_param['pg_usuario'] = self.usua.get()
-        self.dico_param['pg_bd'] = self.mdpa.get()
-        self.dico_param['pg_pwd'] = self.dbnb.get()
+        self.dico_param['pg_bd'] = self.dbnb.get()
+        self.dico_param['pg_pwd'] = self.mdpa.get()
         self.dico_param['tabla_out'] = self.tabl.get()
         self.dico_param['tipo_cols'] = self.typcols
         self.dico_param['cols'] = self.dico_cols
@@ -357,7 +358,7 @@ class Solinette(Tk):
 
 ################################################################################
 if __name__ == '__main__':
-    app = Solinette()
+    app = SolinetteGUI()
     app.mainloop()
     print app.dico_param
 
