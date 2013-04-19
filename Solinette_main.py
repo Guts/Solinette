@@ -54,13 +54,15 @@ class Solinette(Tk):
                             padx=5, pady=5)
 
         # Variables
-        inutile = ['Esperando que se elige ela rchivo Excel']
+        inutile = ['Esperando que se elige el archivo Excel']
         self.typcols = []
         self.host = StringVar()
         self.port = IntVar()
         self.dbnb = StringVar()
         self.usua = StringVar()
         self.mdpa = StringVar()
+        self.ok = 0
+        self.dico_param ={}
 
             ## Frame 1
         # target folder
@@ -126,9 +128,12 @@ class Solinette(Tk):
         self.U = Entry(self.FrConn, textvariable = self.usua)
         self.M = Entry(self.FrConn, textvariable = self.mdpa, show='*')
         # pre relleno
-        self.host.set('localhost')
+        self.host.set('10.0.6.46')
         self.port.set('5432')
         self.usua.set('postgres')
+        self.mdpa.set('pacivur')
+        self.dbnb.set('geolocalizacion')
+
         # widgets placement
         self.H.grid(row = 1, column = 2, padx = 3, pady = 5, sticky = N+S+W+E)
         self.P.grid(row = 2, column = 2, padx = 3, pady = 5, sticky = N+S+W+E)
@@ -159,13 +164,15 @@ class Solinette(Tk):
                                 state = DISABLED)
         can = Button(self, text = 'Cancel (quit)',
                                 relief= 'groove',
-                                command = self.destroy)
+                                command = self.quit)
 
         # widgets placement
         self.FrPath.grid(row = 2, column = 1, sticky = N+S+W+E, padx = 2, pady = 2)
         self.val.grid(row = 5, column = 1, columnspan = 2,
                             sticky = N+S+W+E, padx = 2, pady = 5)
         can.grid(row = 5, column = 0, sticky = N+S+W+E, padx = 2, pady = 5)
+
+                #### POUR TEST : VOIR LIGNE PRE RELLENO N 132 + 210/211 (licolumns)
 
 
 
@@ -200,6 +207,8 @@ class Solinette(Tk):
         cols = sheet.row_values(0)
         self.ddl_dir['values'] = cols
         self.ddl_dis['values'] = cols
+        self.ddl_dir.current(1)
+        self.ddl_dis.current(2)
         # types of columns
         self.typcols = list(sheet.row_types(1))
         # End of function
@@ -254,9 +263,10 @@ class Solinette(Tk):
                               port = self.port.get(), user = self.usua.get(),
                               password = self.mdpa.get())
             # información al usuario
+            self.val.config(text='¡D A L E!')
             showinfo(title = u'Prueba de conexión ',
                      message = u'Prueba de conexión terminó con éxito')
-            self.val.config(text='¡Dale!')
+            self.ok = 1
             # clausura de la conexión
             conn.close()
 
@@ -287,6 +297,9 @@ class Solinette(Tk):
         return outbook
 
 
+    def quit(self):
+        self.destroy()
+
     def xls2csv(self, xlspath):
         u""" export an Excel 2003 file (.xls) to a CSV file
         see: http://stackoverflow.com/a/10803229 """
@@ -309,8 +322,10 @@ class Solinette(Tk):
         if self.check_campos() != 0:
             return
 
-        # test connection settings
-        self.testconnexion()
+        if self.ok == 0:
+            # test connection settings
+            self.testconnexion()
+            return
 
         # test versions of PostgreSQL and PostGIS
 
@@ -321,10 +336,20 @@ class Solinette(Tk):
         self.xls2csv(self.target.get())
 
         # End of function
-        return self.target.get(), self.ddl_dir.get(), self.ddl_dis.get(), \
-                self.host.get(), self.port.get(), self.usua.get(), \
-                self.mdpa.get(), self.dbnb.get(), self.tabl.get(), self.typcols
-
+        self.dico_param['archivo']=self.target.get()
+        self.dico_param['direccion']=self.ddl_dir.get()
+        self.dico_param['distrito']=self.ddl_dis.get()
+        self.dico_param['pg_host']=self.host.get()
+        self.dico_param['pg_port']=self.port.get()
+        self.dico_param['pg_usuario']=self.usua.get()
+        self.dico_param['pg_bd']=self.mdpa.get()
+        self.dico_param['pg_pwd']=self.dbnb.get()
+        self.dico_param['tabla_out']=self.tabl.get()
+        self.dico_param['tipo_cols']=self.typcols
+        self.quit()
+##        return self.dico_param, self.target.get(), self.ddl_dir.get(), self.ddl_dis.get(), \
+##                self.host.get(), self.port.get(), self.usua.get(), \
+##                self.mdpa.get(), self.dbnb.get(), self.tabl.get(), self.typcols
 
 ################################################################################
 if __name__ == '__main__':
