@@ -62,7 +62,8 @@ class Solinette(Tk):
         self.usua = StringVar()
         self.mdpa = StringVar()
         self.ok = 0
-        self.dico_param ={}
+        self.dico_cols = {}
+        self.dico_param = {}
 
             ## Frame 1
         # target folder
@@ -211,6 +212,8 @@ class Solinette(Tk):
         self.ddl_dis.current(2)
         # types of columns
         self.typcols = list(sheet.row_types(1))
+        for i in range(len(cols)):
+            self.dico_cols[cols[i]] = self.typcols[i]
         # End of function
         return
 
@@ -336,16 +339,17 @@ class Solinette(Tk):
         self.xls2csv(self.target.get())
 
         # End of function
-        self.dico_param['archivo']=self.target.get()
-        self.dico_param['direccion']=self.ddl_dir.get()
-        self.dico_param['distrito']=self.ddl_dis.get()
-        self.dico_param['pg_host']=self.host.get()
-        self.dico_param['pg_port']=self.port.get()
-        self.dico_param['pg_usuario']=self.usua.get()
-        self.dico_param['pg_bd']=self.mdpa.get()
-        self.dico_param['pg_pwd']=self.dbnb.get()
-        self.dico_param['tabla_out']=self.tabl.get()
-        self.dico_param['tipo_cols']=self.typcols
+        self.dico_param['archivo'] = self.target.get()
+        self.dico_param['direccion'] = self.ddl_dir.get()
+        self.dico_param['distrito'] = self.ddl_dis.get()
+        self.dico_param['pg_host'] = self.host.get()
+        self.dico_param['pg_port'] = self.port.get()
+        self.dico_param['pg_usuario'] = self.usua.get()
+        self.dico_param['pg_bd'] = self.mdpa.get()
+        self.dico_param['pg_pwd'] = self.dbnb.get()
+        self.dico_param['tabla_out'] = self.tabl.get()
+        self.dico_param['tipo_cols'] = self.typcols
+        self.dico_param['cols'] = self.dico_cols
         self.quit()
 ##        return self.dico_param, self.target.get(), self.ddl_dir.get(), self.ddl_dis.get(), \
 ##                self.host.get(), self.port.get(), self.usua.get(), \
@@ -355,6 +359,7 @@ class Solinette(Tk):
 if __name__ == '__main__':
     app = Solinette()
     app.mainloop()
+    print app.dico_param
 
 
 
