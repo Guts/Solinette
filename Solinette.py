@@ -4,7 +4,7 @@
 # Name :       Solinette
 # Purpose :
 # Authors :    Pierre Vernier et Julien M.
-# Python :     2.7.x
+# Python :     2.7.4 +
 # Encoding:    latin1
 # Created :    19/12/2011
 # Updated :    23/03/2013
@@ -16,7 +16,7 @@
 ###################################
 
 # standard library
-
+from os import environ as env, path
 
 # external library
 import psycopg2
@@ -281,12 +281,13 @@ def entre_puntos(cadena, tuplo):
 ######### Global variables #########
 ####################################
 
+
+#### Retrieving connexion settings and parameters from the GUI
 app = SolinetteGUI()
 app.mainloop()
 params = app.dico_param
 
-
-#######################ANCIENNE VERSION#########################################
+#### Connexion to database
 conn = psycopg2.connect(host=params['pg_host'],
         port=params['pg_port'],
         dbname=params['pg_bd'],
@@ -296,25 +297,40 @@ conn = psycopg2.connect(host=params['pg_host'],
 curs = conn.cursor()
 
 
-# encoding, muy importante
+# Setting the encoding
 cons_encoding = "set client_encoding to 'LATIN1';"
 curs.execute(cons_encoding)
 
+#### Creation of input table
+# columns definition
+cols = ''
 
-# A continuacion para agregar un campo id si no hay. No es obligatorio
-'''
-cons_sequence = "CREATE TEMPORARY SEQUENCE serial_id START 1;"
-curs.execute(cons_sequence)
+dico_equival_type = {0:'char(255)',
+                     1:'char(255)',
+                     2:'numeric',
+                     3:'date',
+                     4:'boolean',
+                     5:'None'}
 
-cons_add_id = "ALTER TABLE " + tabla_direcciones + " ADD COLUMN "+ col_id + " int;"
-curs.execute(cons_add_id)
-
-cons_fill_id = "UPDATE " + tabla_direcciones + " SET "+ col_id + " = nextval('serial_id');"
-curs.execute(cons_fill_id)'''
-################################################################################
-
+for i in range(len(params.get('cols').keys())):
+    cols = cols + params.get('cols').keys()[i].lower() + ' ' \
+                + dico_equival_type.get(params.get('cols').values()[i]) + ', '
 
 
+# input table creation
+cons_creacion = "create table " + params.get('tabla_out') + " ( " + cols[:-2] + ");"
+curs.execute(cons_creacion)
+
+conn.commit()   # save the modifications
+
+
+#### Fill in the table
+cons_copy = "copy "+ params.get('tabla_out') + " from 'E:/Mes documents/GitHub/Solinette/"+ params.get('archivo') + "' DELIMITER E'\t' CSV HEADER;"
+curs.execute(cons_copy)
+conn.commit()
+
+
+#copy empresas_mml from '\\Compartido\sig\Processos y herramientas\solinette\datos a ubicar\empresas_MML.csv' DELIMITER ';' CSV HEADER;
 
 
 # nombre de las 2 tablas
@@ -349,15 +365,6 @@ col_dist_der = '"DERESQUEMA"' # 'deresquema'
 
 
 
-# Este comentario en bloque es a quitar en la version final. Aca solo para los tests
-
-conn = psycopg2.connect('host=localhost port=5432 dbname=geolocalizacion user=postgres password=pacivur')
-curs = conn.cursor()
-
-
-# encoding, muy importante
-cons_encoding = "set client_encoding to 'LATIN1';"
-curs.execute(cons_encoding)
 
 
 
@@ -2160,3 +2167,51 @@ print '- ',len(lista_busca_multi), ' necesitan que se edite la tabla de vias par
 print '- ',len(lista_busca_bug), ' no tienen su equivalente en la tabla de vias'
 print '- ',len(lista_busca_imposible), ' no tienen un nombre o un numero y no pueden ser localizadas con este programa'
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################### FORMER codelines
+
+
+### Este comentario en bloque es a quitar en la version final. Aca solo para los tests
+##
+##conn = psycopg2.connect('host=localhost port=5432 dbname=geolocalizacion user=postgres password=pacivur')
+##curs = conn.cursor()
+##
+##
+### encoding, muy importante
+##cons_encoding = "set client_encoding to 'LATIN1';"
+##curs.execute(cons_encoding)
+
+
+##1 'XL_CELL_TEXT',cell_contents(sheet,1)
+##2 'XL_CELL_NUMBER',cell_contents(sheet,2)
+##3 'XL_CELL_DATE',cell_contents(sheet,3)
+##0 'XL_CELL_BLANK',cell_contents(sheet,6)
+##4 'XL_CELL_BOOLEAN',cell_contents(sheet,4)
+##5 'XL_CELL_ERROR',cell_contents(sheet,5)
+
+
+# A continuacion para agregar un campo id si no hay. No es obligatorio
+'''
+cons_sequence = "CREATE TEMPORARY SEQUENCE serial_id START 1;"
+curs.execute(cons_sequence)
+
+cons_add_id = "ALTER TABLE " + tabla_direcciones + " ADD COLUMN "+ col_id + " int;"
+curs.execute(cons_add_id)
+
+cons_fill_id = "UPDATE " + tabla_direcciones + " SET "+ col_id + " = nextval('serial_id');"
+curs.execute(cons_fill_id)'''

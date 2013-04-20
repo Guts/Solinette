@@ -5,7 +5,8 @@
 # Purpose:
 #
 # Author:      Julien Moura, Pierre Vernier
-#
+# Python :     2.7.4 +
+# Encoding:    utf-8
 # Created:     09/04/2013
 # Copyright:   (c) Julien 2013
 # Licence:     <your licence>
@@ -21,8 +22,10 @@ from tkFileDialog import askopenfilename
 from tkMessageBox import showerror, showinfo
 from ttk import Combobox
 
+from collections import OrderedDict as OD
 from os import environ as env, path
 import csv
+from sys import platform
 
 # external library
 import xlrd, xlwt
@@ -62,7 +65,7 @@ class SolinetteGUI(Tk):
         self.usua = StringVar()
         self.mdpa = StringVar()
         self.ok = 0
-        self.dico_cols = {}
+        self.dico_cols = OD()
         self.dico_param = {}
 
             ## Frame 1
@@ -129,11 +132,11 @@ class SolinetteGUI(Tk):
         self.U = Entry(self.FrConn, textvariable = self.usua)
         self.M = Entry(self.FrConn, textvariable = self.mdpa, show='*')
         # pre relleno
-        self.host.set('10.0.6.46')
+        self.host.set('localhost')
         self.port.set('5432')
         self.usua.set('postgres')
         self.mdpa.set('pacivur')
-        self.dbnb.set('geolocalizacion')
+        self.dbnb.set('test2')
 
         # widgets placement
         self.H.grid(row = 1, column = 2, padx = 3, pady = 5, sticky = N+S+W+E)
@@ -212,6 +215,9 @@ class SolinetteGUI(Tk):
         self.ddl_dis.current(2)
         # types of columns
         self.typcols = list(sheet.row_types(1))
+        # add universal ID to list of columns
+        self.dico_cols['SOL_IDU'] = 2
+        # loop on names and types of columns
         for i in range(len(cols)):
             self.dico_cols[cols[i]] = self.typcols[i]
         # End of function
@@ -335,6 +341,7 @@ class SolinetteGUI(Tk):
         # create a new xls with an universal ID
         self.iduxls(self.target.get())
         excel = self.iduxls(self.target.get())[1]
+
         # export xls to csv
         self.xls2csv(excel)
         archivo = self.xls2csv(excel)[1]
