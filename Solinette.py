@@ -4,7 +4,7 @@
 # Name :       Solinette
 # Purpose :
 # Authors :    Pierre Vernier et Julien M.
-# Python :     2.7.4 +
+# Python :     2.7.x +
 # Encoding:    latin1
 # Created :    19/12/2011
 # Updated :    23/03/2013
@@ -21,7 +21,6 @@ from sys import exit
 
 # external library
 import psycopg2
-
 
 # custom modules
 from Solinette_main import SolinetteGUI
@@ -328,26 +327,25 @@ conn.commit()   # save the modifications
 
 #### Fill in the table
 cons_copy = "copy "+ params.get('tabla_out') \
-                   + " from '" + path.join(getcwd(), params.get('archivo')) + "' DELIMITER E'\t' CSV HEADER QUOTE '\"';"
+                   + " from '" + path.join(getcwd(), params.get('archivo')) \
+                   + "' DELIMITER E'\t' CSV HEADER QUOTE '\"';"
 curs.execute(cons_copy)
 conn.commit()
 
 
-#copy empresas_mml from '\\Compartido\sig\Processos y herramientas\solinette\datos a ubicar\empresas_MML.csv' DELIMITER ';' CSV HEADER;
-
-
+#### Bascis settings: DB columns
 # nombre de las 2 tablas
-tabla_direcciones = 'empresas_mml'
-tabla_vias = 'nombrevial_09_30_solinette'
-tabla_dir_geom = tabla_direcciones+'_geom' # La tabla de las direcciones encontradas (con geometria)
-tabla_dir_multi = tabla_direcciones+'_multi' # La tabla de las direcciones encontradas pero con geometria 'MULTTILINESTRING'
-tabla_dir_bug = tabla_direcciones+'_bug' # La tabla de las direcciones no encontradas (sin geometria)
-tabla_dir_imposible = tabla_direcciones+'_imposible' # La tabla de las direcciones imposibles de localizar (sin nombre o numero)
+tabla_direcciones = params.get('tabla_out')
+tabla_vias = 'solinette_nombrevial_130421'
+tabla_dir_geom = tabla_direcciones + '_geom'    # tabla de las direcciones encontradas (con geometria)
+tabla_dir_multi = tabla_direcciones + '_multi'  # tabla de las direcciones encontradas pero con geometria 'MULTTILINESTRING'
+tabla_dir_bug = tabla_direcciones + '_bug'      # tabla de las direcciones no encontradas (sin geometria)
+tabla_dir_imposible = tabla_direcciones + '_imposible'  #  tabla de las direcciones imposibles de localizar (sin nombre o numero)
 
 # columnas de la tabla de las direcciones
-col_id = 'id'
-col_direccion = 'direccion'
-col_dist = 'distrito'
+col_id = 'SOL_IDU'
+col_direccion = params.get('direccion')
+col_dist = params.get('distrito')
 
 # columnas de la tabla de las vias
 col_id_via = 'gid'
@@ -360,65 +358,40 @@ col_ubigeo2_via = 'ubigeo2'
 col_dist_izq = '"IZQESQUEMA"' # 'izqesquema'
 col_dist_der = '"DERESQUEMA"' # 'deresquema'
 
-####################################
-########### Main program ###########
-####################################
-
-
-
-
-
-
 
 
 ################################################################################
+########### Main program ###########
+####################################
 
-# A continuacion para agregar un campo id si no hay. No es obligatorio
-'''
-cons_sequence = "CREATE TEMPORARY SEQUENCE serial_id START 1;"
-curs.execute(cons_sequence)
-
-cons_add_id = "ALTER TABLE " + tabla_direcciones + " ADD COLUMN "+ col_id + " int;"
-curs.execute(cons_add_id)
-
-cons_fill_id = "UPDATE " + tabla_direcciones + " SET "+ col_id + " = nextval('serial_id');"
-curs.execute(cons_fill_id)
-'''
-# Fin de la parte para agregar y llenar el campo id
-
-
-'''
-# para quitar la columna, solo durantes los tests
-consX = "ALTER TABLE " + tabla_direcciones + " DROP COLUMN tipo_via; ALTER TABLE " + tabla_direcciones + " DROP COLUMN numero; \
-ALTER TABLE " + tabla_direcciones + " DROP COLUMN complemento_dir; ALTER TABLE " + tabla_direcciones + " DROP COLUMN nombre_via;"
-curs.execute(consX)
-'''
-
-# Agrego los 4 campos que voy a llenar
-
+## Agrego los 4 campos que voy a llenar
 # Agrego una nueva columna en la cual pongo el tipo de la via
-cons2 = "begin; ALTER TABLE " + tabla_direcciones + " ADD COLUMN tipo_via varchar(10);commit;"
-curs.execute(cons2)
+cons_tipo = "begin; ALTER TABLE " + tabla_direcciones \
+                                  + " ADD COLUMN sol_tipo varchar(10);"
+curs.execute(cons_tipo)
 
 # Agrego una nueva columna en la cual pongo el numero de la via
-cons3 = "ALTER TABLE " + tabla_direcciones + " ADD COLUMN nombre_via varchar(120);"
-curs.execute(cons3)
+cons_nom = "ALTER TABLE " + tabla_direcciones \
+                          + " ADD COLUMN sol_nombre varchar(120);"
+curs.execute(cons_nom)
 
 # Agrego una nueva columna en la cual pongo el numero de la via
-cons4 = "ALTER TABLE " + tabla_direcciones + " ADD COLUMN numero int;"
-curs.execute(cons4)
+cons_numero = "ALTER TABLE " + tabla_direcciones \
+                             + " ADD COLUMN sol_numero int;"
+curs.execute(cons_numero)
 
 # Agrego una nueva columna en la cual pongo el complemento de la direccion
-cons5 = "ALTER TABLE " + tabla_direcciones + " ADD COLUMN complemento_dir varchar(200);"
-curs.execute(cons5)
+cons_complemento = "ALTER TABLE " + tabla_direcciones \
+                                  + " ADD COLUMN sol_compdir varchar(200);"
+curs.execute(cons_complemento)
 
+# saving changes
+curs.commit()
 
-
-cons = "select " + col_direccion + " from " + tabla_direcciones + " order by " + col_id + ";"
+cons = "select " + col_direccion + " from " + tabla_direcciones \
+                                 + " order by " + col_id + ";"
 curs.execute(cons)
-lista = curs.fetchall()
-
-
+li_direcciones = curs.fetchall()
 
 # Necesito los id para poder insertar nuevos valores en los nuevos campos segun ellos. Es mas seguro que segun los i
 cons_id = "select " + col_id + " from " + tabla_direcciones + " order by " + col_id + ";"
@@ -433,20 +406,20 @@ construc_lista(lista_id)
 # Inicio - Esa parte hace lo mismo que la funcion construc_lista() que no funciona aqui, no se porque
 lista2=[]
 i = 0
-while i < len(lista):
+while i < len(li_direcciones):
     lista2.append([])
     i=i+1
 
 i = 0
-while i < len(lista):
-    if lista[i] <> (None,):
-        if lista[i][0][0] =='\xa0':
-            #print lista[i]
-            lista2[i].append(lista[i][0][1:].rstrip())
+while i < len(li_direcciones):
+    if li_direcciones[i] <> (None,):
+        if li_direcciones[i][0][0] =='\xa0':
+            #print li_direcciones[i]
+            lista2[i].append(li_direcciones[i][0][1:].rstrip())
             #print lista2[i]
         else:
         #print lista2[i]
-            lista2[i].append(lista[i][0].rstrip())
+            lista2[i].append(li_direcciones[i][0].rstrip())
         #print lista2[i]
 
     else:
@@ -455,7 +428,7 @@ while i < len(lista):
 # Fin - Esa parte hace lo mismo que la funcion construc_lista() que no funciona aqui, no se porque
 
 
-del lista
+del li_direcciones
 
 en_mayusculas(lista2)
 
@@ -2158,6 +2131,14 @@ if len(lista_dobles) >0:
 
 
 conn2.commit()
+
+
+## Export to shapefile
+
+
+
+################################################################################
+## Ending program
 print "*****************"
 print "Listo !"
 
@@ -2167,7 +2148,6 @@ print '- ',len(lista_busca_geom), ' han sido localizadas'
 print '- ',len(lista_busca_multi), ' necesitan que se edite la tabla de vias para poder ser localizadas'
 print '- ',len(lista_busca_bug), ' no tienen su equivalente en la tabla de vias'
 print '- ',len(lista_busca_imposible), ' no tienen un nombre o un numero y no pueden ser localizadas con este programa'
-
 
 
 
@@ -2206,6 +2186,9 @@ print '- ',len(lista_busca_imposible), ' no tienen un nombre o un numero y no pu
 ##5 'XL_CELL_ERROR',cell_contents(sheet,5)
 
 
+#copy empresas_mml from '\\Compartido\sig\Processos y herramientas\solinette\datos a ubicar\empresas_MML.csv' DELIMITER ';' CSV HEADER;
+
+
 # A continuacion para agregar un campo id si no hay. No es obligatorio
 '''
 cons_sequence = "CREATE TEMPORARY SEQUENCE serial_id START 1;"
@@ -2216,3 +2199,25 @@ curs.execute(cons_add_id)
 
 cons_fill_id = "UPDATE " + tabla_direcciones + " SET "+ col_id + " = nextval('serial_id');"
 curs.execute(cons_fill_id)'''
+
+
+# A continuacion para agregar un campo id si no hay. No es obligatorio
+'''
+cons_sequence = "CREATE TEMPORARY SEQUENCE serial_id START 1;"
+curs.execute(cons_sequence)
+
+cons_add_id = "ALTER TABLE " + tabla_direcciones + " ADD COLUMN "+ col_id + " int;"
+curs.execute(cons_add_id)
+
+cons_fill_id = "UPDATE " + tabla_direcciones + " SET "+ col_id + " = nextval('serial_id');"
+curs.execute(cons_fill_id)
+'''
+# Fin de la parte para agregar y llenar el campo id
+
+
+'''
+# para quitar la columna, solo durantes los tests
+consX = "ALTER TABLE " + tabla_direcciones + " DROP COLUMN tipo_via; ALTER TABLE " + tabla_direcciones + " DROP COLUMN numero; \
+ALTER TABLE " + tabla_direcciones + " DROP COLUMN complemento_dir; ALTER TABLE " + tabla_direcciones + " DROP COLUMN nombre_via;"
+curs.execute(consX)
+'''
