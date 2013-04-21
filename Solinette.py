@@ -16,7 +16,8 @@
 ###################################
 
 # standard library
-from os import environ as env, path
+from os import environ as env, path, getcwd
+from sys import exit
 
 # external library
 import psycopg2
@@ -287,6 +288,10 @@ app = SolinetteGUI()
 app.mainloop()
 params = app.dico_param
 
+# test if there are parameters
+if not params.get('pg_host'):
+    exit()
+
 #### Connexion to database
 conn = psycopg2.connect(host=params['pg_host'],
         port=params['pg_port'],
@@ -295,7 +300,6 @@ conn = psycopg2.connect(host=params['pg_host'],
         password=params['pg_pwd'])
 
 curs = conn.cursor()
-
 
 # Setting the encoding
 cons_encoding = "set client_encoding to 'LATIN1';"
@@ -316,18 +320,15 @@ for i in range(len(params.get('cols').keys())):
     cols = cols + params.get('cols').keys()[i].lower() + ' ' \
                 + dico_equival_type.get(params.get('cols').values()[i]) + ', '
 
-
 # input table creation
 cons_creacion = "create table " + params.get('tabla_out') + " ( " + cols[:-2] + ");"
 curs.execute(cons_creacion)
 
 conn.commit()   # save the modifications
 
-
 #### Fill in the table
 cons_copy = "copy "+ params.get('tabla_out') \
-                   + " from 'E:/Mes documents/GitHub/Solinette/" \
-                   + params.get('archivo') + "' DELIMITER E'\t' CSV HEADER QUOTE '\"';"
+                   + " from '" + path.join(getcwd(), params.get('archivo')) + "' DELIMITER E'\t' CSV HEADER QUOTE '\"';"
 curs.execute(cons_copy)
 conn.commit()
 
