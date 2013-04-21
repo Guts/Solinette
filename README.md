@@ -14,3 +14,7 @@ To do list:
 - [ ] passer le script de la Solinette en classe
 - [X] récupérer les paramètres retournés par la classe graphique
 - [ ] tester avec différents fichiers
+- [] GUI : tester si tabla_oout existe déjà => suffixe date
+- [] idem pr champs solinette
+- [] changer noms champs table geolocalizacion
+- [] nettoyer variable
