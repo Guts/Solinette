@@ -325,7 +325,9 @@ conn.commit()   # save the modifications
 
 
 #### Fill in the table
-cons_copy = "copy "+ params.get('tabla_out') + " from 'E:/Mes documents/GitHub/Solinette/"+ params.get('archivo') + "' DELIMITER E'\t' CSV HEADER;"
+cons_copy = "copy "+ params.get('tabla_out') \
+                   + " from 'E:/Mes documents/GitHub/Solinette/" \
+                   + params.get('archivo') + "' DELIMITER E'\t' CSV HEADER QUOTE '\"';"
 curs.execute(cons_copy)
 conn.commit()
 
@@ -345,8 +347,6 @@ tabla_dir_imposible = tabla_direcciones+'_imposible' # La tabla de las direccion
 col_id = 'id'
 col_direccion = 'direccion'
 col_dist = 'distrito'
-
-
 
 # columnas de la tabla de las vias
 col_id_via = 'gid'

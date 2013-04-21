@@ -315,12 +315,12 @@ class SolinetteGUI(Tk):
         with xlrd.open_workbook(xlspath) as book:
             sheet = book.sheet_by_index(0)
             with open('temp/' + path.splitext(path.basename(xlspath))[0] + '.csv', 'wb') as f:
-                out = csv.writer(f, delimiter='\t', dialect = 'excel')
+                out = csv.writer(f, delimiter='\t', dialect = 'excel-tab', quotechar='"')
                 for row in range(sheet.nrows):
                     try:
                         out.writerow(sheet.row_values(row))
                     except:
-                         out.writerow([unicode(s).encode("utf-8") for s in sheet.row_values(row)])
+                         out.writerow([unicode(s).encode("latin1") for s in sheet.row_values(row)])
 
         # End of function
         return book, f
