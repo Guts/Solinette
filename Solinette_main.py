@@ -132,11 +132,11 @@ class SolinetteGUI(Tk):
         self.U = Entry(self.FrConn, textvariable = self.usua)
         self.M = Entry(self.FrConn, textvariable = self.mdpa, show='*')
         # pre relleno
-        self.host.set('localhost')
+        self.host.set('10.0.6.234')
         self.port.set('5432')
         self.usua.set('postgres')
         self.mdpa.set('pacivur')
-        self.dbnb.set('test2')
+        self.dbnb.set('geolocalizacion')
 
         # widgets placement
         self.H.grid(row = 1, column = 2, padx = 3, pady = 5, sticky = N+S+W+E)

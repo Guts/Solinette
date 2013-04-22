@@ -16,11 +16,13 @@
 ###################################
 
 # standard library
-from os import environ as env, path, getcwd
+from os import environ as env, path, getcwd, chdir, system
 from sys import exit
+import csv
 
 # external library
 import psycopg2
+
 
 # custom modules
 from Solinette_main import SolinetteGUI
@@ -320,19 +322,33 @@ for i in range(len(params.get('cols').keys())):
     cols = cols + params.get('cols').keys()[i].lower() + ' ' \
                 + dico_equival_type.get(params.get('cols').values()[i]) + ', '
 
+print curs
 # input table creation
 c_crea_tablaout = "create table " + params.get('tabla_out') + " ( " + cols[:-2] + ");"
 curs.execute(c_crea_tablaout)
 
 # saving modifications and cleaning up
 conn.commit()
-del c_crea_tablaout, cols, dico_equival_type, c_set_encoding
+##del c_crea_tablaout, cols, dico_equival_type, app
+
+print curs
+test = r'C:\\ParaSolinette_municipalidades_multi.csv'
 
 #### Fill in the table
-c_crea_copy = "copy "+ params.get('tabla_out') \
-                   + " from '" + path.join(getcwd(), params.get('archivo')) \
-                   + "' DELIMITER E'\t' CSV HEADER QUOTE '\"';"
-curs.execute(c_crea_copy)
+####with open(path.normpath(path.join(getcwd(), params.get('archivo'))), mode='r') as f:
+####    curs.copy_from(f, params.get('tabla_out'), sep='\t')
+##c_crea_copy = "copy "+ params.get('tabla_out') + " from '" + unicode(path.normpath(path.join(getcwd(), params.get('archivo')))) + "' DELIMITER E'\t' CSV HEADER QUOTE '\"';"
+######c_crea_copy = "copy " + params.get('tabla_out') + " from 'C:\\ParaSolinette_municipalidades_multi.csv' DELIMITER E'\t' CSV HEADER QUOTE '\"';"
+####
+####print c_crea_copy
+##curs.execute(c_crea_copy)
+
+tablename = params.get('tabla_out') # a table with the appropriate columns etc
+filename = path.abspath('C:\\youpi.csv') # a csv file
+SQL = "COPY %s FROM '%s' WITH CSV HEADER" % (tablename, filename)
+import sys
+curs.copy_expert(SQL, sys.stdin) # Error occurs here
+
 
 # saving modifications and cleaning up
 conn.commit()
