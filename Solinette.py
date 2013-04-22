@@ -41,6 +41,8 @@ def construc_lista(lista):
         #except:
         lista.insert(i, f)
         i = i+1
+    # End of function
+    return lista
 
 def en_mayusculas(lista):
     """Función que permite transformar en mayusculas una cadena de caracteres.
@@ -52,6 +54,8 @@ def en_mayusculas(lista):
             lista[i][0] = lista[i][0].upper()
 
         i = i+1
+    # End of function
+    return lista
 
 def sin_accento(lista):
     """Función que permite quitar los accentos de una cadena de caracteres.
@@ -75,7 +79,8 @@ def sin_accento(lista):
                 except:
                     pass
         i = i+1
-
+    # End of function
+    return lista, accentos, sin_accentos
 
 
 def sentido_n_nm1(inicio_n, final_n, inicio_nm1, final_nm1):
@@ -104,7 +109,8 @@ def sentido_n_nm1(inicio_n, final_n, inicio_nm1, final_nm1):
         else:
             pass
             #print 'caso raro en n-1'
-
+    # End of function
+    return inicio_n, inicio_nm1, final_n, final_nm1
 
 
 
@@ -135,7 +141,8 @@ def sentido_n_np1(inicio_n, final_n, inicio_np1, final_np1):
         else:
             pass
             #print 'caso raro en n+1'
-
+    # End of function
+    return inicio_n, inicio_np1, final_n, final_np1, sentido, lista_coord_np1
 
 
 def entre_puntos(cadena, tuplo):
@@ -200,8 +207,6 @@ def entre_puntos(cadena, tuplo):
     b_perpen=tuplo_y - a_perpen*tuplo_x
     deltaX = 5/sqrt(1+a_perpen**2)
 
-
-
     if lista_dir[2]/2 <> lista_dir[2]/2.:
         etat ='impar'
 
@@ -248,11 +253,6 @@ def entre_puntos(cadena, tuplo):
             X_decal = tuplo_x + deltaX
 
 
-
-
-
-
-
     Y_decal = a_perpen*X_decal + b_perpen
 
     coord = (X_decal, Y_decal)
@@ -275,14 +275,15 @@ def entre_puntos(cadena, tuplo):
         coord = (X_decal, Y_decal)
         lista_coords.append(coord)
 
+    # End of function
+    return cadena, tuplo, lista_coords, lista_pts
 
 
 ####################################
 ######### Global variables #########
 ####################################
 
-
-#### Retrieving connexion settings and parameters from the GUI
+#### Retrieving connection settings and parameters from the GUI
 app = SolinetteGUI()
 app.mainloop()
 params = app.dico_param
@@ -291,7 +292,7 @@ params = app.dico_param
 if not params.get('pg_host'):
     exit()
 
-#### Connexion to database
+#### Connection to database
 conn = psycopg2.connect(host=params['pg_host'],
         port=params['pg_port'],
         dbname=params['pg_bd'],
@@ -301,8 +302,8 @@ conn = psycopg2.connect(host=params['pg_host'],
 curs = conn.cursor()
 
 # Setting the encoding
-cons_encoding = "set client_encoding to 'LATIN1';"
-curs.execute(cons_encoding)
+c_set_encoding = "set client_encoding to 'LATIN1';"
+curs.execute(c_set_encoding)
 
 #### Creation of input table
 # columns definition
@@ -320,18 +321,22 @@ for i in range(len(params.get('cols').keys())):
                 + dico_equival_type.get(params.get('cols').values()[i]) + ', '
 
 # input table creation
-cons_creacion = "create table " + params.get('tabla_out') + " ( " + cols[:-2] + ");"
-curs.execute(cons_creacion)
+c_crea_tablaout = "create table " + params.get('tabla_out') + " ( " + cols[:-2] + ");"
+curs.execute(c_crea_tablaout)
 
-conn.commit()   # save the modifications
+# saving modifications and cleaning up
+conn.commit()
+del c_crea_tablaout, cols, dico_equival_type, c_set_encoding
 
 #### Fill in the table
-cons_copy = "copy "+ params.get('tabla_out') \
+c_crea_copy = "copy "+ params.get('tabla_out') \
                    + " from '" + path.join(getcwd(), params.get('archivo')) \
                    + "' DELIMITER E'\t' CSV HEADER QUOTE '\"';"
-curs.execute(cons_copy)
-conn.commit()
+curs.execute(c_crea_copy)
 
+# saving modifications and cleaning up
+conn.commit()
+del c_crea_copy
 
 #### Bascis settings: DB columns
 # nombre de las 2 tablas
@@ -366,42 +371,42 @@ col_dist_der = '"DERESQUEMA"' # 'deresquema'
 
 ## Agrego los 4 campos que voy a llenar
 # Agrego una nueva columna en la cual pongo el tipo de la via
-cons_tipo = "begin; ALTER TABLE " + tabla_direcciones \
+c_add_tipo = "begin; ALTER TABLE " + tabla_direcciones \
                                   + " ADD COLUMN sol_tipo varchar(10);"
-curs.execute(cons_tipo)
+curs.execute(c_add_tipo)
 
 # Agrego una nueva columna en la cual pongo el numero de la via
-cons_nom = "ALTER TABLE " + tabla_direcciones \
+c_add_nom = "ALTER TABLE " + tabla_direcciones \
                           + " ADD COLUMN sol_nombre varchar(120);"
-curs.execute(cons_nom)
+curs.execute(c_add_nom)
 
 # Agrego una nueva columna en la cual pongo el numero de la via
-cons_numero = "ALTER TABLE " + tabla_direcciones \
+c_add_numero = "ALTER TABLE " + tabla_direcciones \
                              + " ADD COLUMN sol_numero int;"
-curs.execute(cons_numero)
+curs.execute(c_add_numero)
 
 # Agrego una nueva columna en la cual pongo el complemento de la direccion
-cons_complemento = "ALTER TABLE " + tabla_direcciones \
+c_add_complemento = "ALTER TABLE " + tabla_direcciones \
                                   + " ADD COLUMN sol_compdir varchar(200);"
-curs.execute(cons_complemento)
+curs.execute(c_add_complemento)
 
-# saving changes
+# saving changes and cleaning up
 curs.commit()
+del c_add_complemento, c_add_nom, c_add_numero, c_add_tipo
 
-cons = "select " + col_direccion + " from " + tabla_direcciones \
+c_sel_all = "select " + col_direccion + " from " + tabla_direcciones \
                                  + " order by " + col_id + ";"
-curs.execute(cons)
+curs.execute(c_sel_all)
 li_direcciones = curs.fetchall()
 
-# Necesito los id para poder insertar nuevos valores en los nuevos campos segun ellos. Es mas seguro que segun los i
-cons_id = "select " + col_id + " from " + tabla_direcciones + " order by " + col_id + ";"
-curs.execute(cons_id)
-lista_id = curs.fetchall()
+# Necesito los id para poder insertar nuevos valores en los nuevos campos segun
+# ellos. Es mas seguro que segun los i
+c_sel_id = "select " + col_id + " from " + tabla_direcciones + " order by " + col_id + ";"
+curs.execute(c_sel_id)
+li_id = curs.fetchall()
 
-
-construc_lista(lista_id)
-
-
+# Transformo la lista de tuple en lista de listas
+construc_lista(li_id)
 
 # Inicio - Esa parte hace lo mismo que la funcion construc_lista() que no funciona aqui, no se porque
 lista2=[]
