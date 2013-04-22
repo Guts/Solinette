@@ -132,11 +132,11 @@ class SolinetteGUI(Tk):
         self.U = Entry(self.FrConn, textvariable = self.usua)
         self.M = Entry(self.FrConn, textvariable = self.mdpa, show='*')
         # pre relleno
-        self.host.set('10.0.6.234')
+        self.host.set('localhost')
         self.port.set('5432')
         self.usua.set('postgres')
         self.mdpa.set('pacivur')
-        self.dbnb.set('geolocalizacion')
+        self.dbnb.set('solinette')
 
         # widgets placement
         self.H.grid(row = 1, column = 2, padx = 3, pady = 5, sticky = N+S+W+E)
@@ -314,7 +314,7 @@ class SolinetteGUI(Tk):
         see: http://stackoverflow.com/a/10803229 """
         with xlrd.open_workbook(xlspath) as book:
             sheet = book.sheet_by_index(0)
-            with open('temp/' + path.splitext(path.basename(xlspath))[0] + '.csv', 'wb') as f:
+            with open(path.join('C:\Temp', path.splitext(path.basename(xlspath))[0] + '.csv'), 'wb') as f:
                 out = csv.writer(f, delimiter='\t', dialect = 'excel-tab', quotechar='"')
                 for row in range(sheet.nrows):
                     try:
