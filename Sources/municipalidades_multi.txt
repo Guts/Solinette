@@ -14,7 +14,7 @@ _xf_index_to_xl_type_map: <type 'dict'>, len = 63
 automatic_grid_line_colour: 1
 bf: array('h', [-1])
 biff_version: 80
-book: <xlrd.book.Book object at 0x03140910>
+book: <xlrd.book.Book object at 0x03D820D0>
 bt: array('B', [0])
 cached_normal_view_mag_factor: 0
 cached_page_break_preview_mag_factor: 0
@@ -46,7 +46,7 @@ nrows: 6
 number: 0
 panes_are_frozen: 0
 pickleable: True
-put_cell: <bound method Sheet.put_cell_unragged of <xlrd.sheet.Sheet object at 0x030CC3D0>>
+put_cell: <bound method Sheet.put_cell_unragged of <xlrd.sheet.Sheet object at 0x03D4A1B0>>
 ragged_rows: False
 remove_splits_if_pane_freeze_is_removed: 0
 rich_text_runlist_map: <type 'dict'>, len = 0

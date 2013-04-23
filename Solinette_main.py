@@ -345,16 +345,16 @@ class SolinetteGUI(Tk):
 
     def xls2dict(self, xlspath):
         u""" export values from ab Excel 2003 file (.xls) into a dictionary """
-        with xlrd.open_workbook(xlspath) as book:
+        with xlrd.open_workbook(xlspath, encoding_override = 'utf8') as book:
             sh = book.sheet_by_index(0)
             for row in range(1, sh.nrows):
                 self.dico_vals[row] = []
                 for col in range(sh.ncols):
                     if sh.cell_type(row, col) is not 3:
-                        self.dico_vals[row].append(sh.cell_value(row, col))
+                        self.dico_vals[row].append(unicode(sh.cell_value(row, col)).encode('latin1'))
                     else:
                         date = xlrd.xldate_as_tuple(sh.cell_value(row, col), book.datemode)
-                        self.dico_vals[row].append('-'.join([str(i) for i in date[:3]]))
+                        self.dico_vals[row].append(unicode('-'.join([unicode(i) for i in date[:3]])))
 
         # End of function
         return book, self.dico_vals
@@ -405,7 +405,8 @@ class SolinetteGUI(Tk):
 if __name__ == '__main__':
     app = SolinetteGUI()
     app.mainloop()
-    print app.dico_param
+    result = app.dico_param
+    values = result.get('values')
 
 
 ##1 'XL_CELL_TEXT',cell_contents(sheet,1)

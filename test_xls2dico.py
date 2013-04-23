@@ -23,7 +23,7 @@ for row in range(1, sh.nrows):
     dico2[row] = []
     for col in range(sh.ncols):
         if sh.cell_type(row, col) is not 3:
-            dico2[row].append(sh.cell_value(row, col))
+            dico2[row].append(unicode(sh.cell_value(row, col)))
         else:
             date = xlrd.xldate_as_tuple(sh.cell_value(row, col), book.datemode)
             dico2[row].append('-'.join([str(i) for i in date[:3]]))

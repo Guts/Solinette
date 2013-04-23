@@ -307,19 +307,21 @@ conn = psycopg2.connect(host=params['pg_host'],
 curs = conn.cursor()
 
 # Setting the cursor encoding
-##c_set_encoding = "set client_encoding to 'LATIN1';"
+##c_set_encoding = "set client_encoding to 'UTF8';"
 ##curs.execute(c_set_encoding)
 
 #### Creation of input table
 # columns definition
 cols = ''
-
+dico_vals = app.dico_param.get('values')
+valores = tuple(tuple(dico_vals.get(i)) for i in dico_vals.keys())
 dico_equival_type = {0:'char(255)',
                      1:'char(255)',
                      2:'numeric',
                      3:'date',
                      4:'boolean',
-                     5:'None'}
+                     5:'None',
+                     9:'char(55)'}
 
 for i in range(len(params.get('cols').keys())):
     cols = cols + params.get('cols').keys()[i].lower() + ' ' \
@@ -336,11 +338,17 @@ conn.commit()
 ##chmod(path.join(getcwd(), params.get('archivo')), 644)
 
 #### Fill in the table
-c_crea_copy = "copy "+ params.get('tabla_out') \
-                   + " from '" + path.join('C:\temp', params.get('archivo')) \
-                   + "' DELIMITER E'\t' CSV HEADER QUOTE '\"' ENCODING 'utf8';"
+# copy method
+c_crea_copy = u"copy "+ params.get('tabla_out') \
+                   + u" from '" + path.join('C:\temp', params.get('archivo')) \
+                   + u"' DELIMITER E'\t' CSV HEADER QUOTE '\"' ENCODING 'LATIN1';"
 curs.execute(c_crea_copy)
 
+# insert from dictionary
+try:
+    curs.executemany('INSERT INTO ' + params.get('tabla_out') + ' (key, value) VALUES (%s, %s)', dico_vals.items())
+except Exception, e:
+    print e.pgerror
 
 
 # saving modifications and cleaning up
@@ -454,7 +462,6 @@ sin_accento(li_dir2)
 
 ####### Aca edito las direcciones para poner un espacio despues de un '.', un '°' o un '?'
 for direc in li_dir2:
-
     for string in direc:
         string2 = ''
         for e in string:
