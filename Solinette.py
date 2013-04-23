@@ -348,10 +348,10 @@ conn.commit()
 # nombre de las 2 tablas
 tabla_direcciones = params.get('tabla_out')
 tabla_vias = 'solinette_nombrevial_100930'
-tabla_dir_geom = tabla_direcciones + '_geom'    # tabla de las direcciones encontradas (con geometria)
-tabla_dir_multi = tabla_direcciones + '_multi'  # tabla de las direcciones encontradas pero con geometria 'MULTTILINESTRING'
-tabla_dir_bug = tabla_direcciones + '_bug'      # tabla de las direcciones no encontradas (sin geometria)
-tabla_dir_imposible = tabla_direcciones + '_imposible'  #  tabla de las direcciones imposibles de localizar (sin nombre o numero)
+tabla_dir_geom = tabla_direcciones.lower() + '_geom'    # tabla de las direcciones encontradas (con geometria)
+tabla_dir_multi = tabla_direcciones.lower() + '_multi'  # tabla de las direcciones encontradas pero con geometria 'MULTTILINESTRING'
+tabla_dir_bug = tabla_direcciones.lower() + '_bug'      # tabla de las direcciones no encontradas (sin geometria)
+tabla_dir_imposible = tabla_direcciones.lower() + '_imposible'  #  tabla de las direcciones imposibles de localizar (sin nombre o numero)
 
 # columnas de la tabla de las direcciones
 col_id = 'SOL_IDU'
@@ -502,7 +502,7 @@ while i < len(li_dir2):
                     dir_comple = dir_comple+' '+li_dir2[i][j]
                     del li_dir2[i][j]
 
-                cons_compl = "UPDATE " + tabla_direcciones + " SET complemento_dir = "+ "'"+str(dir_comple)+ "'"+ " where " + \
+                cons_compl = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(dir_comple)+ "'"+ " where " + \
                          col_id + " = "+ str(li_id[i])+';'
                 curs.execute(cons_compl)
                 del comple, cons_compl, dir_comple
@@ -636,7 +636,7 @@ while i < len(li_dir2):
                             del cons_f, compl2
 
                         else:
-                            cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " ||' '|| complemento_dir where " + col_id + " = "+ str(li_id[i])+';'
+                            cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " ||' '|| sol_compdir where " + col_id + " = "+ str(li_id[i])+';'
                             #print cons_f
                             curs.execute(cons_f)
                             del cons_f, compl2, cons_verif, lista_verif
@@ -667,7 +667,7 @@ while i < len(li_dir2):
                     li_dir2[i][j][1:len(li_dir2[i][j])] = str(int(li_dir2[i][j][1:len(li_dir2[i][j])])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
 
 
-                cons_j = "UPDATE " + tabla_direcciones + " SET numero = "+str(li_dir2[i][j][1:len(li_dir2[i][j])])+ " where " + col_id + " = "+ str(li_id[i])+';'
+                cons_j = "UPDATE " + tabla_direcciones + " SET sol_numero = "+str(li_dir2[i][j][1:len(li_dir2[i][j])])+ " where " + col_id + " = "+ str(li_id[i])+';'
                 curs.execute(cons_j)
                 del cons_j
 
@@ -682,11 +682,11 @@ while i < len(li_dir2):
                     g = g+1
                 nombre = nombre.rstrip(' ')
                 if len(nombre)>2:
-                    cons_j = "UPDATE " + tabla_direcciones + " SET nombre_via = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                    cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
                     curs.execute(cons_j)
                     del cons_j
                 if len(nombre)<=2:
-                    cons_j = "UPDATE " + tabla_direcciones + " SET nombre_via = 'CALLE '||"+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                    cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = 'CALLE '||"+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
                     curs.execute(cons_j)
                     del cons_j
 
@@ -700,18 +700,18 @@ while i < len(li_dir2):
                     compl2 = compl2.rstrip(' ')
                     if compl2 <> '-':
 
-                        cons_verif = "SELECT complemento_dir from " + tabla_direcciones + " where " + col_id + " = "+ str(li_id[i])+';'
+                        cons_verif = "SELECT sol_compdir from " + tabla_direcciones + " where " + col_id + " = "+ str(li_id[i])+';'
                         curs.execute( cons_verif)
                         lista_verif = curs.fetchall()
                         #print lista_verif
                         if lista_verif[0] == (None,):
-                            cons_f = "UPDATE " + tabla_direcciones + " SET complemento_dir = "+ "'"+str(compl2)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                            cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
                             #print cons_f
                             curs.execute(cons_f)
                             del cons_f, compl2
 
                         else:
-                            cons_f = "UPDATE " + tabla_direcciones + " SET complemento_dir = "+ "'"+str(compl2)+"'"+ " ||' '|| complemento_dir where " + col_id + " = "+ str(li_id[i])+';'
+                            cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " ||' '|| sol_compdir where " + col_id + " = "+ str(li_id[i])+';'
                             #print cons_f
                             curs.execute(cons_f)
                             del cons_f, compl2, cons_verif, lista_verif
@@ -736,7 +736,7 @@ while i < len(li_dir2):
                     if int(l[t]) < 100: # Si el numero que tengo es inferior a 100, signica que es un número de cuadra
                         l[t] = str(int(l[t])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
 
-                    cons_t = "UPDATE " + tabla_direcciones + " SET numero = "+str(l[t])+ " where " + col_id + " = "+ str(li_id[i])+';'
+                    cons_t = "UPDATE " + tabla_direcciones + " SET sol_numero = "+str(l[t])+ " where " + col_id + " = "+ str(li_id[i])+';'
                     curs.execute(cons_t)
                     del cons_t
                     del l[t]
@@ -761,11 +761,11 @@ while i < len(li_dir2):
                         g = g+1
                     nombre = nombre.rstrip(' ')
                     if len(nombre)>2:
-                        cons_j = "UPDATE " + tabla_direcciones + " SET nombre_via = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                        cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
                         curs.execute(cons_j)
                         del cons_j
                     if len(nombre)<=2:
-                        cons_j = "UPDATE " + tabla_direcciones + " SET nombre_via = 'CALLE '||"+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                        cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = 'CALLE '||"+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
                         curs.execute(cons_j)
                         del cons_j
 
@@ -778,16 +778,16 @@ while i < len(li_dir2):
                             f = f+1
                         compl2 = compl2.rstrip(' ')
                         if compl2 <> '-':
-                            cons_verif = "SELECT complemento_dir from " + tabla_direcciones + " where " + col_id + " = "+ str(li_id[i])+';'
+                            cons_verif = "SELECT sol_compdir from " + tabla_direcciones + " where " + col_id + " = "+ str(li_id[i])+';'
                             curs.execute( cons_verif)
                             lista_verif = curs.fetchall()
                             if lista_verif[0] == (None,): # Si no hay complementos todavia
-                                cons_f = "UPDATE " + tabla_direcciones + " SET complemento_dir = "+ "'"+str(compl2)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                                cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
                                 #print cons_f
                                 curs.execute(cons_f)
                                 del cons_f, compl2, cons_verif, lista_verif
                             else: # Si ya existen complementos
-                                cons_f = "UPDATE " + tabla_direcciones + " SET complemento_dir = "+ "'"+str(compl2)+"'"+ " ||' '|| complemento_dir where " + col_id + " = "+ str(li_id[i])+';'
+                                cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " ||' '|| sol_compdir where " + col_id + " = "+ str(li_id[i])+';'
                                 curs.execute(cons_f)
                                 #print cons_f
                                 del cons_f, compl2
@@ -804,16 +804,16 @@ while i < len(li_dir2):
                         #print 'complemento else : ',compl2, 'dddd', nombre
                         if compl2 <> '-':
 
-                            cons_verif = "SELECT complemento_dir from " + tabla_direcciones + " where " + col_id + " = "+ str(li_id[i])+';'
+                            cons_verif = "SELECT sol_compdir from " + tabla_direcciones + " where " + col_id + " = "+ str(li_id[i])+';'
                             curs.execute( cons_verif)
                             lista_verif = curs.fetchall()
                             if lista_verif[0] == (None,): # Si no hay complementos todavia
-                                cons_f = "UPDATE " + tabla_direcciones + " SET complemento_dir = "+ "'"+str(cad+compl2)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                                cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(cad+compl2)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
                                 #print cons_f
                                 curs.execute(cons_f)
                                 del cons_f, compl2, cons_verif, lista_verif
                             else: # Si ya existen complementos
-                                cons_f = "UPDATE " + tabla_direcciones + " SET complemento_dir = "+ "'"+str(cad+compl2)+"'"+ " ||' '|| complemento_dir where " + col_id + " = "+ str(li_id[i])+';'
+                                cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(cad+compl2)+"'"+ " ||' '|| sol_compdir where " + col_id + " = "+ str(li_id[i])+';'
                                 curs.execute(cons_f)
                                 del cons_f, compl2
                         else:
@@ -837,11 +837,11 @@ while i < len(li_dir2):
 
             nombre = nombre.rstrip(' ')
             if len(nombre)>2:
-                cons_j = "UPDATE " + tabla_direcciones + " SET nombre_via = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
                 curs.execute(cons_j)
                 del cons_j
             if len(nombre)<=2:
-                cons_j = "UPDATE " + tabla_direcciones + " SET nombre_via = 'CALLE '||"+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = 'CALLE '||"+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
                 curs.execute(cons_j)
                 del cons_j
 
@@ -927,7 +927,7 @@ while i < len(li_dir2):
                         if i not in lista_a_borrar:
                             lista_a_borrar.append(i)
                         #print 'el nombre de la calle es el numero : ',li_dir2[i]
-                        cons_nombre = "UPDATE " + tabla_direcciones + " SET nombre_via = 'CALLE ' ||"+ "'"+str(li_dir2[i][j])+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                        cons_nombre = "UPDATE " + tabla_direcciones + " SET sol_nombre = 'CALLE ' ||"+ "'"+str(li_dir2[i][j])+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
                         #print cons_nombre
                         curs.execute(cons_nombre)
                         del cons_nombre
@@ -1031,7 +1031,7 @@ while i < len(li_dir2):
                     if int(li_dir2[i][j]) < 100: # Si el numero que tengo es inferior a 100, signica que es un número de cuadra
                         li_dir2[i][j] = str(int(li_dir2[i][j])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
 
-                    cons_num = "UPDATE " + tabla_direcciones + " SET numero = "+str(li_dir2[i][j])+ " where " + col_id + " = "+ str(li_id[i])+';'
+                    cons_num = "UPDATE " + tabla_direcciones + " SET sol_numero = "+str(li_dir2[i][j])+ " where " + col_id + " = "+ str(li_id[i])+';'
                     #print cons_num
                     curs.execute(cons_num)
                     del cons_num
@@ -1046,7 +1046,7 @@ while i < len(li_dir2):
                             pass
                         g = g+1
                     nombre = nombre.rstrip(' ')
-                    cons_g = "UPDATE " + tabla_direcciones + " SET nombre_via = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                    cons_g = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
                     #print cons_g
                     curs.execute(cons_g)
                     del cons_g
@@ -1066,17 +1066,17 @@ while i < len(li_dir2):
                             f = f+1
                         compl2 = compl2.rstrip(' ')
                         if compl2 <> '-':
-                            cons_verif = "SELECT complemento_dir from " + tabla_direcciones + " where " + col_id + " = "+ str(li_id[i])+';'
+                            cons_verif = "SELECT sol_compdir from " + tabla_direcciones + " where " + col_id + " = "+ str(li_id[i])+';'
                             curs.execute( cons_verif)
                             lista_verif = curs.fetchall()
                             #print 'compl2 :' , compl2, len(compl2)
                             if lista_verif[0] == (None,)and len(compl2) >0 : # Si no hay complementos todavia
-                                cons_f = "UPDATE " + tabla_direcciones + " SET complemento_dir = "+ "'"+str(compl2)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                                cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
                                 #print cons_f
                                 curs.execute(cons_f)
                                 del cons_f, compl2, cons_verif, lista_verif
                             else: # Si ya existen complementos
-                                cons_f = "UPDATE " + tabla_direcciones + " SET complemento_dir = "+ "'"+str(compl2)+"'"+ " ||' '|| complemento_dir where " + col_id + " = "+ str(li_id[i])+';'
+                                cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " ||' '|| sol_compdir where " + col_id + " = "+ str(li_id[i])+';'
                                 curs.execute(cons_f)
                                 #print cons_f
                                 del cons_f, compl2
@@ -1129,11 +1129,11 @@ while i < len(li_dir2):
             j = j+1
         nombre = nombre.rstrip(' ')
         if len(nombre)>2:
-            cons_j = "UPDATE " + tabla_direcciones + " SET nombre_via = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+            cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
             curs.execute(cons_j)
             del cons_j
         if len(nombre)<=2:
-            cons_j = "UPDATE " + tabla_direcciones + " SET nombre_via = 'CALLE '||"+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+            cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = 'CALLE '||"+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
             curs.execute(cons_j)
             del cons_j
 
