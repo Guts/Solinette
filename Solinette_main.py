@@ -26,6 +26,7 @@ from collections import OrderedDict as OD
 from os import environ as env, path
 import csv
 from sys import platform
+from time import strftime, localtime
 
 # external library
 import xlrd, xlwt
@@ -189,13 +190,14 @@ class SolinetteGUI(Tk):
                                    initialdir = '../Sources')
 
         if path.splitext(self.xls)[1] == '.xls':
+            hoy = '_' + strftime('%y%m%d', localtime())
             self.target.insert(0, self.xls)
             self.licolumns()
             self.browsetarg.config(state=DISABLED)
             self.target.config(state=DISABLED)
             self.FrAttr.grid(row = 3, column = 1, sticky = N+S+W+E, padx = 2, pady = 2)
             self.FrConn.grid(row = 4, column = 1, sticky = N+S+W+E, padx = 2, pady = 2)
-            self.tabl.insert(0, path.basename(self.xls).split('.')[0])
+            self.tabl.insert(0, path.basename(self.xls).split('.')[0] + hoy)
             self.val.config(state = ACTIVE)
         # end of function
         return self.xls
@@ -221,7 +223,7 @@ class SolinetteGUI(Tk):
         for i in range(len(cols)):
             self.dico_cols[cols[i]] = self.typcols[i]
         # End of function
-        return
+        return book, self.typcols, self.dico_cols, self.ddl_dir, self.ddl_dis
 
     def check_campos(self):
         u""" Verifica que los campos del formulario son bien rellenos """
@@ -271,6 +273,21 @@ class SolinetteGUI(Tk):
             conn = pg.connect(host = self.host.get(), dbname = self.dbnb.get(),
                               port = self.port.get(), user = self.usua.get(),
                               password = self.mdpa.get())
+            curs = conn.cursor()
+            # check PostgreSQL and PostGIS versions
+            try:
+                curs.execute('SELECT version()')
+                ver = curs.fetchone()
+                print ver
+            except DatabaseError, e:
+                showerror(title = u'Prueba de conexión ',
+                message = 'Prueba de conexión fracasó. Mensaje de error:\n' + str(e))
+                return
+            # check if destination table already exists
+            query = "select table_name from information_schema.tables" #% (self.tabl.get())
+            curs.execute(query)
+            li_tablas = curs.fetchall()
+            print 'elle existe déjà connard : ', li_tablas
             # información al usuario
             self.val.config(text='¡D A L E!')
             showinfo(title = u'Prueba de conexión ',
