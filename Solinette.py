@@ -480,7 +480,8 @@ while i < len(li_dir2):
     #print li_dir2[i]
     i = i+1
 
-print "Edición de la tabla de direcciones"
+log = open('C:\\temp\\log_solinette.txt', 'w')
+log.write("Inicio de la edición de la tabla de direcciones\n")
 
 # esta parte es para extraer los complementos de direccion.
 # He quitado 'PARQUE' porque existen las avenidas parque sur y parque norte.
@@ -1156,12 +1157,12 @@ while len(lista_a_borrar) <> 0:
 
 
 ########### Fin de la parte parsing de direcciones #############
-print "*****************"
+log.write("Fín\n")
 
 conn.commit()
 
 ## Ahora edito los distritos para que sean normalizados
-print "Creacion de los codigos UBIGEO en funcion de los nombres de distrito"
+log.write("Inicio de la creacion de los codigos UBIGEO en función de los nombres de distrito\n")
 
 ## A hacer de manera que sea facultativo. Si ya hay un campo ubigeo no usar esta parte
 cons_dist = "SELECT "+ col_dist +" from " + tabla_direcciones + " order by "+ col_id.lower() +";"
@@ -1266,7 +1267,7 @@ while i < len(li_dir2_dist):
     i = i+1
 
 ## Fin de la parte de normalizacion de los distritos
-print "*****************"
+log.write("Fín\n")
 
 ##Creo una tabla conteniendo todas las direcciones que tienen sea el campo nombre vacio o sea el campo numero vacio
 ## Estas direcciones no se pueden ubicar con el programa.
@@ -1281,7 +1282,7 @@ conn.commit()
 ##del curs
 
 ################## Inicio de la geolocalizacion de direcciones ################
-print "Localisazión de las direcciones"
+log.write("Inicio de la localisazión de las direcciones\n")
 
 ###################################################
 
@@ -1953,9 +1954,6 @@ while i < len(li_dir2):
 
 
 
-
-
-
         else: # si no tengo una cuadra no puedo localizar el punto
             pass
 
@@ -1974,8 +1972,8 @@ while i < len(li_dir2):
     i = i+1
 
 
-print "*****************"
-print "Creacion de las tablas finales"
+log.write("Fín\n")
+log.write("Creacion de las tablas finales\n")
 # Aca selecciono todas las lineas que no tienen una geometria (las direcciones imposibles a localizar)
 # para luego borrar las de la tabla.
 busca_geom_vacio= "SELECT  "+ col_id + " from " + tabla_dir_geom +" where st_astext(the_geom) IS NULL;"
@@ -2068,7 +2066,7 @@ if len(lista_busca_geom) + len(lista_busca_bug) + len(lista_busca_multi) + len(l
     pass
 
 else:
-    print 'Hay un problema. Hay al menos una direccion que esta en varias tablas'
+    log.write('\tHay un problema. Hay al menos una direccion que esta en varias tablas\n')
 
 
 lista_dobles = []
@@ -2077,9 +2075,9 @@ for e in lista_busca_geom:
         lista_dobles.append(e)
 
 if len(lista_dobles) >0:
-    print 'hay un problema con las direcciones :'
+    log.write('\tHay un problema con las direcciones: \n')
     for doble in lista_dobles:
-        print dobles
+        log.write('\t-'+ dobles + '\n\n')
 
 
 conn.commit()
@@ -2087,15 +2085,11 @@ conn.commit()
 ## Export to shapefile
 
 
-
-################################################################################
 ## Ending program
-print "*****************"
-print "Listo !"
-
-print '*** Resumen ***'
-print 'Sobre ',len(li_dir2),' direcciones :'
-print '- ',len(lista_busca_geom), ' han sido localizadas'
-print '- ',len(lista_busca_multi), ' necesitan que se edite la tabla de vias para poder ser localizadas'
-print '- ',len(lista_busca_bug), ' no tienen su equivalente en la tabla de vias'
-print '- ',len(lista_busca_imposible), ' no tienen un nombre o un numero y no pueden ser localizadas con este programa'
+log.write('*** Resumen ***\n')
+log.write('Sobre ',len(li_dir2),' direcciones :\n')
+log.write('- ',len(lista_busca_geom), ' han sido localizadas\n')
+log.write('- ',len(lista_busca_multi), ' necesitan que se edite la tabla de vias para poder ser localizadas\n')
+log.write('- ',len(lista_busca_bug), ' no tienen su equivalente en la tabla de vias\n')
+log.write('- ',len(lista_busca_imposible), ' no tienen un nombre o un numero y no pueden ser localizadas con este programa\n')
+log.close()
