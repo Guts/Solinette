@@ -1,6 +1,5 @@
-ï»¿# -*- coding: utf-8 -*-
+# -*- coding: cp1252 -*-
 #!/usr/bin/env python
-from __future__ import unicode_literals
 #-------------------------------------------------------------------------------
 # Name :       Solinette
 # Purpose :
@@ -22,8 +21,6 @@ from sys import exit
 from math import atan2, pi, sqrt
 import random
 
-
-
 # external library
 import psycopg2
 
@@ -35,7 +32,7 @@ from Solinette_main import SolinetteGUI
 ###################################
 
 def construc_lista(lista):
-    """FunciÃ³n para pasar de una lista de tuples (resultado de psycopg2)
+    """Función para pasar de una lista de tuples (resultado de psycopg2)
     a una lista de listas"""
     i =0
     while i <len(lista):
@@ -50,7 +47,7 @@ def construc_lista(lista):
     return lista
 
 def en_mayusculas(lista):
-    """FunciÃ³n que permite transformar en mayusculas una cadena de caracteres.
+    """Función que permite transformar en mayusculas una cadena de caracteres.
     Necesita 1 argumento, una lista de listas que contienen
     una cadena de caracteres."""
     i = 0
@@ -63,11 +60,11 @@ def en_mayusculas(lista):
     return lista
 
 def sin_accento(lista):
-    """FunciÃ³n que permite quitar los accentos de una cadena de caracteres.
+    """Función que permite quitar los accentos de una cadena de caracteres.
     Necesita 1 argumento, una lista de listas que contienen
     una cadena de caracteres."""
-    accentos = ['Ã', 'Ã“', 'Ã', 'Ã‰', 'Ãš', 'Ãœ', 'Ã€', 'Ã’', 'ÃŒ', 'Ãˆ', 'Ã™', 'Å¡', 'Ã±', 'Å ', '#', "'"] # 'Å ' = 'Âª'
-    sin_accentos = ['A', 'O', 'I', 'E', 'U', 'U','A', 'O', 'I', 'E', 'U', 'Â°', 'Ã‘', '', 'NÂ°', '']
+    accentos = ['Á', 'Ó', 'Í', 'É', 'Ú', 'Ü', 'À', 'Ò', 'Ì', 'È', 'Ù', 'š', 'ñ', 'Š', '#', "'"] # 'Š' = 'ª'
+    sin_accentos = ['A', 'O', 'I', 'E', 'U', 'U','A', 'O', 'I', 'E', 'U', '°', 'Ñ', '', 'N°', '']
     i = 0
     while i < len(lista):
         #print 'i intern', i, lista[i]
@@ -153,7 +150,7 @@ def sentido_n_np1(inicio_n, final_n, inicio_np1, final_np1):
 def entre_puntos(cadena, tuplo):
     """Funcion para encontrar los 2 puntos de la cuadra entre los cuales se
     encuentra el punto a localizar y hacer el desplacamiento a la izq. o der.
-    en funcion del nÃºmero"""
+    en funcion del número"""
     lista_pts =[]
     cadena2 = cadena.lstrip('LINESTRING(')
     cadena3 = cadena2.rstrip(')')
@@ -307,8 +304,8 @@ conn = psycopg2.connect(host=params['pg_host'],
 curs = conn.cursor()
 
 # Setting the cursor encoding
-##c_set_encoding = "set client_encoding to 'LATIN1';"
-##curs.execute(c_set_encoding)
+c_set_encoding = "set client_encoding to 'LATIN1';"
+curs.execute(c_set_encoding)
 
 #### Creation of input table
 # columns definition
@@ -331,14 +328,14 @@ curs.execute(c_crea_tablaout)
 
 # saving modifications and cleaning up
 conn.commit()
-##del c_crea_tablaout, cols, dico_equival_typ #, c_set_encoding, app
+del c_crea_tablaout, cols, dico_equival_type, c_set_encoding, app
 
 ##chmod(path.join(getcwd(), params.get('archivo')), 644)
 
 #### Fill in the table
 c_crea_copy = "copy "+ params.get('tabla_out') \
                    + " from '" + path.join('C:\temp', params.get('archivo')) \
-                   + "' DELIMITER E'\t' CSV HEADER QUOTE '\"' ENCODING 'utf8';"
+                   + "' DELIMITER E'\t' CSV HEADER QUOTE '\"';"
 curs.execute(c_crea_copy)
 
 
@@ -452,14 +449,14 @@ del li_direcciones
 en_mayusculas(li_dir2)
 sin_accento(li_dir2)
 
-####### Aca edito las direcciones para poner un espacio despues de un '.', un 'Â°' o un '?'
+####### Aca edito las direcciones para poner un espacio despues de un '.', un '°' o un '?'
 for direc in li_dir2:
 
     for string in direc:
         string2 = ''
         for e in string:
             try:
-                if (e == '.' or e == 'Â°' or e == '?') and string[string.index(e)+1] <> ' ':
+                if (e == '.' or e == '°' or e == '?') and string[string.index(e)+1] <> ' ':
                     string2 = string2 + e + ' '
                 else:
                     string2 = string2 + e
@@ -480,7 +477,7 @@ while i < len(li_dir2):
     #print li_dir2[i]
     i = i+1
 
-print "EdiciÃ³n de la tabla de direcciones"
+print "Edición de la tabla de direcciones"
 
 # esta parte es para extraer los complementos de direccion.
 # He quitado 'PARQUE' porque existen las avenidas parque sur y parque norte.
@@ -568,7 +565,7 @@ while i < len(li_dir2):
 
 # Para extraer el numero y nombre de la via
 
-lista_num = ['N', 'NÂ°', 'NRO.', 'NRO', 'NO', 'N?', 'NÂª', 'N\xaa', 'NÃ‚Â°', 'N\xb0', 'NO.', 'NUM.', 'CDR', 'CDRA', 'CDRA.','CUADRA']
+lista_num = ['N', 'N°', 'NRO.', 'NRO', 'NO', 'N?', 'Nª', 'N\xaa', 'NÂ°', 'N\xb0', 'NO.', 'NUM.', 'CDR', 'CDRA', 'CDRA.','CUADRA']
 
 i =0
 
@@ -578,7 +575,7 @@ while i < len(li_dir2):
 
     while j < len(li_dir2[i]):
         #print i, li_dir2[i]
-        if li_dir2[i][j] in lista_num: # en el caso en el cual el numero esta con un caracter tipo 'NÂ°'
+        if li_dir2[i][j] in lista_num: # en el caso en el cual el numero esta con un caracter tipo 'N°'
             #print li_dir2[i]
             #print li_dir2[i][j]
             #print lista_num
@@ -589,9 +586,9 @@ while i < len(li_dir2):
                 pass
             try:
                 int(li_dir2[i][j+1])
-                #print 'cas nÂ°'
+                #print 'cas n°'
 
-                if int(li_dir2[i][j+1]) < 100: # Si el numero que tengo es inferior a 100, signica que es un nÃºmero de cuadra
+                if int(li_dir2[i][j+1]) < 100: # Si el numero que tengo es inferior a 100, signica que es un número de cuadra
                     li_dir2[i][j+1] = str(int(li_dir2[i][j+1])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
 
 
@@ -666,7 +663,7 @@ while i < len(li_dir2):
                 #print li_dir2[i][j]
                 #print int(li_dir2[i][j][1:len(li_dir2[i][j])])
 
-                if int(li_dir2[i][j][1:len(li_dir2[i][j])]) < 100: # Si el numero que tengo es inferior a 100, signica que es un nÃºmero de cuadra
+                if int(li_dir2[i][j][1:len(li_dir2[i][j])]) < 100: # Si el numero que tengo es inferior a 100, signica que es un número de cuadra
                     li_dir2[i][j][1:len(li_dir2[i][j])] = str(int(li_dir2[i][j][1:len(li_dir2[i][j])])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
 
 
@@ -736,7 +733,7 @@ while i < len(li_dir2):
                 try:
                     int(l[t])
 
-                    if int(l[t]) < 100: # Si el numero que tengo es inferior a 100, signica que es un nÃºmero de cuadra
+                    if int(l[t]) < 100: # Si el numero que tengo es inferior a 100, signica que es un número de cuadra
                         l[t] = str(int(l[t])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
 
                     cons_t = "UPDATE " + tabla_direcciones + " SET sol_numero = "+str(l[t])+ " where " + col_id + " = "+ str(li_id[i])+';'
@@ -772,7 +769,7 @@ while i < len(li_dir2):
                         curs.execute(cons_j)
                         del cons_j
 
-                    if j+1 < len(li_dir2[i])-1: # si hay un complemento mas a aÃ±adir
+                    if j+1 < len(li_dir2[i])-1: # si hay un complemento mas a añadir
                         f = 0
                         compl2 = ''
                         while f < len(l):
@@ -797,7 +794,7 @@ while i < len(li_dir2):
                         else:
                             pass
 
-                    else: # Si no hay complemento a aÃ±adir
+                    else: # Si no hay complemento a añadir
                         f = j+1
                         compl2 = ''
                         while f < len(li_dir2[i]):
@@ -848,7 +845,7 @@ while i < len(li_dir2):
                 curs.execute(cons_j)
                 del cons_j
 
-            # A priori no es necesario aÃ±adir otro complemento. Por si acaso aÃ±adir codigo aca.
+            # A priori no es necesario añadir otro complemento. Por si acaso añadir codigo aca.
 
 
         j = j+1
@@ -938,8 +935,8 @@ while i < len(li_dir2):
 
                     if j ==0 and len(li_dir2[i])>2:
                         # No comentar este print. Es una alerta
-                        print 'Alerta : Esa calle : ',li_dir2[i] ,'cuyo nombre es un solo nÃºmero tiene tambien un nÃºmero para ubicar la direccion: No esta previsto en esta  \
-                        versiÃ³n del programa. A cambiar'
+                        print 'Alerta : Esa calle : ',li_dir2[i] ,'cuyo nombre es un solo número tiene tambien un número para ubicar la direccion: No esta previsto en esta  \
+                        versión del programa. A cambiar'
 
 
 
@@ -1031,7 +1028,7 @@ while i < len(li_dir2):
                     #print '...................................',li_dir2[i], li_dir2[i][j]
                     #Todo lo que se encunetra antes del mumero es el nombre, depues es un complemento de direccion.
 
-                    if int(li_dir2[i][j]) < 100: # Si el numero que tengo es inferior a 100, signica que es un nÃºmero de cuadra
+                    if int(li_dir2[i][j]) < 100: # Si el numero que tengo es inferior a 100, signica que es un número de cuadra
                         li_dir2[i][j] = str(int(li_dir2[i][j])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
 
                     cons_num = "UPDATE " + tabla_direcciones + " SET sol_numero = "+str(li_dir2[i][j])+ " where " + col_id + " = "+ str(li_id[i])+';'
@@ -1057,7 +1054,7 @@ while i < len(li_dir2):
 
 
 
-                    if j+1 < len(li_dir2[i]): # si hay un complemento mas a aÃ±adir
+                    if j+1 < len(li_dir2[i]): # si hay un complemento mas a añadir
 
                         f = j+1
                         compl2 = ''
@@ -1090,7 +1087,7 @@ while i < len(li_dir2):
 
 
 
-            except: # si el nombre no es un nÃºmero ?
+            except: # si el nombre no es un número ?
                 pass
 
             j = j+1
@@ -1281,7 +1278,7 @@ conn.commit()
 ##del curs
 
 ################## Inicio de la geolocalizacion de direcciones ################
-print "LocalisaziÃ³n de las direcciones"
+print "Localisazión de las direcciones"
 
 ###################################################
 
@@ -1301,7 +1298,7 @@ curs.execute(cons_createtable_multi)
 conn.commit()
 
 lista_coords = [] # Esta lista almacena las coordenadas de las direcciones que voy a localizar.
-# Necesario para no poner dos (o mas) mismas direcciones al mismo punto. hago un pequeÃ±o 'decalage'.
+# Necesario para no poner dos (o mas) mismas direcciones al mismo punto. hago un pequeño 'decalage'.
 # Pero no chequeo si todos los campos son iguales (caso de un 'doublon')
 
 lista_palab =['Y', 'DE', 'LOS', 'LAS', 'LA', 'EL' ,'DEL', 'AL'] # palabras de 3 letras max que no tomo en cuenta en mis\
@@ -1316,7 +1313,7 @@ while i < len(li_dir2):
     curs.execute(cons_dir)
     #print cons_dir
     lista_dir = curs.fetchall()
-    lista_dir = lista_dir[0] # Eso transforma mi lista en tuple. Lo hago para tener un nivel menos. Ser mas practico despuÃ©s
+    lista_dir = lista_dir[0] # Eso transforma mi lista en tuple. Lo hago para tener un nivel menos. Ser mas practico después
     print i+1 #, lista_dir
 
     # Aca extraigo la cuadra a partir del numero de la direccion
@@ -1710,12 +1707,12 @@ while i < len(li_dir2):
                 #print 'coords point :', start_X, start_Y, end_X, end_Y
 
 ###############################################################################################
-################ A continuaciÃ³n, busco las cuadras vecinas n-1 y n+1 ##########################
+################ A continuación, busco las cuadras vecinas n-1 y n+1 ##########################
 ###############################################################################################
 
                 # Ahora necesito encontrar una cuadra vecina para saber el sentido de las cuadras
                 #if cuadra == 1:
-                    #print 'La cuadra es la nÃºmero 1, no existe cuadra n-1'
+                    #print 'La cuadra es la número 1, no existe cuadra n-1'
                 # Busco primero la cuadra n-1. Puedo encontrar varias
                 sentido_nm1 = 'normal' # Eso me sierve mas bajo para saber si interpolo de manera normal o en el otro sentido
                 cons_cuad_nm1 = "SELECT gid from " + tabla_vias +" where "\
@@ -1740,7 +1737,7 @@ while i < len(li_dir2):
                 construc_lista(lista_cuad_np1)
 
                 id_cuad_nm1 = -1
-                if len(lista_cuad_nm1) <> 0: # Si hay una cuadra vecina n-1, busco la Ãºnica buena
+                if len(lista_cuad_nm1) <> 0: # Si hay una cuadra vecina n-1, busco la única buena
                     # Abajo version con st_intersection
                     t =0
                     lista_intersec = ['GEOMETRYCOLLECTION EMPTY']
@@ -1765,7 +1762,7 @@ while i < len(li_dir2):
                     #print "No hay una cuadra n-1 adequada"
 
                 id_cuad_np1 = -1
-                if len(lista_cuad_np1) <> 0: # Si hay una cuadra vecina n+1, busco la Ãºnica buena
+                if len(lista_cuad_np1) <> 0: # Si hay una cuadra vecina n+1, busco la única buena
                     # Abajo version con st_intersection
                     tp =0
                     lista_intersecp = ['GEOMETRYCOLLECTION EMPTY']
@@ -1870,7 +1867,7 @@ while i < len(li_dir2):
 
 
                 ##########################################################################
-                ################ A continuaciÃ³n, empiezo la interpolacion ################
+                ################ A continuación, empiezo la interpolacion ################
                 ##########################################################################
 
 
@@ -2026,7 +2023,7 @@ for e in lista_delete_imposible:
 #######################################################
 
 
-# Ahora tengo mis 2 tablas limpias. A continuacion hago una verificaciÃ³n para ver si no hay una direccion que se encuentra
+# Ahora tengo mis 2 tablas limpias. A continuacion hago una verificación para ver si no hay una direccion que se encuentra
 # en las dos tablas y si la suma de las 2 tablas (geom + bug) = la tbla inicial de direcciones.
 
 
