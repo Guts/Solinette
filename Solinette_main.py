@@ -67,6 +67,7 @@ class SolinetteGUI(Tk):
         self.mdpa = StringVar()
         self.ok = 0
         self.dico_cols = OD()
+        self.dico_vals = OD()
         self.dico_param = {}
 
             ## Frame 1
@@ -218,7 +219,7 @@ class SolinetteGUI(Tk):
         # types of columns
         self.typcols = list(sheet.row_types(1))
         # add universal ID to list of columns
-        self.dico_cols['SOL_IDU'] = 2
+        self.dico_cols['SOL_IDU'] = 9
         # loop on names and types of columns
         for i in range(len(cols)):
             self.dico_cols[cols[i]] = self.typcols[i]
@@ -342,6 +343,22 @@ class SolinetteGUI(Tk):
         # End of function
         return book, f
 
+    def xls2dict(self, xlspath):
+        u""" export values from ab Excel 2003 file (.xls) into a dictionary """
+        with xlrd.open_workbook(xlspath) as book:
+            sh = book.sheet_by_index(0)
+            for row in range(1, sh.nrows):
+                self.dico_vals[row] = []
+                for col in range(sh.ncols):
+                    if sh.cell_type(row, col) is not 3:
+                        self.dico_vals[row].append(sh.cell_value(row, col))
+                    else:
+                        date = xlrd.xldate_as_tuple(sh.cell_value(row, col), book.datemode)
+                        self.dico_vals[row].append('-'.join([str(i) for i in date[:3]]))
+
+        # End of function
+        return book, self.dico_vals
+
     def process(self):
         u""" makes ones tests before getting variables needed to process """
         # check of empty entries
@@ -363,6 +380,9 @@ class SolinetteGUI(Tk):
         self.xls2csv(excel)
         archivo = self.xls2csv(excel)[1]
 
+        # export xls into a dictionary
+        self.xls2dict(excel)
+
         # End of function
         self.dico_param['archivo'] = archivo.name
         self.dico_param['direccion'] = self.ddl_dir.get()
@@ -375,6 +395,7 @@ class SolinetteGUI(Tk):
         self.dico_param['tabla_out'] = self.tabl.get()
         self.dico_param['tipo_cols'] = self.typcols
         self.dico_param['cols'] = self.dico_cols
+        self.dico_param['values'] = self.dico_vals
         self.quit()
 ##        return self.dico_param, self.target.get(), self.ddl_dir.get(), self.ddl_dis.get(), \
 ##                self.host.get(), self.port.get(), self.usua.get(), \
@@ -385,18 +406,6 @@ if __name__ == '__main__':
     app = SolinetteGUI()
     app.mainloop()
     print app.dico_param
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ##1 'XL_CELL_TEXT',cell_contents(sheet,1)
