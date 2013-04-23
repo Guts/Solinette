@@ -10,11 +10,12 @@ To do list:
 - [x] en extraire la liste des colonnes
 - [x] y ajouter un identifiant universel (clé primaire)
 - [x] exporter en csv
-- [ ] système d'aide avec des infobulles
-- [ ] passer le script de la Solinette en classe
 - [X] récupérer les paramètres retournés par la classe graphique
-- [ ] tester avec différents fichiers
-- [] GUI : tester si tabla_oout existe déjà => suffixe date
+- [] système d'aide avec des infobulles
+- [] passer le script de la Solinette en classe
+- [] tester avec différents fichiers
+- [] GUI : tester si tabla_out existe déjà => suffixe date
 - [] idem pr champs solinette
 - [] changer noms champs table geolocalizacion
-- [] nettoyer variable
+- [] nettoyer variables
+- [] fichier log
