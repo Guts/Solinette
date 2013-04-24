@@ -1,10 +1,41 @@
 ﻿# -*- coding: utf-8 -*-
 #!/usr/bin/env python
-##from __future__ import unicode_literals
+from __future__ import unicode_literals
 
+### imports
 import psycopg2
 from collections import OrderedDict as OD
 
+import xlrd
+import datetime
+
+### functions definition
+
+def xls2dict(xlspath):
+    u""" export values from ab Excel 2003 file (.xls) into a dictionary """
+    global dico_vals, values
+    with xlrd.open_workbook(xlspath) as book:
+        print book.encoding
+        sh = book.sheet_by_index(0)
+        for row in range(1, sh.nrows):
+            dico_vals[row] = []
+            for col in range(sh.ncols):
+                if sh.cell_type(row, col) is 1:
+                    dico_vals[row].append(unicode(sh.cell_value(row, col)))
+                elif sh.cell_type(row, col) is 2:
+                    dico_vals[row].append(unicode(sh.cell_value(row, col)))
+                elif sh.cell_type(row, col) is 3:
+                    date = xlrd.xldate_as_tuple(sh.cell_value(row, col), book.datemode)
+                    dico_vals[row].append(unicode('-'.join([unicode(i) for i in date[:3]])))
+                elif sh.cell_type(row, col) is 4:
+                    dico_vals[row].append(unicode(int(sh.cell_value(row, col))))
+                elif sh.cell_type(row, col) is 0:
+                    dico_vals[row].append(unicode('NULL'))
+    # End of function
+    return book, dico_vals
+
+### variables
+# basic operators
 conn = psycopg2.connect(host='localhost',
         port='5432',
         dbname='solinette',
@@ -13,19 +44,24 @@ conn = psycopg2.connect(host='localhost',
 
 curs = conn.cursor()
 
-
 # columns definition
 cols_u = u'sol_idu char(255), gid numeric, direccion char(255), distrito char(255), idmunici numeric, ccdd numeric, ccpp numeric, ccdi numeric, dpto_nombr char(255), prov_nombr char(255), catmuni numeric, vfi numeric, p04 numeric, p11 char(255), '
-cols_s = 'sol_idu char(255), gid numeric, direccion char(255), distrito char(255), idmunici numeric, ccdd numeric, ccpp numeric, ccdi numeric, dpto_nombr char(255), prov_nombr char(255), catmuni numeric, vfi numeric, p04 numeric, p11 char(255), '
+##cols_s = 'sol_idu char(255), gid numeric, direccion char(255), distrito char(255), idmunici numeric, ccdd numeric, ccpp numeric, ccdi numeric, dpto_nombr char(255), prov_nombr char(255), catmuni numeric, vfi numeric, p04 numeric, p11 char(255), '
 
-## => http://wiki.postgresql.org/wiki/Psycopg2_Tutorial
+# path to excel file for test
+xlspath = r'temp\ParaSolinette_municipalidades_multi.xls'
 
+# data dictionary / list
+dico_vals = {}
+values = []
+
+### main program
 # check existing databases
 curs.execute("""SELECT datname from pg_database""")
 print curs.fetchall()
 
 # setting the encoding
-set_s = "set client_encoding to 'LATIN1';"
+##set_s = "set client_encoding to 'LATIN1';"
 set_u = u"set client_encoding to 'UTF8';"
 curs.execute(set_u)
 
@@ -34,9 +70,13 @@ work_mem = 2048
 curs.execute('SET work_mem TO %s', (work_mem,))
 
 # creating a test table
-test_u = u'test'
-test_s = 'test'
-curs.execute(u"CREATE TABLE test (" + cols_u[:-2] + ");")
+try:
+    test_u = u'test'
+    ##test_s = 'test'
+    curs.execute(u"CREATE TABLE test (" + cols_u[:-2] + ");")
+except Exception, e:
+    print e.pgerror
+    pass
 
 # saving changes to database
 conn.commit()
@@ -44,22 +84,52 @@ conn.commit()
 # data test
 coldef = (u'SOL_IDU', u'gid', u'direccion', u'distrito', u'IDMUNICI', u'CCDD', u'CCPP', u'CCDI', u'DPTO_NOMBR', u'PROV_NOMBR',u'CATMUNI',u'VFI', u'P04', u'P11')
 data_u = (u'001', u'0', u'Av. Carlos Alberto Izaguirre N°813', u'LOS OLIVOS', u'19160', u'15', u'1', u'17', u'LIMA', u'LIMA', u'2', u'1', u'0', u'FELIPE BALDOMERO CASTILLO ALFARO')
-data_s = ('001', '0', 'Av. Carlos Alberto Izaguirre N°813', 'LOS OLIVOS', '19160', '15', '1', '17', 'LIMA', 'LIMA', '2', '1', '0', 'FELIPE BALDOMERO CASTILLO ALFARO')
+##data_s = ('001', '0', 'Av. Carlos Alberto Izaguirre N°813', 'LOS OLIVOS', '19160', '15', '1', '17', 'LIMA', 'LIMA', '2', '1', '0', 'FELIPE BALDOMERO CASTILLO ALFARO')
 
-## inserting data
+## inserting  simple data
 ### method 1
 ##curs.execute("INSERT INTO test VALUES %s", (data_u,)) # correct
 
-# method 2
-c_insert = "INSERT INTO test VALUES %s;" # Note: no quotes
+# method 2: best practice (no quotes, no modulo)
+c_insert = u"INSERT INTO test VALUES %s;" # Note: no quotes
 curs.execute(c_insert, (data_u,)) # Note: no % operator
-
 
 ### method 3
 ##c_insert = u"INSERT INTO %s VALUES %s;" # Note: no quotes
 ##curs.execute(c_insert, (test_u, data_u)) # Note: no % operator
 
+# saving changes to database
 conn.commit()
+
+
+## inserting multiple data
+# retrieving data from xls file
+xls2dict(xlspath)
+# tuplization
+valores = tuple(tuple(dico_vals.get(i)) for i in dico_vals.keys())
+
+
+for i in valores:
+    for j in i:
+        print j, type(j)
+
+
+try:
+    curs.executemany(u"INSERT INTO test VALUES %s", (valores))
+except Exception, e:
+    print e, u'executemany does"nt work: just execute first value to test'
+    curs.execute(u"INSERT INTO test VALUES %s", (valores[0],))
+
+
+conn.commit()
+
+
+
+###################### former codlines and documentation
+
+
+## => http://wiki.postgresql.org/wiki/Psycopg2_Tutoria
+
 
 ###A last item I would like to show you is how to insert multiple rows using a dictionary. If you had the following:
 ##
