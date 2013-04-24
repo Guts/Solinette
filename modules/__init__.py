@@ -1,2 +1,4 @@
-﻿from Solinette_GUI import SolinetteGUI
-from Solinette_main import Solinette
+﻿# -*- coding: UTF-8 -*-
+#!/usr/bin/env python
+
+from Solinette_main import SolinetteGUI

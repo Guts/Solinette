@@ -28,7 +28,7 @@ from time import strftime, localtime
 import psycopg2
 
 # custom modules
-from Solinette_main import SolinetteGUI
+from modules import SolinetteGUI
 
 ###################################
 ###### Functions definition #######
