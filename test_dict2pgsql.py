@@ -115,20 +115,25 @@ for i in valores:
 
 
 try:
-    curs.executemany(u"INSERT INTO test VALUES %s", (valores))
+    curs.executemany(u"INSERT INTO test (" + cols_u[:-2] + ") VALUES %s", valores)
 except Exception, e:
-    print e, u'executemany does"nt work: just execute first value to test'
-    curs.execute(u"INSERT INTO test VALUES %s", (valores[0],))
+    print e, u' => executemany does"nt work: just execute first value to test'
+##    curs.execute(u"INSERT INTO test VALUES %s", (valores[0],))
+    for val in range(len(valores)):
+        curs.execute(u"INSERT INTO test VALUES %s", (valores[val],))
+        conn.commit()
+
 
 
 conn.commit()
+curs.close()
 
 
 
 ###################### former codlines and documentation
 
 
-## => http://wiki.postgresql.org/wiki/Psycopg2_Tutoria
+## => http://wiki.postgresql.org/wiki/Psycopg2_Tutorial
 
 
 ###A last item I would like to show you is how to insert multiple rows using a dictionary. If you had the following:
