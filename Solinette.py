@@ -480,7 +480,7 @@ while i < len(li_dir2):
 
 logname = 'temp\\log_solinette_%s_%s.txt' % (params.get('tabla_out'), hoy_format)
 log = open(logname, 'a')
-log.write(u"Inicio de la edición de la tabla de direcciones\n")
+log.write(u"Inicio de la edición de la tabla de direcciones\n".encode('latin1'))
 
 # esta parte es para extraer los complementos de direccion.
 # He quitado 'PARQUE' porque existen las avenidas parque sur y parque norte.

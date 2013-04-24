@@ -180,8 +180,6 @@ class SolinetteGUI(Tk):
 
                 #### POUR TEST : VOIR LIGNE PRE RELLENO N 132 + 210/211 (licolumns)
 
-
-
     def setpathtarg(self):
         """ ...browse and insert the path of target folder """
         self.xls = askopenfilename(parent = self,
@@ -285,7 +283,7 @@ class SolinetteGUI(Tk):
                 message = 'Prueba de conexión fracasó. Mensaje de error:\n' + str(e))
                 return
             # check if destination table already exists
-            query = "select table_name from information_schema.tables" #% (self.tabl.get())
+            query = "select table_name from information_schema.tables where 'sql_identifier' LIKE 'public'" #% (self.tabl.get())
             curs.execute(query)
             li_tablas = curs.fetchall()
             print 'elle existe déjà connard : ', li_tablas
@@ -402,6 +400,7 @@ class SolinetteGUI(Tk):
         self.dico_param['cols'] = self.dico_cols
         self.dico_param['values'] = self.dico_vals
         self.quit()
+
 ##        return self.dico_param, self.target.get(), self.ddl_dir.get(), self.ddl_dis.get(), \
 ##                self.host.get(), self.port.get(), self.usua.get(), \
 ##                self.mdpa.get(), self.dbnb.get(), self.tabl.get(), self.typcols
@@ -413,7 +412,7 @@ if __name__ == '__main__':
     result = app.dico_param
     values = result.get('values')
 
-
+#### Memo
 ##1 'XL_CELL_TEXT',cell_contents(sheet,1)
 ##2 'XL_CELL_NUMBER',cell_contents(sheet,2)
 ##3 'XL_CELL_DATE',cell_contents(sheet,3)

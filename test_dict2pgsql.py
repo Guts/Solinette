@@ -60,6 +60,11 @@ values = []
 curs.execute("""SELECT datname from pg_database""")
 print curs.fetchall()
 
+# check if destination table already exists
+query = "select %s from information_schema.tables where 'sql_identifier' LIKE 'public';"
+curs.execute(query, (u'test',))
+li_tables = curs.fetchone()
+
 # setting the encoding
 ##set_s = "set client_encoding to 'LATIN1';"
 set_u = u"set client_encoding to 'UTF8';"
