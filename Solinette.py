@@ -54,12 +54,15 @@ def en_mayusculas(lista):
     Necesita 1 argumento, una lista de listas que contienen
     una cadena de caracteres."""
     i = 0
+    print '- EN MAYUSCULAS -', lista, len(lista)
     while i < len(lista):
         print lista[i]
         if type(lista[i][0]) == str:
+            print '\t +++++++++normal',  lista[i][0]
             lista[i][0] = lista[i][0].decode('utf8').upper()
 
         elif type(lista[i][0]) == unicode:
+            print '\t\t *********else', lista[i][0]
             lista[i][0] = unicodedata.normalize('NFKD', lista[i][0]).encode('ascii', 'ignore').decode('utf8').upper()
             #lista[i][0] = str(lista[i][0].decode('utf8').upper())
 
@@ -417,6 +420,7 @@ c_sel_all = "select " + col_direccion + " from " + tabla_direcciones \
                                  + " order by " + col_id + ";"
 curs.execute(c_sel_all)
 li_direcciones = curs.fetchall()
+conn.commit()
 
 # Necesito los id para poder insertar nuevos valores en los nuevos campos segun
 # ellos. Es mas seguro que segun los i
@@ -426,23 +430,27 @@ li_id = curs.fetchall()
 
 # Transformo la lista de tuple en lista de listas
 construc_lista(li_id)
+#li_id = [list(i) for i in li_id]
 
 # Inicio - Esa parte hace lo mismo que la funcion construc_lista() que no
 # funciona aqui, no se porque
+print li_direcciones, len(li_direcciones)
+
 li_dir2 =[]
-
-for i in li_dir2:
-    li_dir2.append([])
-
-i = 0
+i=0
 while i < len(li_direcciones):
     li_dir2.append([])
     i=i+1
 
+print li_dir2, len(li_dir2)
+
 i = 0
 while i < len(li_direcciones):
     if li_direcciones[i] <> (None,):
+        print '============='+li_direcciones[i][0].decode('utf8')
         if li_direcciones[i][0][0] =='\xa0':
+        #if li_direcciones[i][0][0] =='Â':
+
             #print li_direcciones[i]
             li_dir2[i].append(li_direcciones[i][0][1:].rstrip())
             #print li_dir2[i]
@@ -456,7 +464,13 @@ while i < len(li_direcciones):
     i=i+1
 # Fin - Esa parte hace lo mismo que la funcion construc_lista() que no funciona aqui, no se porque
 
-del li_direcciones
+##for i in range(len(truc)):
+##    try:
+##        truc[i][0].decode('utf8').rstrip()
+##    except UnicodeDecodeError:
+##        unicode(truc[i][0].decode('tatin1').rstrip())
+
+##del li_direcciones
 
 en_mayusculas(li_dir2)
 sin_accento(li_dir2)
@@ -515,8 +529,14 @@ while i < len(li_dir2):
                     dir_comple = dir_comple+' '+li_dir2[i][j]
                     del li_dir2[i][j]
 
-                cons_compl = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(dir_comple)+ "'"+ " where " + \
+                cons_compl = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+unicodedata.normalize('NFKD', dir_comple.encode('ascii', 'ignore').decode('utf8'))+ "'"+ " where " + \
                          col_id + " = "+ str(li_id[i])+';'
+
+##                cons_compl = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(dir_comple)+ "'"+ " where " + \
+##                         col_id + " = "+ str(li_id[i])+';'
+
+##                print cons_compl
+
                 curs.execute(cons_compl)
                 del comple, cons_compl, dir_comple
                 j = -1
@@ -1059,7 +1079,7 @@ while i < len(li_dir2):
                             pass
                         g = g+1
                     nombre = nombre.rstrip(' ')
-                    cons_g = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                    cons_g = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'" + str(nombre) + "'"+ " where " + col_id + " = "+ str(li_id[i])+';'
                     #print cons_g
                     curs.execute(cons_g)
                     del cons_g
@@ -1125,7 +1145,8 @@ while len(lista_a_borrar) <> 0:
 # Abajo me quedan las direcciones sin numero. Asumo que lo que queda es el nombre de la via
 
 
-i = 0 # Aca edito las direcciones con um numero solo (sin ningun caracter para anunciarlo)
+i = 0 # Aca edito las direcciones con un numero solo (sin ningun caracter para anunciarlo)
+print li_dir2
 while i < len(li_dir2):
     j = 0
     if len(li_dir2[i]) >0:
@@ -1142,13 +1163,27 @@ while i < len(li_dir2):
             j = j+1
         nombre = nombre.rstrip(' ')
         if len(nombre)>2:
-            cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
-            curs.execute(cons_j)
-            del cons_j
+            cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'" + unicode(nombre) + "'"+ " where " + col_id.lower() + " = "+ str(li_id[i])+';'
+            print '\t #######', cons_j
+            try:
+                curs.execute(cons_j)
+            except Exception, e:
+                print e.pgerror
+                conn.commit()
+                curs.execute(cons_j)
+
         if len(nombre)<=2:
-            cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = 'CALLE '||"+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
-            curs.execute(cons_j)
-            del cons_j
+            cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = 'CALLE '||"+ "'" + unicode(nombre) + "'"+ " where " + col_id.lower() + " = "+ str(li_id[i])+';'
+            print '\t #######', cons_j
+            try:
+                curs.execute(cons_j)
+            except Exception, e:
+                print e.pgerror
+                conn.commit()
+                curs.execute(cons_j)
+
+        del cons_j
+
 
     i = i+1
 
@@ -1326,7 +1361,7 @@ while i < len(li_dir2):
     #print cons_dir
     lista_dir = curs.fetchall()
     lista_dir = lista_dir[0] # Eso transforma mi lista en tuple. Lo hago para tener un nivel menos. Ser mas practico después
-    print i+1 #, lista_dir
+##    print i+1 #, lista_dir
 
     # Aca extraigo la cuadra a partir del numero de la direccion
     if len(str(lista_dir[2])) == 3 and type(lista_dir[2]) == int:
