@@ -1,0 +1,28 @@
+﻿### How to COMPILE into a Windows EXECUTABLE
+(using py2exe)
+
+Requirements :
+
+Installed :
+- PostgreSQL 9.1.x
+- PostGIS 1.5.x
+- Python 2.4.x
+- py2exe
+- psycopg2
+- xlrd
+- xlwt
+Source code :
+- solinette source code
+
+
+Step by step :
+
+- create a folder 'solinette' on the root ("C:\solinette" for example)
+- copy into this folder : 
+	* files: 'Solinette.py', 'icone_Solinette.ico', 'setup_solinette.py' (there is in the 'compilation' folder)
+	* folders: 'documentation', 'modules', and 'sources'
+- open a windows commands terminal
+- go in the directory: 'cd C:\solinette'
+- run 'python setup_solinette.py py2exe'
+- compress then send the Solinette directory
+- open the archive and run Solinette.exe
