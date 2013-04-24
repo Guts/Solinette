@@ -25,7 +25,7 @@ from ttk import Combobox
 from collections import OrderedDict as OD
 from os import environ as env, path
 import csv
-from sys import platform
+import platform
 from time import strftime, localtime
 
 # external library
@@ -332,7 +332,7 @@ class SolinetteGUI(Tk):
         see: http://stackoverflow.com/a/10803229 """
         with xlrd.open_workbook(xlspath) as book:
             sheet = book.sheet_by_index(0)
-            with open(path.join('C:\Temp', path.splitext(path.basename(xlspath))[0] + '.csv'), 'wb') as f:
+            with open(path.join(env.get('TEMP'), path.splitext(path.basename(xlspath))[0] + '.csv'), 'wb') as f:
                 out = csv.writer(f, delimiter='\t', dialect = 'excel-tab', quotechar='"')
                 for row in range(sheet.nrows):
                     try:
@@ -345,17 +345,22 @@ class SolinetteGUI(Tk):
 
     def xls2dict(self, xlspath):
         u""" export values from ab Excel 2003 file (.xls) into a dictionary """
-        with xlrd.open_workbook(xlspath, encoding_override = 'utf8') as book:
+        with xlrd.open_workbook(xlspath) as book:
             sh = book.sheet_by_index(0)
             for row in range(1, sh.nrows):
                 self.dico_vals[row] = []
                 for col in range(sh.ncols):
-                    if sh.cell_type(row, col) is not 3:
-                        self.dico_vals[row].append(unicode(sh.cell_value(row, col)).encode('latin1'))
-                    else:
-                        date = xlrd.xldate_as_tuple(sh.cell_value(row, col), book.datemode)
-                        self.dico_vals[row].append(unicode('-'.join([unicode(i) for i in date[:3]])))
-
+                    if sh.cell_type(row, col) is 1:
+                        self.dico_vals[row].append(unicode(sh.cell_value(row, col)))
+                    elif sh.cell_type(row, col) is 2:
+                        self.dico_vals[row].append(unicode(sh.cell_value(row, col)))
+                    elif sh.cell_type(row, col) is 3:
+                        self.date = xlrd.xldate_as_tuple(sh.cell_value(row, col), book.datemode)
+                        dico_vals[row].append(unicode('-'.join([unicode(i) for i in date[:3]])))
+                    elif sh.cell_type(row, col) is 4:
+                        self.dico_vals[row].append(unicode(int(sh.cell_value(row, col))))
+                    elif sh.cell_type(row, col) is 0:
+                        self.dico_vals[row].append(unicode('NULL'))
         # End of function
         return book, self.dico_vals
 
