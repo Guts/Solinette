@@ -115,7 +115,7 @@ for i in valores:
 
 
 try:
-    curs.executemany(u"INSERT INTO test (" + cols_u[:-2] + ") VALUES %s", valores)
+    curs.executemany(u"INSERT INTO test (" + cols_u[:-2] + ") VALUES %s;", valores)
 except Exception, e:
     print e, u' => executemany does"nt work: just execute first value to test'
 ##    curs.execute(u"INSERT INTO test VALUES %s", (valores[0],))
