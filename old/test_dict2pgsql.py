@@ -49,7 +49,8 @@ cols_u = u'sol_idu char(255), gid numeric, direccion char(255), distrito char(25
 ##cols_s = 'sol_idu char(255), gid numeric, direccion char(255), distrito char(255), idmunici numeric, ccdd numeric, ccpp numeric, ccdi numeric, dpto_nombr char(255), prov_nombr char(255), catmuni numeric, vfi numeric, p04 numeric, p11 char(255), '
 
 # path to excel file for test
-xlspath = r'temp\ParaSolinette_municipalidades_multi.xls'
+##xlspath = r'temp\ParaSolinette_municipalidades_multi.xls'
+xlspath = r'temp\ParaSolinette_agencias_scotiabank_lima_callao.xls'
 
 # data dictionary / list
 dico_vals = {}
@@ -130,11 +131,45 @@ except Exception, e:
 
 
 
+
+
+
+
+
+
+
+
+
+
+### Ending program
 conn.commit()
 curs.close()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################################################################
 ###################### former codlines and documentation
 
 
