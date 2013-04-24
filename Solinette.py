@@ -8,8 +8,8 @@ from __future__ import unicode_literals
 # Python :     2.7.x +
 # Encoding:    latin1
 # Created :    19/12/2011
-# Updated :    23/03/2013
-# Version :    1.4.2
+# Updated :    23/04/2013
+# Version :    1.5.1
 #-------------------------------------------------------------------------------
 
 ###################################
@@ -21,8 +21,8 @@ from os import environ as env, path, getcwd, chmod
 from sys import exit
 from math import atan2, pi, sqrt
 import random
-
-
+import datetime
+from time import strftime, localtime
 
 # external library
 import psycopg2
@@ -118,7 +118,6 @@ def sentido_n_nm1(inicio_n, final_n, inicio_nm1, final_nm1):
     return inicio_n, inicio_nm1, final_n, final_nm1
 
 
-
 def sentido_n_np1(inicio_n, final_n, inicio_np1, final_np1):
     """Funcion para establecer si el sentido es correcto entre
     la cuadra n y la cuadra n+1"""
@@ -167,7 +166,6 @@ def entre_puntos(cadena, tuplo):
 
             del x
 
-
     tuplo_x = tuplo[0]
     tuplo_y = tuplo[1]
 
@@ -199,14 +197,10 @@ def entre_puntos(cadena, tuplo):
         v = v+1
         del e, x_e, y_e, x_v, y_v, a, b
 
-
-
     difH = punto_2[0] - punto_1[0] # la diferencia entre la x de los 2 puntos
     difV = punto_2[1] - punto_1[1] # la diferencia entre la y de los 2 puntos
     angRadian = atan2(difV , difH) # calculo del angulo en radians
     angGrado = angRadian *(180./pi) # convercion en grados
-
-
 
     a_perpen=-1/a_entre
     b_perpen=tuplo_y - a_perpen*tuplo_x
@@ -221,7 +215,6 @@ def entre_puntos(cadena, tuplo):
     global X_decal, Y_decal
 
     if sentido == 'contrario':
-
         if angGrado >0 and etat == 'par':
             X_decal = tuplo_x - deltaX
 
@@ -237,11 +230,7 @@ def entre_puntos(cadena, tuplo):
         if angGrado <0 and etat == 'impar':
             X_decal = tuplo_x - deltaX
 
-
-
     else:
-
-
         if angGrado >0 and etat == 'par':
             X_decal = tuplo_x + deltaX
 
@@ -265,8 +254,8 @@ def entre_puntos(cadena, tuplo):
 
     if coord not in lista_coords:
         lista_coords.append(coord)
-    else:
 
+    else:
         lado_X = random.triangular(-1,1)
 
         X_decal = X_decal + lado_X
@@ -287,6 +276,9 @@ def entre_puntos(cadena, tuplo):
 ####################################
 ######### Global variables #########
 ####################################
+# timestamp of program
+hoy = datetime.datetime.now()
+hoy_format = strftime('%y%m%d_%H%M%S', localtime())
 
 #### Retrieving connection settings and parameters from the GUI
 app = SolinetteGUI()
@@ -307,21 +299,24 @@ conn = psycopg2.connect(host=params['pg_host'],
 curs = conn.cursor()
 
 # Setting the cursor encoding
-##c_set_encoding = "set client_encoding to 'UTF8';"
-##curs.execute(c_set_encoding)
+c_set_encoding = "set client_encoding to 'UTF8';"
+curs.execute(c_set_encoding)
 
 #### Creation of input table
 # columns definition
 cols = ''
+# retrieving excel values
 dico_vals = app.dico_param.get('values')
+# tuplization
 valores = tuple(tuple(dico_vals.get(i)) for i in dico_vals.keys())
+# data types equivalence
 dico_equival_type = {0:'char(255)',
                      1:'char(255)',
                      2:'numeric',
                      3:'date',
                      4:'boolean',
                      5:'None',
-                     9:'char(55)'}
+                     9:'char(255)'}
 
 for i in range(len(params.get('cols').keys())):
     cols = cols + params.get('cols').keys()[i].lower() + ' ' \
@@ -333,28 +328,27 @@ curs.execute(c_crea_tablaout)
 
 # saving modifications and cleaning up
 conn.commit()
-##del c_crea_tablaout, cols, dico_equival_typ #, c_set_encoding, app
-
-##chmod(path.join(getcwd(), params.get('archivo')), 644)
+del c_crea_tablaout, cols, c_set_encoding, app
 
 #### Fill in the table
 # copy method
-c_crea_copy = u"copy "+ params.get('tabla_out') \
-                   + u" from '" + path.join('C:\temp', params.get('archivo')) \
-                   + u"' DELIMITER E'\t' CSV HEADER QUOTE '\"' ENCODING 'LATIN1';"
-curs.execute(c_crea_copy)
+##c_crea_copy = u"copy "+ params.get('tabla_out') \
+##                   + u" from '" + path.join('C:\temp', params.get('archivo')) \
+##                   + u"' DELIMITER E'\t' CSV HEADER QUOTE '\"' ENCODING 'LATIN1';"
+##curs.execute(c_crea_copy)
 
 # insert from dictionary
 try:
-    curs.executemany('INSERT INTO ' + params.get('tabla_out') + ' (key, value) VALUES (%s, %s)', dico_vals.items())
+    curs.executemany(u"INSERT INTO " + params.get('tabla_out') + " (" + cols_u[:-2] + ") VALUES (%s);", valores)
 except Exception, e:
-    print e.pgerror
-
+    print e, u' => executemany does"nt work: just execute first value to test'
+    for val in range(len(valores)):
+        curs.execute(u"INSERT INTO " + params.get('tabla_out') + " VALUES %s", (valores[val],))
+        conn.commit()
 
 # saving modifications and cleaning up
 conn.commit()
-#del c_crea_copy
-#del c_crea_insert
+
 #### Bascis settings: DB columns
 # nombre de las 2 tablas
 tabla_direcciones = params.get('tabla_out')
@@ -379,8 +373,6 @@ col_ubigeo_via = 'ubigeo' # 'ubigeo'
 col_ubigeo2_via = 'ubigeo2'
 col_dist_izq = 'izqesquema' # 'izqesquema'
 col_dist_der = 'deresquema' # 'deresquema'
-
-
 
 ################################################################################
 ########### Main program ###########
@@ -454,7 +446,6 @@ while i < len(li_direcciones):
     i=i+1
 # Fin - Esa parte hace lo mismo que la funcion construc_lista() que no funciona aqui, no se porque
 
-
 del li_direcciones
 
 en_mayusculas(li_dir2)
@@ -487,8 +478,9 @@ while i < len(li_dir2):
     #print li_dir2[i]
     i = i+1
 
-log = open('C:\\temp\\log_solinette.txt', 'w')
-log.write("Inicio de la edición de la tabla de direcciones\n")
+logname = 'temp\\log_solinette_%s_%s.txt' % (params.get('tabla_out'), hoy_format)
+log = open(logname, 'a')
+log.write(u"Inicio de la edición de la tabla de direcciones\n")
 
 # esta parte es para extraer los complementos de direccion.
 # He quitado 'PARQUE' porque existen las avenidas parque sur y parque norte.
