@@ -23,7 +23,7 @@ from math import atan2, pi, sqrt
 import random
 import datetime
 from time import strftime, localtime
-
+import unicodedata
 # external library
 import psycopg2
 
@@ -39,7 +39,7 @@ def construc_lista(lista):
     a una lista de listas"""
     i =0
     while i <len(lista):
-        f = str(lista[i][0]).rstrip()
+        f = str(lista[i][0]).decode('utf8').rstrip()
         lista.remove(lista[i])
         #try: # para guadar enteros ,por ejemplo en el caso de los id
             #lista.insert(i,int(f))
@@ -55,8 +55,16 @@ def en_mayusculas(lista):
     una cadena de caracteres."""
     i = 0
     while i < len(lista):
+        print lista[i]
         if type(lista[i][0]) == str:
-            lista[i][0] = lista[i][0].upper()
+            lista[i][0] = lista[i][0].decode('utf8').upper()
+
+        elif type(lista[i][0]) == unicode:
+            lista[i][0] = unicodedata.normalize('NFKD', lista[i][0]).encode('ascii', 'ignore').decode('utf8').upper()
+            #lista[i][0] = str(lista[i][0].decode('utf8').upper())
+
+        else:
+            pass
 
         i = i+1
     # End of function
@@ -66,8 +74,10 @@ def sin_accento(lista):
     """Función que permite quitar los accentos de una cadena de caracteres.
     Necesita 1 argumento, una lista de listas que contienen
     una cadena de caracteres."""
-    accentos = ['Á', 'Ó', 'Í', 'É', 'Ú', 'Ü', 'À', 'Ò', 'Ì', 'È', 'Ù', 'š', 'ñ', 'Š', '#', "'"] # 'Š' = 'ª'
-    sin_accentos = ['A', 'O', 'I', 'E', 'U', 'U','A', 'O', 'I', 'E', 'U', '°', 'Ñ', '', 'N°', '']
+    #accentos = ['Á', 'Ó', 'Í', 'É', 'Ú', 'Ü', 'À', 'Ò', 'Ì', 'È', 'Ù', 'š', 'ñ', 'Š', '#', "'"] # 'Š' = 'ª'
+    #sin_accentos = ['A', 'O', 'I', 'E', 'U', 'U','A', 'O', 'I', 'E', 'U', '°', 'Ñ', '', 'N°', '']
+    accentos = [u'Á', u'Ó', u'Í', u'É', u'Ú', u'Ü', u'À', u'Ò', u'Ì', u'È', u'Ù', u'š', u'ñ', u'Š', u'#', u"'"] # 'Š' = 'ª'
+    sin_accentos = [u'A', u'O', u'I', u'E', u'U', u'U', u'A', u'O', u'I', u'E', u'U', u'°', u'Ñ', u'', u'N°', u'']
     i = 0
     while i < len(lista):
         #print 'i intern', i, lista[i]
@@ -316,7 +326,7 @@ dico_equival_type = {0:'char(255)',
                      3:'date',
                      4:'boolean',
                      5:'None',
-                     9:'char(255)'}
+                     9:'numeric'}
 
 for i in range(len(params.get('cols').keys())):
     cols = cols + params.get('cols').keys()[i].lower() + ' ' \
@@ -751,7 +761,7 @@ while i < len(li_dir2):
                     t = len(l)
                     #print 'new liste', l
 
-                    # Aca tengo que llenar el campo "nombre via" hasta i-1 y eventualmente los complementos a partir de i+1. Y luego borrarlos
+                    # Aca tengo que llenar el campo "sol_nombre" hasta i-1 y eventualmente los complementos a partir de i+1. Y luego borrarlos
                     g = 0
                     nombre = ''
                     while g < j:
@@ -967,7 +977,7 @@ while len(lista_a_borrar) <> 0:
     del lista_a_borrar[0]
 #print lista_a_borrar
 
-i = 0 # Aca edito las direcciones con um numero solo (sin ningun caracter para anunciarlo)
+i = 0 # Aca edito las direcciones con un numero solo (sin ningun caracter para anunciarlo)
 while i < len(li_dir2):
     j = 0
     if len(li_dir2[i]) >0:
@@ -1039,7 +1049,7 @@ while i < len(li_dir2):
                     curs.execute(cons_num)
                     del cons_num
 
-                    # Aca tengo que llenar el campo "nombre via" hasta i-1 y eventualmente los complementos a partir de i+1. Y luego borrarlos
+                    # Aca tengo que llenar el campo "sol_nombre" hasta i-1 y eventualmente los complementos a partir de i+1. Y luego borrarlos
                     g = 0
                     nombre = ''
                     while g < j:
@@ -1156,12 +1166,12 @@ while len(lista_a_borrar) <> 0:
 
 
 ########### Fin de la parte parsing de direcciones #############
-log.write("Fín\n")
+log.write(u"Fín\n".encode('latin1'))
 
 conn.commit()
 
 ## Ahora edito los distritos para que sean normalizados
-log.write("Inicio de la creacion de los codigos UBIGEO en función de los nombres de distrito\n")
+log.write(u"Inicio de la creacion de los codigos UBIGEO en función de los nombres de distrito\n".encode('latin1'))
 
 ## A hacer de manera que sea facultativo. Si ya hay un campo ubigeo no usar esta parte
 cons_dist = "SELECT "+ col_dist +" from " + tabla_direcciones + " order by "+ col_id.lower() +";"
@@ -1193,7 +1203,6 @@ conn.commit()
 en_mayusculas(li_dir2_dist)
 
 sin_accento(li_dir2_dist)
-
 
 col_distref = 'nombre'
 col_distref2 = 'nombre2'
@@ -1266,7 +1275,7 @@ while i < len(li_dir2_dist):
     i = i+1
 
 ## Fin de la parte de normalizacion de los distritos
-log.write("Fín\n")
+log.write(u"Fín\n".encode('latin1'))
 
 ##Creo una tabla conteniendo todas las direcciones que tienen sea el campo nombre vacio o sea el campo numero vacio
 ## Estas direcciones no se pueden ubicar con el programa.
@@ -1281,7 +1290,7 @@ conn.commit()
 ##del curs
 
 ################## Inicio de la geolocalizacion de direcciones ################
-log.write("Inicio de la localisazión de las direcciones\n")
+log.write(u"Inicio de la localisazión de las direcciones\n".encode('latin1'))
 
 ###################################################
 
@@ -1971,8 +1980,8 @@ while i < len(li_dir2):
     i = i+1
 
 
-log.write("Fín\n")
-log.write("Creacion de las tablas finales\n")
+log.write(u"Fín\n".encode('latin1'))
+log.write(u"Creacion de las tablas finales\n".encode('latin1'))
 # Aca selecciono todas las lineas que no tienen una geometria (las direcciones imposibles a localizar)
 # para luego borrar las de la tabla.
 busca_geom_vacio= "SELECT  "+ col_id + " from " + tabla_dir_geom +" where st_astext(the_geom) IS NULL;"
@@ -2065,7 +2074,7 @@ if len(lista_busca_geom) + len(lista_busca_bug) + len(lista_busca_multi) + len(l
     pass
 
 else:
-    log.write('\tHay un problema. Hay al menos una direccion que esta en varias tablas\n')
+    log.write(u'\tHay un problema. Hay al menos una direccion que esta en varias tablas\n'.encode('latin1'))
 
 
 lista_dobles = []
@@ -2074,9 +2083,9 @@ for e in lista_busca_geom:
         lista_dobles.append(e)
 
 if len(lista_dobles) >0:
-    log.write('\tHay un problema con las direcciones: \n')
+    log.write(u'\tHay un problema con las direcciones: \n'.encode('latin1'))
     for doble in lista_dobles:
-        log.write('\t-'+ dobles + '\n\n')
+        log.write(u'\t-'+ dobles + '\n\n'.encode('latin1'))
 
 
 conn.commit()
@@ -2085,10 +2094,10 @@ conn.commit()
 
 
 ## Ending program
-log.write('*** Resumen ***\n')
-log.write('Sobre ',len(li_dir2),' direcciones :\n')
-log.write('- ',len(lista_busca_geom), ' han sido localizadas\n')
-log.write('- ',len(lista_busca_multi), ' necesitan que se edite la tabla de vias para poder ser localizadas\n')
-log.write('- ',len(lista_busca_bug), ' no tienen su equivalente en la tabla de vias\n')
-log.write('- ',len(lista_busca_imposible), ' no tienen un nombre o un numero y no pueden ser localizadas con este programa\n')
+log.write(u'*** Resumen ***\n'.encode('latin1'))
+log.write(u'Sobre '.encode('latin1')+str(len(li_dir2))+ u' direcciones :\n'.encode('latin1'))
+log.write(u'- '.encode('latin1')+str(len(lista_busca_geom))+ u' han sido localizadas\n'.encode('latin1'))
+log.write(u'- '.encode('latin1')+str(len(lista_busca_multi))+ u' necesitan que se edite la tabla de vias para poder ser localizadas\n'.encode('latin1'))
+log.write(u'- '.encode('latin1')+str(len(lista_busca_bug))+ u' no tienen su equivalente en la tabla de vias\n'.encode('latin1'))
+log.write(u'- '.encode('latin1')+str(len(lista_busca_imposible))+ u' no tienen un nombre o un numero y no pueden ser localizadas con este programa\n'.encode('latin1'))
 log.close()
