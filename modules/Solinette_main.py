@@ -186,7 +186,7 @@ class SolinetteGUI(Tk):
                                    title = u'Seleccionar el archivo Excel',
                                    filetypes = (("Archivos Excel (2003)", "*.xls"),
                                                 ("All files", "*.*")),
-                                   initialdir = '../Sources')
+                                   initialdir = '../sources')
 
         if path.splitext(self.xls)[1] == '.xls':
             hoy = '_' + strftime('%y%m%d', localtime())
@@ -379,15 +379,15 @@ class SolinetteGUI(Tk):
         self.iduxls(self.target.get())
         excel = self.iduxls(self.target.get())[1]
 
-        # export xls to csv
-        self.xls2csv(excel)
-        archivo = self.xls2csv(excel)[1]
+##        # export xls to csv
+##        self.xls2csv(excel)
+##        archivo = self.xls2csv(excel)[1]
 
         # export xls into a dictionary
         self.xls2dict(excel)
 
         # End of function
-        self.dico_param['archivo'] = archivo.name
+##        self.dico_param['archivo'] = archivo.name
         self.dico_param['direccion'] = self.ddl_dir.get()
         self.dico_param['distrito'] = self.ddl_dis.get()
         self.dico_param['pg_host'] = self.host.get()
