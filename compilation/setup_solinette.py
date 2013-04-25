@@ -31,7 +31,7 @@ setup(
     author_mail = "julien.moura@gmail.com",
     url = "https://github.com/Guts/Solinette",
     license="license GPL v3.0",
-    data_files = [("", ["icone_Solinette.ico"]),("sources", ["sources/logo_Solinette.GIF"]),("documentacion",["documentation/Instalacion_PostGIS_UsoSolinette_ES.docx"])],
+    data_files = [("temp", []),("", ["icone_Solinette.ico"]),("sources", ["sources/logo_Solinette.GIF"]),("documentacion",["documentation/Instalacion_PostGIS_UsoSolinette_ES.docx"])],
     options={'py2exe': py2exe_options},
     windows = [
         {

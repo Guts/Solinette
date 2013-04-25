@@ -21,18 +21,11 @@ import subprocess
 ### preparation
 # creating a root-near directory
 tmp = os.environ.get('TEMP')    # system temporary folder
-if not os.path.isdir(os.path.join(tmp, 'py_compilations')):
-    os.mkdir(os.path.join(tmp, 'py_compilations'), 644)
-else:
-    print 'folder already exists'
-    sys.exit()
+os.mkdir(os.path.join(tmp, 'py_compilations'), 644)
 dest = os.path.abspath(os.path.join(tmp, 'py_compilations'))
 # creating sub-folders
-if not os.path.isdir(os.path.join(dest, 'modules')):
-    os.mkdir(os.path.join(dest, 'sources'), 644)
-else:
-    print 'folder already exists'
-    sys.exit()
+os.mkdir(os.path.join(dest, 'temp'), 644)
+os.mkdir(os.path.join(dest, 'sources'), 644)
 # copying necesary files
 shutil.copy2(r'..\Solinette.py', dest)
 shutil.copy2(r'..\icone_Solinette.ico', dest)
@@ -43,8 +36,8 @@ shutil.copytree(r'..\modules\\', os.path.join(dest,  'modules'))
 
 ### Creating the executable (py2exe part)
 os.chdir(dest)
-sys.argv=["setup_solinette.py","py2exe"]
-execfile("setup_solinette.py")
+sys.argv=["python", "setup_solinette.py","py2exe"]
+execfile(dest + "\setup_solinette.py")
 
 
 #### Finalizing
