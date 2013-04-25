@@ -57,17 +57,19 @@ def en_mayusculas(lista):
     print '- EN MAYUSCULAS -', lista, len(lista)
     while i < len(lista):
         print lista[i]
-        if type(lista[i][0]) == str:
-            print '\t +++++++++normal',  lista[i][0]
-            lista[i][0] = lista[i][0].decode('utf8').upper()
-
-        elif type(lista[i][0]) == unicode:
-            print '\t\t *********else', lista[i][0]
-            lista[i][0] = unicodedata.normalize('NFKD', lista[i][0]).encode('ascii', 'ignore').decode('utf8').upper()
-            #lista[i][0] = str(lista[i][0].decode('utf8').upper())
-
-        else:
-            pass
+        lista[i][0] = unicode(lista[i][0]).upper()
+##        if type(lista[i][0]) == str:
+##            print '\t +++++++++normal',  lista[i][0]
+##            lista[i][0] = lista[i][0].decode('utf8').upper()
+##
+##        elif type(lista[i][0]) == unicode:
+##            print '\t\t *********else', lista[i][0]
+##
+##            lista[i][0] = unicodedata.normalize('NFKD', lista[i][0]).encode('ascii', 'ignore').decode('utf8').upper()
+##            #lista[i][0] = str(lista[i][0].decode('utf8').upper())
+##
+##        else:
+##            pass
 
         i = i+1
     # End of function
@@ -80,7 +82,7 @@ def sin_accento(lista):
     #accentos = ['Á', 'Ó', 'Í', 'É', 'Ú', 'Ü', 'À', 'Ò', 'Ì', 'È', 'Ù', 'š', 'ñ', 'Š', '#', "'"] # 'Š' = 'ª'
     #sin_accentos = ['A', 'O', 'I', 'E', 'U', 'U','A', 'O', 'I', 'E', 'U', '°', 'Ñ', '', 'N°', '']
     accentos = [u'Á', u'Ó', u'Í', u'É', u'Ú', u'Ü', u'À', u'Ò', u'Ì', u'È', u'Ù', u'š', u'ñ', u'Š', u'#', u"'"] # 'Š' = 'ª'
-    sin_accentos = [u'A', u'O', u'I', u'E', u'U', u'U', u'A', u'O', u'I', u'E', u'U', u'°', u'Ñ', u'', u'N°', u'']
+    sin_accentos = [u'A', u'O', u'I', u'E', u'U', u'U', u'A', u'O', u'I', u'E', u'U', u'°', u'Ñ', u'', u'N ', u'']
     i = 0
     while i < len(lista):
         #print 'i intern', i, lista[i]
@@ -219,7 +221,7 @@ def entre_puntos(cadena, tuplo):
     b_perpen=tuplo_y - a_perpen*tuplo_x
     deltaX = 5/sqrt(1+a_perpen**2)
 
-    if lista_dir[2]/2 <> lista_dir[2]/2.:
+    if lista_dir_u[2]/2 <> lista_dir_u[2]/2.:
         etat ='impar'
 
     else:
@@ -364,28 +366,28 @@ conn.commit()
 
 #### Bascis settings: DB columns
 # nombre de las 2 tablas
-tabla_direcciones = params.get('tabla_out')
-tabla_vias = 'solinette_nombrevial_100930'
-tabla_dir_geom = tabla_direcciones.lower() + '_geom'    # tabla de las direcciones encontradas (con geometria)
-tabla_dir_multi = tabla_direcciones.lower() + '_multi'  # tabla de las direcciones encontradas pero con geometria 'MULTTILINESTRING'
-tabla_dir_bug = tabla_direcciones.lower() + '_bug'      # tabla de las direcciones no encontradas (sin geometria)
-tabla_dir_imposible = tabla_direcciones.lower() + '_imposible'  #  tabla de las direcciones imposibles de localizar (sin nombre o numero)
+tabla_direcciones = unicode(params.get('tabla_out'))
+tabla_vias = u'solinette_nombrevial_100930'
+tabla_dir_geom = tabla_direcciones.lower() + u'_geom'    # tabla de las direcciones encontradas (con geometria)
+tabla_dir_multi = tabla_direcciones.lower() + u'_multi'  # tabla de las direcciones encontradas pero con geometria 'MULTTILINESTRING'
+tabla_dir_bug = tabla_direcciones.lower() + u'_bug'      # tabla de las direcciones no encontradas (sin geometria)
+tabla_dir_imposible = tabla_direcciones.lower() + u'_imposible'  #  tabla de las direcciones imposibles de localizar (sin nombre o numero)
 
 # columnas de la tabla de las direcciones
-col_id = 'SOL_IDU'
-col_direccion = params.get('direccion')
-col_dist = params.get('distrito')
+col_id = u'sol_idu'
+col_direccion = unicode(params.get('direccion'))
+col_dist = unicode(params.get('distrito'))
 
 # columnas de la tabla de las vias
-col_id_via = 'gid'
-col_tipo_via = 'categ_via'  #'categ_via'
-col_nombre_via = 'nombre_via' #'nombre_via'
-col_nombre_via_alt = 'nombre_alt'  # 'nombre_alt' # nombre alternativo de la via
-col_num_via = 'cuadra' # 'cuadra'
-col_ubigeo_via = 'ubigeo' # 'ubigeo'
-col_ubigeo2_via = 'ubigeo2'
-col_dist_izq = 'izqesquema' # 'izqesquema'
-col_dist_der = 'deresquema' # 'deresquema'
+col_id_via = u'gid'
+col_tipo_via = u'categ_via'  #'categ_via'
+col_nombre_via = u'nombre_via' #'nombre_via'
+col_nombre_via_alt = u'nombre_alt'  # 'nombre_alt' # nombre alternativo de la via
+col_num_via = u'cuadra' # 'cuadra'
+col_ubigeo_via = u'ubigeo' # 'ubigeo'
+col_ubigeo2_via = u'ubigeo2'
+col_dist_izq = u'izqesquema' # 'izqesquema'
+col_dist_der = u'deresquema' # 'deresquema'
 
 ################################################################################
 ########### Main program ###########
@@ -393,38 +395,50 @@ col_dist_der = 'deresquema' # 'deresquema'
 
 ## Agrego los 4 campos que voy a llenar
 # Agrego una nueva columna en la cual pongo el tipo de la via
-c_add_tipo = "begin; ALTER TABLE " + tabla_direcciones \
-                                  + " ADD COLUMN sol_tipo varchar(10);"
+c_add_tipo = u"begin; ALTER TABLE " + tabla_direcciones \
+                                  + u" ADD COLUMN sol_tipo varchar(255);"
 curs.execute(c_add_tipo)
 
 # Agrego una nueva columna en la cual pongo el numero de la via
-c_add_nom = "ALTER TABLE " + tabla_direcciones \
-                          + " ADD COLUMN sol_nombre varchar(120);"
+c_add_nom = u"ALTER TABLE " + tabla_direcciones \
+                          + u" ADD COLUMN sol_nombre varchar(255);"
 curs.execute(c_add_nom)
 
 # Agrego una nueva columna en la cual pongo el numero de la via
-c_add_numero = "ALTER TABLE " + tabla_direcciones \
-                             + " ADD COLUMN sol_numero int;"
+c_add_numero = u"ALTER TABLE " + tabla_direcciones \
+                             + u" ADD COLUMN sol_numero int;"
 curs.execute(c_add_numero)
 
 # Agrego una nueva columna en la cual pongo el complemento de la direccion
-c_add_complemento = "ALTER TABLE " + tabla_direcciones \
-                                  + " ADD COLUMN sol_compdir varchar(200);"
+c_add_complemento = u"ALTER TABLE " + tabla_direcciones \
+                                  + u" ADD COLUMN sol_compdir varchar(255);"
 curs.execute(c_add_complemento)
 
 # saving changes and cleaning up
 conn.commit()
 del c_add_complemento, c_add_nom, c_add_numero, c_add_tipo
 
-c_sel_all = "select " + col_direccion + " from " + tabla_direcciones \
-                                 + " order by " + col_id + ";"
+c_sel_all = u"select " + col_direccion + u" from " + tabla_direcciones \
+                                 + u" order by " + col_id + ";"
 curs.execute(c_sel_all)
 li_direcciones = curs.fetchall()
 conn.commit()
 
+# encoding
+test = []
+for tutu in li_direcciones:
+    xyz = list(tutu)
+    xyz[0] = xyz[0].decode('utf8')
+    test.append(xyz)
+    del xyz
+
+del li_direcciones
+li_direcciones = test
+del test
+
 # Necesito los id para poder insertar nuevos valores en los nuevos campos segun
 # ellos. Es mas seguro que segun los i
-c_sel_id = "select " + col_id + " from " + tabla_direcciones + " order by " + col_id + ";"
+c_sel_id = u"select " + col_id + u" from " + tabla_direcciones + u" order by " + col_id + u";"
 curs.execute(c_sel_id)
 li_id = curs.fetchall()
 
@@ -447,9 +461,9 @@ print li_dir2, len(li_dir2)
 i = 0
 while i < len(li_direcciones):
     if li_direcciones[i] <> (None,):
-        print '============='+li_direcciones[i][0].decode('utf8')
+        print '============='+li_direcciones[i][0]
         if li_direcciones[i][0][0] =='\xa0':
-        #if li_direcciones[i][0][0] =='Â':
+        #if li_direcciones[i][0][0] ==u'Â':
 
             #print li_direcciones[i]
             li_dir2[i].append(li_direcciones[i][0][1:].rstrip())
@@ -460,7 +474,7 @@ while i < len(li_direcciones):
         #print li_dir2[i]
 
     else:
-        li_dir2[i].append('ninguna')
+        li_dir2[i].append(u'ninguna')
     i=i+1
 # Fin - Esa parte hace lo mismo que la funcion construc_lista() que no funciona aqui, no se porque
 
@@ -468,9 +482,9 @@ while i < len(li_direcciones):
 ##    try:
 ##        truc[i][0].decode('utf8').rstrip()
 ##    except UnicodeDecodeError:
-##        unicode(truc[i][0].decode('tatin1').rstrip())
+##        unicode(truc[i][0].decode('latin1').rstrip())
 
-##del li_direcciones
+del li_direcciones
 
 en_mayusculas(li_dir2)
 sin_accento(li_dir2)
@@ -478,10 +492,10 @@ sin_accento(li_dir2)
 ####### Aca edito las direcciones para poner un espacio despues de un '.', un '°' o un '?'
 for direc in li_dir2:
     for string in direc:
-        string2 = ''
+        string2 = u''
         for e in string:
             try:
-                if (e == '.' or e == '°' or e == '?') and string[string.index(e)+1] <> ' ':
+                if (e == u'.' or e == u'°' or e == u'?') and string[string.index(e)+1] <> u' ':
                     string2 = string2 + e + ' '
                 else:
                     string2 = string2 + e
@@ -495,11 +509,12 @@ del direc, string, e
 i = 0
 while i < len(li_dir2):
     li_dir2[i] = li_dir2[i][0].split(' ')
+    print u'\t\t ###################', unicode(li_dir2[i])
     try:
         li_dir2[i].remove('')
     except:
         pass
-    #print li_dir2[i]
+    print u'\t\t ###################', unicode(li_dir2[i])
     i = i+1
 
 logname = 'temp\\log_solinette_%s_%s.txt' % (params.get('tabla_out'), hoy_format)
@@ -508,9 +523,13 @@ log.write(u"Inicio de la edición de la tabla de direcciones\n".encode('latin1')
 
 # esta parte es para extraer los complementos de direccion.
 # He quitado 'PARQUE' porque existen las avenidas parque sur y parque norte.
-lista_comple = ['COMPLEMENTO', 'AA', 'A.H','URB', 'MZ', 'MZA', 'MANZANA', 'OF', 'PARCELA', 'LOTE', 'LT', '(', 'INT.', \
-                'INTERIOR', 'SECTOR', 'ZONA', 'Z.I', 'PISO', 'KM', 'KILOMETRO', 'DPTO', 'COOP', \
-                'PT', 'ALT', 'BLOCK', 'APARTADO', 'ESQ.', 'ESQUINA']
+##lista_comple = ['COMPLEMENTO', 'AA', 'A.H','URB', 'MZ', 'MZA', 'MANZANA', 'OF', 'PARCELA', 'LOTE', 'LT', '(', 'INT.', \
+##                'INTERIOR', 'SECTOR', 'ZONA', 'Z.I', 'PISO', 'KM', 'KILOMETRO', 'DPTO', 'COOP', \
+##                'PT', 'ALT', 'BLOCK', 'APARTADO', 'ESQ.', 'ESQUINA']
+
+lista_comple = [u'COMPLEMENTO', u'AA', u'A.H',u'URB', u'MZ', u'MZA', u'MANZANA', u'OF', u'PARCELA', u'LOTE', u'LT', u'(', u'INT.', \
+                u'INTERIOR', u'SECTOR', u'ZONA', u'Z.I', u'PISO', u'KM', u'KILOMETRO', u'DPTO', u'COOP', \
+                u'PT', u'ALT', u'BLOCK', u'APARTADO', u'ESQ.', u'ESQUINA']
 
 i =0
 while i < len(li_dir2):
@@ -529,8 +548,8 @@ while i < len(li_dir2):
                     dir_comple = dir_comple+' '+li_dir2[i][j]
                     del li_dir2[i][j]
 
-                cons_compl = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+unicodedata.normalize('NFKD', dir_comple.encode('ascii', 'ignore').decode('utf8'))+ "'"+ " where " + \
-                         col_id + " = "+ str(li_id[i])+';'
+                cons_compl = u"UPDATE " + tabla_direcciones + u" SET sol_compdir = " + u"'"+ unicodedata.normalize('NFKD', dir_comple.encode('ascii', 'ignore').decode('utf8'))+ u"'" + u" where " + \
+                         col_id + " = "+ unicode(li_id[i])+';'
 
 ##                cons_compl = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(dir_comple)+ "'"+ " where " + \
 ##                         col_id + " = "+ str(li_id[i])+';'
@@ -560,13 +579,21 @@ while i < len(li_dir2):
 
 
 # Abajo las listas de los tipos de vias. La segunda es normalizada
-lista_tipo = ['CALLE', 'CA', 'CAL', 'CALL', 'C/', 'AVENIDA', 'AV', 'JIRON', 'JR',\
-              'PASAJE', 'PSJE', 'PS', 'PJ', 'PSJ', 'PJE', 'PROLONGACION', 'PRL', 'PROLG', \
-              'PROLONG', 'MALECON', 'MLC', 'PUENTE']
+##lista_tipo = ['CALLE', 'CA', 'CAL', 'CALL', 'C/', 'AVENIDA', 'AV', 'JIRON', 'JR',\
+##              'PASAJE', 'PSJE', 'PS', 'PJ', 'PSJ', 'PJE', 'PROLONGACION', 'PRL', 'PROLG', \
+##              'PROLONG', 'MALECON', 'MLC', 'PUENTE']
 
-lista_tipo_norm = ['2', '2', '2', '2', '2', '1', '1', '3', '3',\
-                   '4', '4', '4', '4', '4','6', '6', '6', \
-              '6', '6', '6', '10']
+lista_tipo = [u'CALLE', u'CA', u'CAL', u'CALL', u'C/', u'AVENIDA', u'AV', u'JIRON', u'JR',\
+              u'PASAJE', u'PSJE', u'PS', u'PJ', u'PSJ', u'PJE', u'PROLONGACION', u'PRL', u'PROLG', \
+              u'PROLONG', u'MALECON', u'MLC', u'PUENTE']
+
+##lista_tipo_norm = ['2', '2', '2', '2', '2', '1', '1', '3', '3',\
+##                   '4', '4', '4', '4', '4','6', '6', '6', \
+##              '6', '6', '6', '10']
+
+lista_tipo_norm = [u'2', u'2', u'2', u'2', u'2', u'1', u'1', u'3', u'3',\
+                   u'4', u'4', u'4', u'4', u'4', u'6', u'6', u'6', \
+              u'6', u'6', u'6', u'10']
 
 
 
@@ -585,7 +612,7 @@ while i < len(li_dir2):
             pass
         if li_dir2[i][0] in lista_tipo: # si el tipo de via es conocido
             nv_valor = lista_tipo_norm[lista_tipo.index(li_dir2[i][0])]
-            cons_i = "UPDATE " + tabla_direcciones + " SET sol_tipo = "+ "'"+str(nv_valor)+ "'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+            cons_i = u"UPDATE " + tabla_direcciones + u" SET sol_tipo = " + u"'" + unicode(nv_valor)+ u"'" + u" where " + col_id + u" = "+ unicode(li_id[i]) + u';'
             curs.execute(cons_i)
             del cons_i, nv_valor
 
@@ -598,7 +625,8 @@ while i < len(li_dir2):
 
 # Para extraer el numero y nombre de la via
 
-lista_num = ['N', 'N°', 'NRO.', 'NRO', 'NO', 'N?', 'Nª', 'N\xaa', 'NÂ°', 'N\xb0', 'NO.', 'NUM.', 'CDR', 'CDRA', 'CDRA.','CUADRA']
+##lista_num = [u'N', u'N°', u'NRO.', u'NRO', u'NO', u'N?', u'Nª', u'N\xaa', u'NÂ°', u'N\xb0', u'NO.', u'NUM.', u'CDR', u'CDRA', u'CDRA.', u'CUADRA']
+lista_num = [u'N', u'N°', u'NRO.', u'NRO', u'NO', u'N?', u'Nª', u'N°', u'NO.', u'NUM.', u'CDR', u'CDRA', u'CDRA.', u'CUADRA', u'NOS', u'NOS']
 
 i =0
 
@@ -607,6 +635,7 @@ while i < len(li_dir2):
     j = 0
 
     while j < len(li_dir2[i]):
+        conn.commit()
         #print i, li_dir2[i]
         if li_dir2[i][j] in lista_num: # en el caso en el cual el numero esta con un caracter tipo 'N°'
             #print li_dir2[i]
@@ -614,62 +643,62 @@ while i < len(li_dir2):
             #print lista_num
             lista_a_borrar.append(i)
             try:
-                li_dir2[i][j+1] = li_dir2[i][j+1].rstrip(',')
+                li_dir2[i][j+1] = li_dir2[i][j+1].rstrip(u',')
             except:
-                pass
+                print i, j
             try:
                 int(li_dir2[i][j+1])
                 #print 'cas n°'
 
                 if int(li_dir2[i][j+1]) < 100: # Si el numero que tengo es inferior a 100, signica que es un número de cuadra
-                    li_dir2[i][j+1] = str(int(li_dir2[i][j+1])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
+                    li_dir2[i][j+1] = unicode(int(li_dir2[i][j+1])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
 
 
 
-                cons_j = "UPDATE " + tabla_direcciones + " SET sol_numero = "+str(li_dir2[i][j+1])+ " where " + col_id + " = "+ str(li_id[i])+';'
+                cons_j = u"UPDATE " + tabla_direcciones + u" SET sol_numero = " + unicode(li_dir2[i][j+1]) + u" where " + col_id.lower() + u" = " + unicode(li_id[i])+';'
                 curs.execute(cons_j)
                 del cons_j
                 # Aca tengo que llenar el campo "nombre via" hasta i-1 y eventualmente los complementos a partir de i+2. Y luego borrarlos
                 g = 0
-                nombre = ''
+                nombre = u''
                 while g < j:
                     if li_dir2[i][g] not in lista_tipo:
-                        nombre = nombre + li_dir2[i][g]+' '
+                        nombre = nombre + li_dir2[i][g] + u' '
                     else:
                         pass
                     g = g+1
                 nombre = nombre.rstrip(' ')
                 if len(nombre)>2:
-                    cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                    cons_j = u"UPDATE " + tabla_direcciones + u" SET sol_nombre = " + u"'" + unicode(nombre) + u"'" + u" where " + col_id.lower() + u" = "+ unicode(li_id[i]) + u';'
                     curs.execute(cons_j)
                     del cons_j
                 if len(nombre)<=2:
-                    cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = 'CALLE '||"+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                    cons_j = u"UPDATE " + tabla_direcciones + u" SET sol_nombre = 'CALLE '||" + u"'" + unicode(nombre) + u"'" + u" where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                     curs.execute(cons_j)
                     del cons_j
 
                 if j+1 < len(li_dir2[i])-1: # si hay un complemento mas
                     #print 'id =', i+1
                     f = j+2
-                    compl2 = ''
+                    compl2 = u''
                     while f < len(li_dir2[i]):
-                        compl2 = compl2 + li_dir2[i][f]+' '
+                        compl2 = compl2 + li_dir2[i][f] + u' '
                         f = f+1
-                    compl2 = compl2.rstrip(' ')
-                    if compl2 <> '-':
+                    compl2 = compl2.rstrip(u' ')
+                    if compl2 <> u'-':
 
-                        cons_verif = "SELECT sol_compdir from " + tabla_direcciones + " where " + col_id + " = "+ str(li_id[i])+';'
+                        cons_verif = u"SELECT sol_compdir from " + tabla_direcciones + u" where " + col_id.lower() + u" = "+ unicode(li_id[i]) + u';'
                         curs.execute( cons_verif)
                         lista_verif = curs.fetchall()
                         #print lista_verif
                         if lista_verif[0] == (None,):
-                            cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                            cons_f = u"UPDATE " + tabla_direcciones + u" SET sol_compdir = " + u"'" + unicode(compl2) + u"'" + u" where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                             #print cons_f
                             curs.execute(cons_f)
                             del cons_f, compl2
 
                         else:
-                            cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " ||' '|| sol_compdir where " + col_id + " = "+ str(li_id[i])+';'
+                            cons_f = u"UPDATE " + tabla_direcciones + u" SET sol_compdir = " + u"'" + unicode(compl2) + u"'" + u" ||' '|| sol_compdir where u" + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                             #print cons_f
                             curs.execute(cons_f)
                             del cons_f, compl2, cons_verif, lista_verif
@@ -681,14 +710,12 @@ while i < len(li_dir2):
                     #del  li_dir2[i][0]
                 #print 'apres :', li_dir2[i]
 
-
-
             except: # Si hay una 'N' pero la cadena siguiente no es de tipo int (hay un '-' por ejemplo'
                 # Este caso esta tomado en cuenta cuando trato los con '-'. No agregara los 'N'
                 pass
 
 
-        if len(li_dir2[i][j]) >0 and li_dir2[i][j][0] =='#': # en el caso en el cual el numero esta caracterizado por el caracter '#'
+        if len(li_dir2[i][j]) >0 and li_dir2[i][j][0] == u'#': # en el caso en el cual el numero esta caracterizado por el caracter '#'
             lista_a_borrar.append(i)
 
             try:
@@ -697,69 +724,65 @@ while i < len(li_dir2):
                 #print int(li_dir2[i][j][1:len(li_dir2[i][j])])
 
                 if int(li_dir2[i][j][1:len(li_dir2[i][j])]) < 100: # Si el numero que tengo es inferior a 100, signica que es un número de cuadra
-                    li_dir2[i][j][1:len(li_dir2[i][j])] = str(int(li_dir2[i][j][1:len(li_dir2[i][j])])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
+                    li_dir2[i][j][1:len(li_dir2[i][j])] = unicode(int(li_dir2[i][j][1:len(li_dir2[i][j])])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
 
 
-                cons_j = "UPDATE " + tabla_direcciones + " SET sol_numero = "+str(li_dir2[i][j][1:len(li_dir2[i][j])])+ " where " + col_id + " = "+ str(li_id[i])+';'
+                cons_j = u"UPDATE " + tabla_direcciones + u" SET sol_numero = " + unicode(li_dir2[i][j][1:len(li_dir2[i][j])]) + u" where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                 curs.execute(cons_j)
                 del cons_j
 
                 # Aca tengo que llenar el campo "nombre via" hasta i-1 y eventualmente los complementos a partir de i+1. Y luego borrarlos
                 g = 0
-                nombre = ''
+                nombre = u''
                 while g < j:
                     if li_dir2[i][g] not in lista_tipo:
-                        nombre = nombre + li_dir2[i][g]+' '
+                        nombre = nombre + li_dir2[i][g] + u' '
                     else:
                         pass
                     g = g+1
-                nombre = nombre.rstrip(' ')
+                nombre = nombre.rstrip(u' ')
                 if len(nombre)>2:
-                    cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                    cons_j = u"UPDATE " + tabla_direcciones + u" SET sol_nombre = " + u"'" + unicode(nombre) + u"'" + u" where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                     curs.execute(cons_j)
                     del cons_j
                 if len(nombre)<=2:
-                    cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = 'CALLE '||"+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                    cons_j = u"UPDATE " + tabla_direcciones + u" SET sol_nombre = 'CALLE '||" + u"'" + unicode(nombre) + u"'" + u" where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                     curs.execute(cons_j)
                     del cons_j
 
                 if j+1 < len(li_dir2[i])-1: # si hay un complemento mas
                     #print 'id =', i+1
                     f = j+1
-                    compl2 = ''
+                    compl2 = u''
                     while f < len(li_dir2[i]):
-                        compl2 = compl2 + li_dir2[i][f]+' '
+                        compl2 = compl2 + li_dir2[i][f] + u' '
                         f = f+1
-                    compl2 = compl2.rstrip(' ')
-                    if compl2 <> '-':
+                    compl2 = compl2.rstrip(u' ')
+                    if compl2 <> u'-':
 
-                        cons_verif = "SELECT sol_compdir from " + tabla_direcciones + " where " + col_id + " = "+ str(li_id[i])+';'
+                        cons_verif = u"SELECT sol_compdir from " + tabla_direcciones + u" where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                         curs.execute( cons_verif)
                         lista_verif = curs.fetchall()
                         #print lista_verif
                         if lista_verif[0] == (None,):
-                            cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                            cons_f = u"UPDATE " + tabla_direcciones + u" SET sol_compdir = " + u"'" + unicode(compl2) + u"'" + u" where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                             #print cons_f
                             curs.execute(cons_f)
                             del cons_f, compl2
 
                         else:
-                            cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " ||' '|| sol_compdir where " + col_id + " = "+ str(li_id[i])+';'
+                            cons_f = u"UPDATE " + tabla_direcciones + u" SET sol_compdir = " + u"'" + unicode(compl2) + u"'" + u" ||' '|| sol_compdir where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                             #print cons_f
                             curs.execute(cons_f)
                             del cons_f, compl2, cons_verif, lista_verif
 
-
-
-
-
             except:
-                #print 'cas # mais pas num'
+                print 'cas # mais pas num'
                 pass
 
-        if '-' in li_dir2[i][j] and li_dir2[i][j] <> '-': # Si no hay ni 'N' ni '#' antes y hay varios numeros con un '-'
+        if u'-' in li_dir2[i][j] and li_dir2[i][j] <> u'-': # Si no hay ni 'N' ni '#' antes y hay varios numeros con un '-'
             lista_a_borrar.append(i)
-            l = li_dir2[i][j].split('-')
+            l = li_dir2[i][j].split(u'-')
             t =0
             #print i+1, li_dir2[i], l
             while t <len(l):
@@ -767,9 +790,9 @@ while i < len(li_dir2):
                     int(l[t])
 
                     if int(l[t]) < 100: # Si el numero que tengo es inferior a 100, signica que es un número de cuadra
-                        l[t] = str(int(l[t])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
+                        l[t] = unicode(int(l[t])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
 
-                    cons_t = "UPDATE " + tabla_direcciones + " SET sol_numero = "+str(l[t])+ " where " + col_id + " = "+ str(li_id[i])+';'
+                    cons_t = u"UPDATE " + tabla_direcciones + u" SET sol_numero = " + unicode(l[t]) + u" where " + col_id.lower() + u" = "+ unicode(li_id[i])+ u';'
                     curs.execute(cons_t)
                     del cons_t
                     del l[t]
@@ -783,44 +806,44 @@ while i < len(li_dir2):
 
                     # Aca tengo que llenar el campo "sol_nombre" hasta i-1 y eventualmente los complementos a partir de i+1. Y luego borrarlos
                     g = 0
-                    nombre = ''
+                    nombre = u''
                     while g < j:
 
                         if li_dir2[i][g] not in lista_tipo and li_dir2[i][g] not in lista_num: # Para no agregar el tipo de via o la plabar 'N' que me ha escapado antes
-                            li_dir2[i][g] = li_dir2[i][g].rstrip(',')
+                            li_dir2[i][g] = li_dir2[i][g].rstrip(u',')
                             nombre = nombre + li_dir2[i][g]+' '
                         else:
                             pass
                         g = g+1
                     nombre = nombre.rstrip(' ')
                     if len(nombre)>2:
-                        cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                        cons_j = u"UPDATE " + tabla_direcciones + u" SET sol_nombre = " + u"'" + unicode(nombre) + u"'" + u" where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                         curs.execute(cons_j)
                         del cons_j
                     if len(nombre)<=2:
-                        cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = 'CALLE '||"+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                        cons_j = u"UPDATE " + tabla_direcciones + u" SET sol_nombre = 'CALLE '||" + u"'" + unicode(nombre) + u"'" + u" where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                         curs.execute(cons_j)
                         del cons_j
 
                     if j+1 < len(li_dir2[i])-1: # si hay un complemento mas a añadir
                         f = 0
-                        compl2 = ''
+                        compl2 = u''
                         while f < len(l):
-                            l[f] = l[f].rstrip(',')
-                            compl2 = compl2 + l[f]+' '
+                            l[f] = l[f].rstrip(u',')
+                            compl2 = compl2 + l[f] + u' '
                             f = f+1
-                        compl2 = compl2.rstrip(' ')
-                        if compl2 <> '-':
-                            cons_verif = "SELECT sol_compdir from " + tabla_direcciones + " where " + col_id + " = "+ str(li_id[i])+';'
+                        compl2 = compl2.rstrip(u' ')
+                        if compl2 <> u'-':
+                            cons_verif = u"SELECT sol_compdir from " + tabla_direcciones + u" where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                             curs.execute( cons_verif)
                             lista_verif = curs.fetchall()
                             if lista_verif[0] == (None,): # Si no hay complementos todavia
-                                cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                                cons_f = u"UPDATE " + tabla_direcciones + u" SET sol_compdir = " + u"'" + unicode(compl2) + u"'" + u" where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                                 #print cons_f
                                 curs.execute(cons_f)
                                 del cons_f, compl2, cons_verif, lista_verif
                             else: # Si ya existen complementos
-                                cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " ||' '|| sol_compdir where " + col_id + " = "+ str(li_id[i])+';'
+                                cons_f = u"UPDATE " + tabla_direcciones + u" SET sol_compdir = " + u"'" + unicode(compl2) + u"'" + u" ||' '|| sol_compdir where " + col_id.lower() + u" = "  + unicode(li_id[i]) + u';'
                                 curs.execute(cons_f)
                                 #print cons_f
                                 del cons_f, compl2
@@ -829,24 +852,24 @@ while i < len(li_dir2):
 
                     else: # Si no hay complemento a añadir
                         f = j+1
-                        compl2 = ''
+                        compl2 = u''
                         while f < len(li_dir2[i]):
-                            compl2 = compl2 + li_dir2[i][f]+' '
+                            compl2 = compl2 + li_dir2[i][f] + u' '
                             f = f+1
                         compl2 = compl2.rstrip(' ')
                         #print 'complemento else : ',compl2, 'dddd', nombre
-                        if compl2 <> '-':
+                        if compl2 <> u'-':
 
-                            cons_verif = "SELECT sol_compdir from " + tabla_direcciones + " where " + col_id + " = "+ str(li_id[i])+';'
+                            cons_verif = u"SELECT sol_compdir from " + tabla_direcciones + u" where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                             curs.execute( cons_verif)
                             lista_verif = curs.fetchall()
                             if lista_verif[0] == (None,): # Si no hay complementos todavia
-                                cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(cad+compl2)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                                cons_f = u"UPDATE " + tabla_direcciones + u" SET sol_compdir = " + u"'" + unicode(cad+compl2) + u"'" + u" where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                                 #print cons_f
                                 curs.execute(cons_f)
                                 del cons_f, compl2, cons_verif, lista_verif
                             else: # Si ya existen complementos
-                                cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(cad+compl2)+"'"+ " ||' '|| sol_compdir where " + col_id + " = "+ str(li_id[i])+';'
+                                cons_f = u"UPDATE " + tabla_direcciones + u" SET sol_compdir = " + u"'" + unicode(cad+compl2) + u"'" + u" ||' '|| sol_compdir where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
                                 curs.execute(cons_f)
                                 del cons_f, compl2
                         else:
@@ -856,12 +879,12 @@ while i < len(li_dir2):
                     t = t+1
 
 
-        if 'S/N' in li_dir2[i]: # Por el momento en este caso no lleno el campo numero. tal vez cambiar su tipo a char y poner 'S/N
+        if u'S/N' in li_dir2[i]: # Por el momento en este caso no lleno el campo numero. tal vez cambiar su tipo a char y poner 'S/N
             lista_a_borrar.append(i)
             #print i+1, li_dir2[i]
             g = 0
-            nombre = ''
-            while li_dir2[i][g] <> 'S/N':
+            nombre = u''
+            while li_dir2[i][g] <> u'S/N':
                 if li_dir2[i][g] not in lista_tipo and li_dir2[i][g] not in lista_num: # Para no agregar el tipo de via o la plabar 'N' que me ha escapado antes
                     nombre = nombre + li_dir2[i][g]+' '
                 else:
@@ -870,11 +893,11 @@ while i < len(li_dir2):
 
             nombre = nombre.rstrip(' ')
             if len(nombre)>2:
-                cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                cons_j = u"UPDATE " + tabla_direcciones + u" SET sol_nombre = " + u"'" + unicode(nombre) + u"'" + u" where " + col_id.lower() + u" = "+ unicode(li_id[i]) + u';'
                 curs.execute(cons_j)
                 del cons_j
             if len(nombre)<=2:
-                cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = 'CALLE '||"+ "'"+str(nombre)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                cons_j = u"UPDATE " + tabla_direcciones + u" SET sol_nombre = 'CALLE '||" + u"'" + unicode(nombre) + u"'" + u" where " + col_id.lower() + " = "+ unicode(li_id[i]) + u';'
                 curs.execute(cons_j)
                 del cons_j
 
@@ -911,47 +934,47 @@ while i < len(li_dir2):
 
                 #print li_dir2[i][j]
                 # Abajo son casos particulares que contienen numeros (fecha) en su nombre. Si se edita se debe editar abajo tambien
-                if (int(li_dir2[i][j]) == 1 and 'ENERO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 13 and 'ENERO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 15 and 'ENERO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 18 and 'ENERO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 19 and 'ENERO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 21 and 'MARZO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 15 and 'ABRIL' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 27 and 'ABRIL' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 1 and 'MAYO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 2 and 'MAYO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 3 and 'MAYO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 5 and 'MAYO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 26 and 'MAYO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 7 and 'JUNIO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 10 and 'JUNIO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 13 and 'JUNIO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 1 and 'JULIO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 15 and 'JULIO' in li_dir2[i][j+2]) \
-                   or (int(li_dir2[i][j]) == 26 and 'JULIO' in li_dir2[i][j+2]) \
-                   or (int(li_dir2[i][j]) == 28 and 'JULIO' in li_dir2[i][j+2]) \
-                   or (int(li_dir2[i][j]) == 1 and 'AGOSTO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 5 and 'AGOSTO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 6 and 'AGOSTO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 22 and 'AGOSTO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 1 and 'SEPTIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 1 and 'SETIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 23 and 'SEPTIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 23 and 'SETIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 1 and 'OCTUBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 3 and 'OCTUBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 8 and 'OCTUBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 9 and 'OCTUBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 12 and 'OCTUBRE' in li_dir2[i][j+2])\
+                if (int(li_dir2[i][j]) == 1 and u'ENERO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 13 and u'ENERO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 15 and u'ENERO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 18 and u'ENERO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 19 and u'ENERO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 21 and u'MARZO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 15 and u'ABRIL' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 27 and u'ABRIL' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 1 and u'MAYO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 2 and u'MAYO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 3 and u'MAYO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 5 and u'MAYO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 26 and u'MAYO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 7 and u'JUNIO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 10 and u'JUNIO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 13 and u'JUNIO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 1 and u'JULIO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 15 and u'JULIO' in li_dir2[i][j+2]) \
+                   or (int(li_dir2[i][j]) == 26 and u'JULIO' in li_dir2[i][j+2]) \
+                   or (int(li_dir2[i][j]) == 28 and u'JULIO' in li_dir2[i][j+2]) \
+                   or (int(li_dir2[i][j]) == 1 and u'AGOSTO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 5 and u'AGOSTO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 6 and u'AGOSTO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 22 and u'AGOSTO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 1 and u'SEPTIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 1 and u'SETIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 23 and u'SEPTIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 23 and u'SETIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 1 and u'OCTUBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 3 and u'OCTUBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 8 and u'OCTUBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 9 and u'OCTUBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 12 and u'OCTUBRE' in li_dir2[i][j+2])\
                    or (int(li_dir2[i][j]) == 1 and 'NOVIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 12 and 'NOVIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 17 and 'NOVIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 20 and 'NOVIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 26 and 'NOVIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 6 and 'DICIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 9 and 'DICIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 25 and 'DICIEMBRE' in li_dir2[i][j+2]):
+                   or (int(li_dir2[i][j]) == 12 and u'NOVIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 17 and u'NOVIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 20 and u'NOVIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 26 and u'NOVIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 6 and u'DICIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 9 and u'DICIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 25 and u'DICIEMBRE' in li_dir2[i][j+2]):
                        pass # Si el numero es una fecha, no lo tomo en cuenta y sigo en la cadena para encontrar el verdadero numero
 
 
@@ -960,7 +983,7 @@ while i < len(li_dir2):
                         if i not in lista_a_borrar:
                             lista_a_borrar.append(i)
                         #print 'el nombre de la calle es el numero : ',li_dir2[i]
-                        cons_nombre = "UPDATE " + tabla_direcciones + " SET sol_nombre = 'CALLE ' ||"+ "'"+str(li_dir2[i][j])+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                        cons_nombre = u"UPDATE " + tabla_direcciones + u" SET sol_nombre = 'CALLE ' ||"+  "' "+ unicode(li_dir2[i][j])+ u"'"+ u" where " + col_id.lower() + u" = "+ unicode(li_id[i]) + u';'
                         #print cons_nombre
                         curs.execute(cons_nombre)
                         del cons_nombre
@@ -968,7 +991,7 @@ while i < len(li_dir2):
 
                     if j ==0 and len(li_dir2[i])>2:
                         # No comentar este print. Es una alerta
-                        print 'Alerta : Esa calle : ',li_dir2[i] ,'cuyo nombre es un solo número tiene tambien un número para ubicar la direccion: No esta previsto en esta  \
+                        print 'Alerta : Esa calle : ', li_dir2[i] , 'cuyo nombre es un solo número tiene tambien un número para ubicar la direccion: No esta previsto en esta  \
                         versión del programa. A cambiar'
 
 
@@ -1010,47 +1033,47 @@ while i < len(li_dir2):
 
                 #print i+1, li_dir2[i], li_dir2[i][j]
                 # Abajo son casos particulares que contienen numeros (fecha) en su nombre
-                if (int(li_dir2[i][j]) == 1 and 'ENERO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 13 and 'ENERO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 15 and 'ENERO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 18 and 'ENERO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 19 and 'ENERO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 21 and 'MARZO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 15 and 'ABRIL' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 27 and 'ABRIL' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 1 and 'MAYO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 2 and 'MAYO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 3 and 'MAYO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 5 and 'MAYO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 26 and 'MAYO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 7 and 'JUNIO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 10 and 'JUNIO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 13 and 'JUNIO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 1 and 'JULIO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 15 and 'JULIO' in li_dir2[i][j+2]) \
-                   or (int(li_dir2[i][j]) == 26 and 'JULIO' in li_dir2[i][j+2]) \
-                   or (int(li_dir2[i][j]) == 28 and 'JULIO' in li_dir2[i][j+2]) \
-                   or (int(li_dir2[i][j]) == 1 and 'AGOSTO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 5 and 'AGOSTO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 6 and 'AGOSTO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 22 and 'AGOSTO' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 1 and 'SEPTIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 1 and 'SETIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 23 and 'SEPTIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 23 and 'SETIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 1 and 'OCTUBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 3 and 'OCTUBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 8 and 'OCTUBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 9 and 'OCTUBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 12 and 'OCTUBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 1 and 'NOVIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 12 and 'NOVIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 17 and 'NOVIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 20 and 'NOVIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 26 and 'NOVIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 6 and 'DICIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 9 and 'DICIEMBRE' in li_dir2[i][j+2])\
-                   or (int(li_dir2[i][j]) == 25 and 'DICIEMBRE' in li_dir2[i][j+2]):
+                if (int(li_dir2[i][j]) == 1 and u'ENERO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 13 and u'ENERO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 15 and u'ENERO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 18 and u'ENERO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 19 and u'ENERO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 21 and u'MARZO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 15 and u'ABRIL' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 27 and u'ABRIL' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 1 and u'MAYO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 2 and u'MAYO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 3 and u'MAYO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 5 and u'MAYO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 26 and u'MAYO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 7 and u'JUNIO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 10 and u'JUNIO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 13 and u'JUNIO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 1 and u'JULIO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 15 and u'JULIO' in li_dir2[i][j+2]) \
+                   or (int(li_dir2[i][j]) == 26 and u'JULIO' in li_dir2[i][j+2]) \
+                   or (int(li_dir2[i][j]) == 28 and u'JULIO' in li_dir2[i][j+2]) \
+                   or (int(li_dir2[i][j]) == 1 and u'AGOSTO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 5 and u'AGOSTO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 6 and u'AGOSTO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 22 and u'AGOSTO' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 1 and u'SEPTIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 1 and u'SETIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 23 and u'SEPTIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 23 and u'SETIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 1 and u'OCTUBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 3 and u'OCTUBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 8 and u'OCTUBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 9 and u'OCTUBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 12 and u'OCTUBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 1 and u'NOVIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 12 and u'NOVIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 17 and u'NOVIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 20 and u'NOVIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 26 and u'NOVIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 6 and u'DICIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 9 and u'DICIEMBRE' in li_dir2[i][j+2])\
+                   or (int(li_dir2[i][j]) == 25 and u'DICIEMBRE' in li_dir2[i][j+2]):
 
                     pass # Si el numero es una fecha, no lo tomo en cuenta y sigo
 
@@ -1062,16 +1085,16 @@ while i < len(li_dir2):
                     #Todo lo que se encunetra antes del mumero es el nombre, depues es un complemento de direccion.
 
                     if int(li_dir2[i][j]) < 100: # Si el numero que tengo es inferior a 100, signica que es un número de cuadra
-                        li_dir2[i][j] = str(int(li_dir2[i][j])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
+                        li_dir2[i][j] = unicode(int(li_dir2[i][j])*100 + 50) # Entonces en este caso, pongo mi punto en el medio de la cuadra, de lado par
 
-                    cons_num = "UPDATE " + tabla_direcciones + " SET sol_numero = "+str(li_dir2[i][j])+ " where " + col_id + " = "+ str(li_id[i])+';'
+                    cons_num = u"UPDATE " + tabla_direcciones + u" SET sol_numero = " + unicode(li_dir2[i][j])+ u" where " + col_id.lower() + u" = "+ unicode(li_id[i]) + u';'
                     #print cons_num
                     curs.execute(cons_num)
                     del cons_num
 
                     # Aca tengo que llenar el campo "sol_nombre" hasta i-1 y eventualmente los complementos a partir de i+1. Y luego borrarlos
                     g = 0
-                    nombre = ''
+                    nombre = u''
                     while g < j:
                         if li_dir2[i][g] not in lista_tipo and li_dir2[i][g] not in lista_num: # Para no agregar el tipo de via o la plabar 'N' que me ha escapado antes
                             nombre = nombre + li_dir2[i][g]+' '
@@ -1079,7 +1102,7 @@ while i < len(li_dir2):
                             pass
                         g = g+1
                     nombre = nombre.rstrip(' ')
-                    cons_g = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'" + str(nombre) + "'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                    cons_g = u"UPDATE " + tabla_direcciones + u" SET sol_nombre = " + u"'" + unicode(nombre) + u"'"+ u" where " + col_id.lower() + u" = "+ unicode(li_id[i]) + u';'
                     #print cons_g
                     curs.execute(cons_g)
                     del cons_g
@@ -1090,7 +1113,7 @@ while i < len(li_dir2):
                     if j+1 < len(li_dir2[i]): # si hay un complemento mas a añadir
 
                         f = j+1
-                        compl2 = ''
+                        compl2 = u''
                         while f < len(li_dir2[i]):
                             if li_dir2[i][f] <> '-':
                                 compl2 = compl2 + li_dir2[i][f]+' '
@@ -1098,18 +1121,18 @@ while i < len(li_dir2):
                                 pass
                             f = f+1
                         compl2 = compl2.rstrip(' ')
-                        if compl2 <> '-':
-                            cons_verif = "SELECT sol_compdir from " + tabla_direcciones + " where " + col_id + " = "+ str(li_id[i])+';'
+                        if compl2 <> u'-':
+                            cons_verif = u"SELECT sol_compdir from " + tabla_direcciones + u" where " + col_id.lower() + u" = "+ unicode(li_id[i]) + u';'
                             curs.execute( cons_verif)
                             lista_verif = curs.fetchall()
                             #print 'compl2 :' , compl2, len(compl2)
                             if lista_verif[0] == (None,)and len(compl2) >0 : # Si no hay complementos todavia
-                                cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " where " + col_id + " = "+ str(li_id[i])+';'
+                                cons_f = u"UPDATE " + tabla_direcciones + u" SET sol_compdir = " + u"'" + unicode(compl2) + u"'" + u" where " + col_id.lower() + u" = "+ unicode(li_id[i]) + u';'
                                 #print cons_f
                                 curs.execute(cons_f)
                                 del cons_f, compl2, cons_verif, lista_verif
                             else: # Si ya existen complementos
-                                cons_f = "UPDATE " + tabla_direcciones + " SET sol_compdir = "+ "'"+str(compl2)+"'"+ " ||' '|| sol_compdir where " + col_id + " = "+ str(li_id[i])+';'
+                                cons_f = u"UPDATE " + tabla_direcciones + u" SET sol_compdir = " + u"'" + unicode(compl2) + u"'" + u" ||' '|| sol_compdir where " + col_id.lower() + u" = "+ unicode(li_id[i]) + u';'
                                 curs.execute(cons_f)
                                 #print cons_f
                                 del cons_f, compl2
@@ -1163,7 +1186,7 @@ while i < len(li_dir2):
             j = j+1
         nombre = nombre.rstrip(' ')
         if len(nombre)>2:
-            cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = "+ "'" + unicode(nombre) + "'"+ " where " + col_id.lower() + " = "+ str(li_id[i])+';'
+            cons_j = u"UPDATE " + tabla_direcciones + u" SET sol_nombre = " + u"'" + unicode(nombre) + u"'"+ u" where " + col_id.lower() + " = "+ unicode(li_id[i]) + u';'
             print '\t #######', cons_j
             try:
                 curs.execute(cons_j)
@@ -1173,7 +1196,7 @@ while i < len(li_dir2):
                 curs.execute(cons_j)
 
         if len(nombre)<=2:
-            cons_j = "UPDATE " + tabla_direcciones + " SET sol_nombre = 'CALLE '||"+ "'" + unicode(nombre) + "'"+ " where " + col_id.lower() + " = "+ str(li_id[i])+';'
+            cons_j = u"UPDATE " + tabla_direcciones + u" SET sol_nombre = 'CALLE '||"+ "'" + unicode(nombre) + u"'"+ u" where " + col_id.lower() + u" = " + unicode(li_id[i]) + u';'
             print '\t #######', cons_j
             try:
                 curs.execute(cons_j)
@@ -1209,12 +1232,12 @@ conn.commit()
 log.write(u"Inicio de la creacion de los codigos UBIGEO en función de los nombres de distrito\n".encode('latin1'))
 
 ## A hacer de manera que sea facultativo. Si ya hay un campo ubigeo no usar esta parte
-cons_dist = "SELECT "+ col_dist +" from " + tabla_direcciones + " order by "+ col_id.lower() +";"
+cons_dist = u"SELECT "+ col_dist + u" from " + tabla_direcciones + u" order by " + col_id.lower() + u";"
 curs.execute(cons_dist)
 lista_dist = curs.fetchall()
 
 
-cons_id = "SELECT "+ col_id +" from " + tabla_direcciones + " order by "+ col_id +";"
+cons_id = u"SELECT "+ col_id + u" from " + tabla_direcciones + u" order by "+ col_id + u";"
 curs.execute(cons_id)
 li_id_dist = curs.fetchall()
 
@@ -1239,19 +1262,19 @@ en_mayusculas(li_dir2_dist)
 
 sin_accento(li_dir2_dist)
 
-col_distref = 'nombre'
-col_distref2 = 'nombre2'
-col_ubiref = 'ubigeo'
+col_distref = u'nombre'
+col_distref2 = u'nombre2'
+col_ubiref = u'ubigeo'
 
-cons_distref = "SELECT "+ col_distref+" from distritos_bd;"
+cons_distref = u"SELECT " + col_distref + u" from distritos_bd;"
 curs.execute(cons_distref)
 lista_distref = curs.fetchall()
 
-cons_distref2 = "SELECT "+ col_distref2+" from distritos_bd;"
+cons_distref2 = u"SELECT " + col_distref2 + u" from distritos_bd;"
 curs.execute(cons_distref2)
 lista_distref2 = curs.fetchall()
 
-cons_ubiref = "SELECT "+ col_ubiref+" from distritos_bd;"
+cons_ubiref = u"SELECT " + col_ubiref + u" from distritos_bd;"
 curs.execute(cons_ubiref)
 lista_ubiref = curs.fetchall()
 
@@ -1270,36 +1293,35 @@ while i < len(lista_distref):
     li_dir2_distref[i].append(lista_distref[i].lstrip(' '))
     i=i+1
 
-c_add_ubiego = "ALTER TABLE " + tabla_direcciones + " ADD column sol_ubigeo varchar(6);"
+c_add_ubiego = u"ALTER TABLE " + tabla_direcciones + u" ADD column sol_ubigeo varchar(6);"
 curs.execute(c_add_ubiego)
 
 i =0
 while i < len(li_dir2_dist):
     if li_dir2_dist[i][0] in lista_distref:
-        cons_updateubiego = "UPDATE " + tabla_direcciones + " SET sol_ubigeo = '" + lista_ubiref[lista_distref.index(li_dir2_dist[i][0])]+"' where " + col_id + " = " + str(i+1)+";"
+        cons_updateubiego = u"UPDATE " + tabla_direcciones + u" SET sol_ubigeo = '" + lista_ubiref[lista_distref.index(li_dir2_dist[i][0])] + u"' where " + col_id + u" = " + unicode(i+1) + u";"
         #print cons_updateubiego
         curs.execute(cons_updateubiego)
     else:
         #print 'je suis dans ce cas'
         if li_dir2_dist[i][0] in lista_distref2:
-            cons_updateubiego = "UPDATE " + tabla_direcciones + " SET sol_ubigeo = '" + lista_ubiref[lista_distref2.index(li_dir2_dist[i][0])]+"' where " + col_id + " = " + str(i+1)+";"
+            cons_updateubiego = u"UPDATE " + tabla_direcciones + u" SET sol_ubigeo = '" + lista_ubiref[lista_distref2.index(li_dir2_dist[i][0])] + u"' where " + col_id + u" = " + unicode(i+1) + u";"
             #print cons_updateubiego
             curs.execute(cons_updateubiego)
 
 
         else:
 
-            distrit = li_dir2_dist[i][0].split(' ')
+            distrit = li_dir2_dist[i][0].split(u' ')
             j =0
             while j <len(distrit):
-                if  len(distrit[j]) > 3 or distrit[j] == 'ATE':
-                    if distrit[j] == 'CERCADO' or distrit[j] == 'JUAN' or distrit[j] == 'SANTA':
+                if  len(distrit[j]) > 3 or distrit[j] == u'ATE':
+                    if distrit[j] == u'CERCADO' or distrit[j] == u'JUAN' or distrit[j] == u'SANTA':
                         pass
                     else:
-
                         for t in lista_distref:
                             if distrit[j] in t:
-                                cons_updateubiego = "UPDATE " + tabla_direcciones + " SET sol_ubigeo = '" + lista_ubiref[lista_distref.index(t)]+"' where " + col_id + " = " + str(i+1)+";"
+                                cons_updateubiego = u"UPDATE " + tabla_direcciones + u" SET sol_ubigeo = '" + lista_ubiref[lista_distref.index(t)] + u"' where " + col_id + u" = " + unicode(i+1) + u";"
                                 #print cons_updateubiego
                                 curs.execute(cons_updateubiego)
                                 #j = len(distrit)-1
@@ -1316,7 +1338,7 @@ log.write(u"Fín\n".encode('latin1'))
 ## Estas direcciones no se pueden ubicar con el programa.
 
 
-cons_tabimposible = "CREATE table " + tabla_dir_imposible + " as ( select * from " +tabla_direcciones + " where sol_nombre is null or \
+cons_tabimposible = u"CREATE table " + tabla_dir_imposible + u" as ( select * from " +tabla_direcciones + u" where sol_nombre is null or \
                     sol_numero is null);"
 
 curs.execute(cons_tabimposible)
@@ -1329,17 +1351,21 @@ log.write(u"Inicio de la localisazión de las direcciones\n".encode('latin1'))
 
 ###################################################
 
-cons_createtable = "CREATE TABLE "+ tabla_dir_geom +" as \
-select * from "+ tabla_direcciones +"; \
-SELECT AddGeometryColumn('public', '"+ tabla_dir_geom +"','the_geom',32718, 'POINT',2);"
+cons_createtable = u"CREATE TABLE " + tabla_dir_geom + u" as \
+select * from " + tabla_direcciones + u"; \
+SELECT AddGeometryColumn('public', '" + tabla_dir_geom + u"','the_geom',32718, 'POINT',2);"
 curs.execute(cons_createtable)
 
-cons_createtable_bug = "CREATE TABLE "+ tabla_dir_bug +" as \
-select * from "+ tabla_direcciones +";"
+conn.commit()
+
+cons_createtable_bug = u"CREATE TABLE "+ tabla_dir_bug + u" as \
+select * from " + tabla_direcciones + u";"
 curs.execute(cons_createtable_bug)
 
-cons_createtable_multi = "CREATE TABLE "+ tabla_dir_multi +" as \
-select * from "+ tabla_direcciones +";"
+conn.commit()
+
+cons_createtable_multi = u"CREATE TABLE " + tabla_dir_multi + u" as \
+select * from " + tabla_direcciones + u";"
 curs.execute(cons_createtable_multi)
 
 conn.commit()
@@ -1348,37 +1374,42 @@ lista_coords = [] # Esta lista almacena las coordenadas de las direcciones que v
 # Necesario para no poner dos (o mas) mismas direcciones al mismo punto. hago un pequeño 'decalage'.
 # Pero no chequeo si todos los campos son iguales (caso de un 'doublon')
 
-lista_palab =['Y', 'DE', 'LOS', 'LAS', 'LA', 'EL' ,'DEL', 'AL'] # palabras de 3 letras max que no tomo en cuenta en mis\
-lista_mes =['ENRERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'SETIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
+lista_palab =[u'Y', u'DE', u'LOS', u'LAS', u'LA', u'EL' ,u'DEL', u'AL'] # palabras de 3 letras max que no tomo en cuenta en mis\
+lista_mes =[u'ENERO', u'FEBRERO', u'MARZO', u'ABRIL', u'MAYO', u'JUNIO', u'JULIO', u'AGOSTO', u'SEPTIEMBRE', u'SETIEMBRE', u'OCTUBRE', u'NOVIEMBRE', u'DICIEMBRE']
             # consultas con un like
 
 i =0
 
 while i < len(li_dir2):
-    cons_dir = "SELECT sol_tipo, sol_nombre, sol_numero, sol_ubigeo from " + tabla_direcciones +" where "+ col_id + " = "+ str(i+1) +";"
+    cons_dir = u"SELECT sol_tipo, sol_nombre, sol_numero, sol_ubigeo from " + tabla_direcciones + u" where " + col_id + " = "+ unicode(i+1) + u";"
     #curs3 = conn.cursor()
     curs.execute(cons_dir)
     #print cons_dir
     lista_dir = curs.fetchall()
     lista_dir = lista_dir[0] # Eso transforma mi lista en tuple. Lo hago para tener un nivel menos. Ser mas practico después
 ##    print i+1 #, lista_dir
-
+    # unicode handling
+    try:
+        lista_dir_u = (lista_dir[0], unicode(lista_dir[1]), lista_dir[2], lista_dir[3])
+    except UnicodeDecodeError, er:
+        lista_dir_u = (lista_dir[0], lista_dir[1].decode('utf8'), lista_dir[2], lista_dir[3])
+    del lista_dir
     # Aca extraigo la cuadra a partir del numero de la direccion
-    if len(str(lista_dir[2])) == 3 and type(lista_dir[2]) == int:
-        cuadra = str(lista_dir[2])[0]
-        a_interpol = str(lista_dir[2])[1:]
-    elif len(str(lista_dir[2])) == 4 and type(lista_dir[2]) == int:
-        cuadra = str(lista_dir[2])[0:2]
-        a_interpol = str(lista_dir[2])[2:]
-    elif len(str(lista_dir[2])) <> 3 and len(str(lista_dir[2])) <> 4 : # Significa que un numero otro que el numero correcto paso. Es un error
-        cuadra = ''
-    if lista_dir[2] == None:
-        cuadra = ''
+    if len(unicode(lista_dir_u[2])) == 3 and type(lista_dir_u[2]) == int:
+        cuadra = unicode(lista_dir_u[2])[0]
+        a_interpol = unicode(lista_dir_u[2])[1:]
+    elif len(unicode(lista_dir_u[2])) == 4 and type(lista_dir_u[2]) == int:
+        cuadra = unicode(lista_dir_u[2])[0:2]
+        a_interpol = unicode(lista_dir_u[2])[2:]
+    elif len(unicode(lista_dir_u[2])) <> 3 and len(unicode(lista_dir_u[2])) <> 4 : # Significa que un numero otro que el numero correcto paso. Es un error
+        cuadra = u''
+    if lista_dir_u[2] == None:
+        cuadra = u''
     #print cuadra
-    if cuadra <> '':
-        #print '........................',lista_dir[2]
+    if cuadra <> u'':
+        #print '........................',lista_dir_u[2]
         #print '.............a interpoler', a_interpol
-        if lista_dir[2]/2. == lista_dir[2]/2: # caso par
+        if lista_dir_u[2]/2. == lista_dir_u[2]/2: # caso par
             fraccion = float(a_interpol)/98
 
         else: # caso impar
@@ -1391,52 +1422,66 @@ while i < len(li_dir2):
         #print 'i = ', i+1
         pass
         #print 'je ne peux pas interpoler'
-        #cons_deletelinea = "DELETE FROM "+ tabla_dir_geom +" where "+ col_id + " = "+ str(i+1) +";"
+        #cons_deletelinea = "DELETE FROM "+ tabla_dir_geom +" where "+ col_id + " = "+ unicode(i+1) +";"
         #curs.execute(cons_deletelinea)
 
-
-    if lista_dir[1] <> None:
-        nbre_fecha = ''
-        rempl = ''
-        rempl = lista_dir[1]
-        rempl = rempl.replace('.', ' ')
-        rempl = rempl.replace(',', ' ')
-        rempl = rempl.replace(';', ' ')
-        rempl = rempl.replace(':', ' ')
-        rempl = rempl.replace('-', ' ')
-        rempl = rempl.replace('_', ' ')
-        rempl = rempl.rstrip(' ') # si hay un espacio al final, lo quito
-        direccion = rempl.split(' ')
+    if lista_dir_u[1] <> None:
+        nbre_fecha = u''
+        rempl = u''
+        rempl = lista_dir_u[1]
+        print '\t\t ', rempl
+        try:
+            rempl = rempl.replace(u'.', u' ')
+            rempl = rempl.replace(u',', u' ')
+            rempl = rempl.replace(u';', u' ')
+            rempl = rempl.replace(u':', u' ')
+            rempl = rempl.replace(u'-', u' ')
+            rempl = rempl.replace(u' - ', u' ')
+            rempl = rempl.replace(u'_', u' ')
+            rempl = rempl.rstrip(u' ') # si hay un espacio al final, lo quito
+            direccion = rempl.split(u' ')
+        except UnicodeDecodeError, er:
+            print er
+            rempl = rempl.decode('utf8')
+            rempl = rempl.replace(u'.', u' ')
+            rempl = rempl.replace(u',', u' ')
+            rempl = rempl.replace(u';', u' ')
+            rempl = rempl.replace(u':', u' ')
+            rempl = rempl.replace(u'-', u' ')
+            rempl = rempl.replace(u' - ', u' ')
+            rempl = rempl.replace(u'_', u' ')
+            rempl = rempl.rstrip(u' ') # si hay un espacio al final, lo quito
+            direccion = rempl.split(u' ')
 
         long_elem =[] # para recuperar la longitud de cada cadena de caracter de la lista
         for e in direccion:
             if e in lista_mes :
-                nbre_fecha = 'si'
+                nbre_fecha = u'si'
             long_elem.append(len(e))
         long_elem.sort(reverse=True) # la longitud max se encuentra al inicio de la lista
 
-        cad_nombre = ' like '+"'"+'%'
-        cad_nombre_2 = '%'
+        cad_nombre = u' like ' + u"'" + u'%'
+        cad_nombre_2 = u'%'
 
-        if (len(direccion) <=2 and long_elem[0]<= 3) or 'CALLE' in direccion or nbre_fecha == 'si': # si tengo al maximo 2 palabras \
+        if (len(direccion) <=2 and long_elem[0]<= 3) or u'CALLE' in direccion or nbre_fecha == u'si': # si tengo al maximo 2 palabras \
             # de maximo 3 letras o la palabra 'CALLE', no hago un like
-            cad_nombre = ' = '+ "'" + lista_dir[1]
+            try:
+                cad_nombre = u' = ' + u"'" + lista_dir_u[1]
+            except UnicodeDecodeError, er:
+                print er
+                cad_nombre = u' = ' + u"'" + lista_dir_u[1].decode('utf8')
 
         else: # en los otros casos puedo hacer un like.
             for e in  direccion:
                     if e not in lista_palab: # no tomo en cuenta las palabras de 3 o menos letras.
                         # lista_palab se encuentra mas arriba
-                        cad_nombre = cad_nombre + str(e) + cad_nombre_2
+                        cad_nombre = cad_nombre + unicode(e) + cad_nombre_2
                     else:
                         pass
 
         #print cad_nombre
-
-
-
-
     else:
-        direccion = ''
+        direccion = u'NOT FOUND'
         pass
 
 
@@ -1444,7 +1489,7 @@ while i < len(li_dir2):
     # Ahora tengo toda la informacion necesaria para encontrar mi cuadra en la tabla vias
 
     # Abajo hago mi consulta segun esa informacion
-    if cuadra <> '' and lista_dir[1] <> '' and lista_dir[1] <> None and lista_dir[3] <> '': # si tengo una cuadra y un nombre puedo localizar el punto
+    if cuadra <> u'' and lista_dir_u[1] <> u'' and lista_dir_u[1] <> None and lista_dir_u[3] <> u'': # si tengo una cuadra y un nombre puedo localizar el punto
 
 
         # Abajo consulta con nombre_via =
@@ -1452,14 +1497,26 @@ while i < len(li_dir2):
         # Significa modificar las 3 consultas siguientes
 
         # 1era consulta, busco excatamente el nombre, la cuadra, el tipo de via y el distrito 1
-        cons_via = "SELECT "+ col_nombre_via + ", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), "+col_dist_izq +", " + col_dist_der+\
-                   ", " + col_id_via +", st_astext(the_geom) from " + tabla_vias +" where "+ \
-                   col_nombre_via + " = "+ "'"+str(lista_dir[1])+ "' and "\
-                     + col_num_via + " = '"+ str(cuadra)+ "' and "+ col_tipo_via + " = '"+ str(lista_dir[0])+ "' and "\
-                    + col_ubigeo_via + " = '"+ str(lista_dir[3])+ "'"
+        cons_via = u"SELECT "+ col_nombre_via + u", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), " + col_dist_izq + u", " + col_dist_der+\
+                   u", " + col_id_via + u", st_astext(the_geom) from " + tabla_vias + u" where "+ \
+                   col_nombre_via + u" = "+ "'" + unicode(lista_dir_u[1]) + u"' and "\
+                     + col_num_via + u" = '" + unicode(cuadra) + u"' and " + col_tipo_via + u" = '"+ unicode(lista_dir_u[0]) + u"' and "\
+                    + col_ubigeo_via + u" = '"+ unicode(lista_dir_u[3]) + u"'"
         curs.execute(cons_via)
 
         lista_via = curs.fetchall()
+        # encoding
+        test = []
+        for tutu in lista_via:
+            xyz = list(tutu)
+            xyz[0] = xyz[0].decode('utf8')
+            test.append(xyz)
+            del xyz
+
+        del lista_via
+        lista_via = test
+        del test
+
         if len(lista_via) >0: # Si encuentro al menos una cuadra
             #print "j ai trouve a la 1"
             pass
@@ -1470,16 +1527,28 @@ while i < len(li_dir2):
             # 2nda consulta, busco excatamente el nombre, la cuadra, el tipo de via y el distrito 2
             cons_via = "SELECT "+ col_nombre_via + ", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), "+col_dist_izq +", " + col_dist_der+\
                    ", " + col_id_via +", st_astext(the_geom) from " + tabla_vias +" where "+ \
-                   col_nombre_via + " = "+ "'"+str(lista_dir[1])+ "' and "\
-                     + col_num_via + " = '"+ str(cuadra)+ "' and "+ col_tipo_via + " = '"+ str(lista_dir[0])+ "' and "\
-                    + col_ubigeo2_via + " = '"+ str(lista_dir[3])+ "'"
+                   col_nombre_via + " = "+ "'"+unicode(lista_dir_u[1])+ "' and "\
+                     + col_num_via + " = '"+ unicode(cuadra)+ "' and "+ col_tipo_via + " = '"+ unicode(lista_dir_u[0])+ "' and "\
+                    + col_ubigeo2_via + " = '"+ unicode(lista_dir_u[3])+ "'"
             curs.execute(cons_via)
-
             lista_via = curs.fetchall()
+
+            # encoding
+            test = []
+            for tutu in lista_via:
+                xyz = list(tutu)
+                xyz[0] = xyz[0].decode('utf8')
+                test.append(xyz)
+                del xyz
+
+            del lista_via
+            lista_via = test
+            del test
+
             if len(lista_via) >0: # Si encuentro al menos una cuadra
                 #print "j ai trouve a la 2"
                 pass
-            if len(lista_via) == 0 and 'CALLE' not in lista_dir[1]: # Si no encuentro la cuadra
+            if len(lista_via) == 0 and 'CALLE' not in lista_dir_u[1]: # Si no encuentro la cuadra
                 del cons_via, lista_via
             ##############
 
@@ -1487,64 +1556,109 @@ while i < len(li_dir2):
                 cons_via = "SELECT "+ col_nombre_via + ", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), "+col_dist_izq +", " + col_dist_der+\
                            ", " + col_id_via +", st_astext(the_geom) from " + tabla_vias +" where "\
                        + col_nombre_via + cad_nombre + "' and "\
-                       + col_num_via + " = '"+ str(cuadra)+ "' and "+ col_tipo_via + " = '"+ str(lista_dir[0])+ "' and "\
-                        + col_ubigeo_via + " = '"+ str(lista_dir[3])+ "';"
+                       + col_num_via + " = '"+ unicode(cuadra)+ "' and "+ col_tipo_via + " = '"+ unicode(lista_dir_u[0])+ "' and "\
+                        + col_ubigeo_via + " = '"+ unicode(lista_dir_u[3])+ "';"
 
                 curs.execute(cons_via)
                 lista_via = curs.fetchall()
 
+                # encoding
+                test = []
+                for tutu in lista_via:
+                    xyz = list(tutu)
+                    xyz[0] = xyz[0].decode('utf8')
+                    test.append(xyz)
+                    del xyz
+
+                del lista_via
+                lista_via = test
+                del test
+
                 if len(lista_via) >0: # Si encuentro al menos una cuadra con mi consulta con 'like'
                     #print "j ai trouve a la 3"
-
                     pass
 
 
-                if len(lista_via) == 0 and 'CALLE' not in lista_dir[1]: # Si todavia no encuentro nada
+                if len(lista_via) == 0 and 'CALLE' not in lista_dir_u[1]: # Si todavia no encuentro nada
                     del cons_via, lista_via
 
                     # 4rta consulta, busco el nombre con un like, la cuadra, el tipo de via y el distrito 2
-                    cons_via = "SELECT "+ col_nombre_via + ", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), "+col_dist_izq +", " + col_dist_der+\
-                           ", " + col_id_via +", st_astext(the_geom) from " + tabla_vias +" where "\
-                                            + col_nombre_via + cad_nombre + "' and "\
-                                            + col_num_via + " = '"+ str(cuadra)+ "' and "+ col_tipo_via + " = '"+ str(lista_dir[0])+ "' and "\
-                        + col_ubigeo2_via + " = '"+ str(lista_dir[3])+ "';"
+                    cons_via = u"SELECT "+ col_nombre_via + u", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), " + col_dist_izq +", " + col_dist_der+\
+                           u", " + col_id_via + u", st_astext(the_geom) from " + tabla_vias + u" where "\
+                                            + col_nombre_via + cad_nombre + u"' and "\
+                                            + col_num_via + u" = '"+ unicode(cuadra)+ u"' and " + col_tipo_via + u" = '" + unicode(lista_dir_u[0]) + u"' and "\
+                        + col_ubigeo2_via + u" = '" + unicode(lista_dir_u[3])+ "';"
                     curs.execute(cons_via)
                     lista_via = curs.fetchall()
+                    # encoding
+                    test = []
+                    for tutu in lista_via:
+                        xyz = list(tutu)
+                        xyz[0] = xyz[0].decode('utf8')
+                        test.append(xyz)
+                        del xyz
 
+                    del lista_via
+                    lista_via = test
+                    del test
 
                     if len(lista_via) >0: # Si encuentro al menos una cuadra despues de la 4ra consulta
                         #print "j ai trouve a la 4"
                         pass
 
-                    if len(lista_via) == 0 and 'CALLE' not in lista_dir[1]:
+                    if len(lista_via) == 0 and u'CALLE' not in lista_dir_u[1]:
                         del cons_via, lista_via
 
                         # 5ta consulta, busco el nombre con un like, la cuadra, el distrito 1 pero sin el tipo de via
-                        cons_via = "SELECT "+ col_nombre_via + ", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), "+\
-                                           col_dist_izq +", " + col_dist_der\
-                                           +", " + col_id_via +", st_astext(the_geom)  from " + tabla_vias +\
-                                        " where " + col_nombre_via + cad_nombre + "' and "\
-                           + col_num_via + " = '"+ str(cuadra)+ "' and "\
-                                + col_ubigeo_via + " = '"+ str(lista_dir[3])+ "'"
+                        cons_via = u"SELECT " + col_nombre_via + u", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), " +\
+                                           col_dist_izq + u", " + col_dist_der\
+                                           + u", " + col_id_via + u", st_astext(the_geom)  from " + tabla_vias +\
+                                        u" where " + col_nombre_via + cad_nombre + u"' and "\
+                           + col_num_via + u" = '"+ unicode(cuadra) + u"' and "\
+                                + col_ubigeo_via + u" = '" + unicode(lista_dir_u[3]) + u"'"
                         curs.execute(cons_via)
                         lista_via = curs.fetchall()
+                        # encoding
+                        test = []
+                        for tutu in lista_via:
+                            xyz = list(tutu)
+                            xyz[0] = xyz[0].decode('utf8')
+                            test.append(xyz)
+                            del xyz
+
+                        del lista_via
+                        lista_via = test
+                        del test
+
 
                         if len(lista_via) >0: # Si encuentro al menos una cuadra despues de la 5ta consulta
                             #print "j ai trouve a la 5"
                             pass
 
-                        if len(lista_via) == 0 and 'CALLE' not in lista_dir[1]:
+                        if len(lista_via) == 0 and u'CALLE' not in lista_dir_u[1]:
                             del cons_via, lista_via
 
                             # 6ta consulta, busco el nombre con un like, la cuadra, el distrito 2 pero sin el tipo de via
-                            cons_via = "SELECT "+ col_nombre_via + ", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), "+\
-                                               col_dist_izq +", " + col_dist_der\
-                                               +", " + col_id_via +", st_astext(the_geom)  from " + tabla_vias +\
-                                            " where " + col_nombre_via + cad_nombre + "' and "\
-                                            + col_num_via + " = '"+ str(cuadra)+ "' and "\
-                                            + col_ubigeo2_via + " = '"+ str(lista_dir[3])+ "'"
+                            cons_via = u"SELECT "+ col_nombre_via + u", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), " +\
+                                               col_dist_izq + u", " + col_dist_der\
+                                               + u", " + col_id_via + u", st_astext(the_geom)  from " + tabla_vias +\
+                                            u" where " + col_nombre_via + cad_nombre + u"' and "\
+                                            + col_num_via + u" = '" + unicode(cuadra) + u"' and "\
+                                            + col_ubigeo2_via + u" = '"+ unicode(lista_dir_u[3]) + u"'"
                             curs.execute(cons_via)
                             lista_via = curs.fetchall()
+
+                            # encoding
+                            test = []
+                            for tutu in lista_via:
+                                xyz = list(tutu)
+                                xyz[0] = xyz[0].decode('utf8')
+                                test.append(xyz)
+                                del xyz
+
+                            del lista_via
+                            lista_via = test
+                            del test
 
 			################################################################################
                             if len(lista_via) >0: # Si encuentro al menos una cuadra despues de la 6ta consulta
@@ -1555,12 +1669,23 @@ while i < len(li_dir2):
                                 # 7ta consulta, busco excatamente el nombre alt, la cuadra, el tipo de via y el distrito 1
                                 cons_via = "SELECT "+ col_nombre_via_alt + ", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), "+col_dist_izq +", " + col_dist_der+\
                                            ", " + col_id_via +", st_astext(the_geom) from " + tabla_vias +" where "+ \
-                                           col_nombre_via_alt + " = "+ "'"+str(lista_dir[1])+ "' and "\
-                                             + col_num_via + " = '"+ str(cuadra)+ "' and "+ col_tipo_via + " = '"+ str(lista_dir[0])+ "' and "\
-                                            + col_ubigeo_via + " = '"+ str(lista_dir[3])+ "'"
+                                           col_nombre_via_alt + " = "+ "'"+unicode(lista_dir_u[1])+ "' and "\
+                                             + col_num_via + " = '"+ unicode(cuadra)+ "' and "+ col_tipo_via + " = '"+ unicode(lista_dir_u[0])+ "' and "\
+                                            + col_ubigeo_via + " = '"+ unicode(lista_dir_u[3])+ "'"
                                 curs.execute(cons_via)
 
                                 lista_via = curs.fetchall()
+                                # encoding
+                                test = []
+                                for tutu in lista_via:
+                                    xyz = list(tutu)
+                                    xyz[0] = xyz[0].decode('utf8')
+                                    test.append(xyz)
+                                    del xyz
+
+                                del lista_via
+                                lista_via = test
+                                del test
                                 if len(lista_via) >0: # Si encuentro al menos una cuadra
                                     #print "j ai trouve a la 7"
                                     pass
@@ -1571,82 +1696,133 @@ while i < len(li_dir2):
                                     # 8va consulta, busco excatamente el nombre alt, la cuadra, el tipo de via y el distrito 2
                                     cons_via = "SELECT "+ col_nombre_via_alt + ", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), "+col_dist_izq +", " + col_dist_der+\
                                            ", " + col_id_via +", st_astext(the_geom) from " + tabla_vias +" where "+ \
-                                           col_nombre_via_alt + " = "+ "'"+str(lista_dir[1])+ "' and "\
-                                             + col_num_via + " = '"+ str(cuadra)+ "' and "+ col_tipo_via + " = '"+ str(lista_dir[0])+ "' and "\
-                                            + col_ubigeo2_via + " = '"+ str(lista_dir[3])+ "'"
+                                           col_nombre_via_alt + " = "+ "'"+unicode(lista_dir_u[1])+ "' and "\
+                                             + col_num_via + " = '"+ unicode(cuadra)+ "' and "+ col_tipo_via + " = '"+ unicode(lista_dir_u[0])+ "' and "\
+                                            + col_ubigeo2_via + " = '"+ unicode(lista_dir_u[3])+ "'"
                                     curs.execute(cons_via)
 
                                     lista_via = curs.fetchall()
+                                    # encoding
+                                    test = []
+                                    for tutu in lista_via:
+                                        xyz = list(tutu)
+                                        xyz[0] = xyz[0].decode('utf8')
+                                        test.append(xyz)
+                                        del xyz
+
+                                    del lista_via
+                                    lista_via = test
+                                    del test
                                     if len(lista_via) >0: # Si encuentro al menos una cuadra
                                         #print "j ai trouve a la 8"
                                         pass
-                                    if len(lista_via) == 0 and 'CALLE' not in lista_dir[1]: # Si no encuentro la cuadra
+                                    if len(lista_via) == 0 and u'CALLE' not in lista_dir_u[1]: # Si no encuentro la cuadra
                                         del cons_via, lista_via
                                     ##############
 
                                         # 9na consulta, busco el nombre alt con un like, la cuadra, el tipo de via y el distrito 1
-                                        cons_via = "SELECT "+ col_nombre_via_alt + ", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), "+col_dist_izq +", " + col_dist_der+\
+                                        cons_via = u"SELECT "+ col_nombre_via_alt + ", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), "+col_dist_izq +", " + col_dist_der+\
                                                    ", " + col_id_via +", st_astext(the_geom) from " + tabla_vias +" where "\
                                                + col_nombre_via_alt + cad_nombre + "' and "\
-                                               + col_num_via + " = '"+ str(cuadra)+ "' and "+ col_tipo_via + " = '"+ str(lista_dir[0])+ "' and "\
-                                                + col_ubigeo_via + " = '"+ str(lista_dir[3])+ "';"
+                                               + col_num_via + " = '"+ unicode(cuadra)+ "' and "+ col_tipo_via + " = '"+ unicode(lista_dir_u[0])+ "' and "\
+                                                + col_ubigeo_via + " = '"+ unicode(lista_dir_u[3])+ "';"
 
                                         curs.execute(cons_via)
                                         lista_via = curs.fetchall()
+                                        # encoding
+                                        test = []
+                                        for tutu in lista_via:
+                                            xyz = list(tutu)
+                                            xyz[0] = xyz[0].decode('utf8')
+                                            test.append(xyz)
+                                            del xyz
 
+                                        del lista_via
+                                        lista_via = test
+                                        del test
                                         if len(lista_via) >0: # Si encuentro al menos una cuadra con mi consulta con 'like'
                                             #print "j ai trouve a la 9"
 
                                             pass
 
 
-                                        if len(lista_via) == 0 and 'CALLE' not in lista_dir[1]: # Si todavia no encuentro nada
+                                        if len(lista_via) == 0 and u'CALLE' not in lista_dir_u[1]: # Si todavia no encuentro nada
                                             del cons_via, lista_via
 
                                             # 10ma consulta, busco el nombre alt con un like, la cuadra, el tipo de via y el distrito 2
                                             cons_via = "SELECT "+ col_nombre_via_alt + ", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), "+col_dist_izq +", " + col_dist_der+\
                                                    ", " + col_id_via +", st_astext(the_geom) from " + tabla_vias +" where "\
                                                                     + col_nombre_via_alt + cad_nombre + "' and "\
-                                                                    + col_num_via + " = '"+ str(cuadra)+ "' and "+ col_tipo_via + " = '"+ str(lista_dir[0])+ "' and "\
-                                                + col_ubigeo2_via + " = '"+ str(lista_dir[3])+ "';"
+                                                                    + col_num_via + " = '"+ unicode(cuadra)+ "' and "+ col_tipo_via + " = '"+ unicode(lista_dir_u[0])+ "' and "\
+                                                + col_ubigeo2_via + " = '"+ unicode(lista_dir_u[3])+ "';"
                                             curs.execute(cons_via)
                                             lista_via = curs.fetchall()
+                                            # encoding
+                                            test = []
+                                            for tutu in lista_via:
+                                                xyz = list(tutu)
+                                                xyz[0] = xyz[0].decode('utf8')
+                                                test.append(xyz)
+                                                del xyz
 
+                                            del lista_via
+                                            lista_via = test
+                                            del test
 
                                             if len(lista_via) >0: # Si encuentro al menos una cuadra despues de la 10ma consulta
                                                 #print "j ai trouve a la 10"
                                                 pass
 
-                                            if len(lista_via) == 0 and 'CALLE' not in lista_dir[1]:
+                                            if len(lista_via) == 0 and u'CALLE' not in lista_dir_u[1]:
                                                 del cons_via, lista_via
 
                                                 # 11a consulta, busco el nombre alt con un like, la cuadra, el distrito 1 pero sin el tipo de via
-                                                cons_via = "SELECT "+ col_nombre_via_alt + ", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), "+\
-                                                                   col_dist_izq +", " + col_dist_der\
-                                                                   +", " + col_id_via +", st_astext(the_geom)  from " + tabla_vias +\
-                                                                " where " + col_nombre_via_alt + cad_nombre + "' and "\
-                                                   + col_num_via + " = '"+ str(cuadra)+ "' and "\
-                                                        + col_ubigeo_via + " = '"+ str(lista_dir[3])+ "'"
+                                                cons_via = u"SELECT "+ col_nombre_via_alt + u", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), " +\
+                                                                   col_dist_izq + u", " + col_dist_der\
+                                                                   + u", " + col_id_via + u", st_astext(the_geom)  from " + tabla_vias +\
+                                                                u" where " + col_nombre_via_alt + cad_nombre + u"' and "\
+                                                   + col_num_via + u" = '"+ unicode(cuadra)+ u"' and "\
+                                                        + col_ubigeo_via + u" = '"+ unicode(lista_dir_u[3]) + u"'"
                                                 curs.execute(cons_via)
                                                 lista_via = curs.fetchall()
+                                                # encoding
+                                                test = []
+                                                for tutu in lista_via:
+                                                    xyz = list(tutu)
+                                                    xyz[0] = xyz[0].decode('utf8')
+                                                    test.append(xyz)
+                                                    del xyz
 
+                                                del lista_via
+                                                lista_via = test
+                                                del test
                                                 if len(lista_via) >0: # Si encuentro al menos una cuadra despues de la 11a consulta
                                                     #print "j ai trouve a la 11"
                                                     pass
 
-                                                if len(lista_via) == 0 and 'CALLE' not in lista_dir[1]:
+                                                if len(lista_via) == 0 and u'CALLE' not in lista_dir_u[1]:
                                                     del cons_via, lista_via
 
                                                     # 12a consulta, busco el nombre alt con un like, la cuadra, el distrito 2 pero sin el tipo de via
-                                                    cons_via = "SELECT "+ col_nombre_via_alt + ", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), "+\
+                                                    cons_via = u"SELECT "+ col_nombre_via_alt + u", st_astext(st_StartPoint(the_geom)), st_astext(st_EndPoint(the_geom)), "+\
                                                                        col_dist_izq +", " + col_dist_der\
-                                                                       +", " + col_id_via +", st_astext(the_geom)  from " + tabla_vias +\
-                                                                    " where " + col_nombre_via_alt + cad_nombre + "' and "\
-                                                                    + col_num_via + " = '"+ str(cuadra)+ "' and "\
-                                                                    + col_ubigeo2_via + " = '"+ str(lista_dir[3])+ "'"
+                                                                       + u", " + col_id_via + u", st_astext(the_geom)  from " + tabla_vias +\
+                                                                    u" where " + col_nombre_via_alt + cad_nombre + u"' and "\
+                                                                    + col_num_via + u" = '" + unicode(cuadra) + u"' and "\
+                                                                    + col_ubigeo2_via + u" = '" + unicode(lista_dir_u[3]) + u"'"
                                                     curs.execute(cons_via)
                                                     lista_via = curs.fetchall()
+                                                    # encoding
+                                                    test = []
+                                                    for tutu in lista_via:
+                                                        xyz = list(tutu)
+                                                        xyz[0] = xyz[0].decode('utf8')
+                                                        test.append(xyz)
+                                                        del xyz
 
+                                                    del lista_via
+                                                    lista_via = test
+                                                    del test
                                                     if len(lista_via) >0:# Si encuentro al menos una cuadra despues de la 12a consulta
                                                         #print "j ai trouve a la fin"
                                                         pass
@@ -1661,27 +1837,19 @@ while i < len(li_dir2):
 
 
                         ################################################################################
-
-
-
-
         # Aca tengo que hacer mis manipulaciones sobre la o las cuadras encontradas
-
-
-
-
         if len(lista_via) > 0:
             #if len(lista_via) > 1: # en el caso de una via doble
             #print 'caso de una via doble', len(lista_via)
 
-            div = lista_dir[2]/2. # para saber si es un numero par o impar
+            div = lista_dir_u[2]/2. # para saber si es un numero par o impar
 
             if int(div) == div:
                 #print "nombre pair"
-                lado = 'Der'
+                lado = u'Der'
             else:
                 #print "nombre impair"
-                lado = 'Izq'
+                lado = u'Izq'
             if len(lista_via) > 1: # en el caso donde tengo mas de una via
                 #print 'caso via doble'
                 #print lista_via
@@ -1698,20 +1866,20 @@ while i < len(li_dir2):
                 #print lado
                 #print lado_der, lado_izq, lado_nulo, lado_doble
                     #print lista_via
-                if lado_der <> -1 and lado == 'Der' and lado_doble == -1:
+                if lado_der <> -1 and lado == u'Der' and lado_doble == -1:
                     lista_via = lista_via[lado_der]
                     #print lista_via
-                if lado_izq <> -1 and lado == 'Izq' and lado_doble == -1:
+                if lado_izq <> -1 and lado == u'Izq' and lado_doble == -1:
                     lista_via = lista_via[lado_izq]
 
                 if lado_doble <> -1:
                     lista_via = lista_via[lado_doble]
 
                 #para tratar los casos raros, es una tentativa
-                if lado_der <> -1 and lado_izq == -1 and lado == 'Izq' and lado_doble == -1:
+                if lado_der <> -1 and lado_izq == -1 and lado == u'Izq' and lado_doble == -1:
                     #print'je suis bien de ce cas rare'
                     lista_via = lista_via[lado_der]
-                if lado_izq <> -1 and lado_der == -1 and lado == 'Der' and lado_doble == -1:
+                if lado_izq <> -1 and lado_der == -1 and lado == u'Der' and lado_doble == -1:
                     lista_via = lista_via[lado_izq]
 
                 #else: # mis condiciones no son bien hechas para localisar los casos raros no previstos
@@ -1725,19 +1893,17 @@ while i < len(li_dir2):
                 # Abajo para extraer las coordenadfas start y end de la cuadra en formato float. No se si lo necesitare
 
 
-            if 'MULTILINESTRING'  in lista_via[6]:
+            if u'MULTILINESTRING' in lista_via[6]:
                 # En este caso, pongo las direcciones en la tabla conteniendo las cuadras "multilinestring"
 
                 # A ver si esta bien
-                cons_deletelineas_bug = "DELETE FROM "+ tabla_dir_bug +" WHERE "+col_id + " = "+str(i+1)+";"
+                cons_deletelineas_bug = u"DELETE FROM " + tabla_dir_bug + u" WHERE "+col_id + u" = " + unicode(i+1) + u";"
                 curs.execute(cons_deletelineas_bug)
 
-                cons_deletelineas_geom = "DELETE FROM "+ tabla_dir_geom +" WHERE "+col_id + " = "+str(i+1)+";"
+                cons_deletelineas_geom = u"DELETE FROM " + tabla_dir_geom + u" WHERE " + col_id + u" = " + unicode(i+1) + u";"
                 curs.execute(cons_deletelineas_geom)
 
             else:
-
-
                 cad_startPoint2 = lista_via[1].lstrip('POINT(')
                 cad_startPoint = cad_startPoint2.rstrip(')')
                 cad_endPoint2 = lista_via[2].lstrip('POINT(')
@@ -1764,7 +1930,7 @@ while i < len(li_dir2):
                 sentido_nm1 = 'normal' # Eso me sierve mas bajo para saber si interpolo de manera normal o en el otro sentido
                 cons_cuad_nm1 = "SELECT gid from " + tabla_vias +" where "\
                    + col_nombre_via + cad_nombre + "' and "\
-                   + col_num_via + " = '"+ str(int(cuadra)-1)+ "';"
+                   + col_num_via + " = '"+ unicode(int(cuadra)-1)+ "';"
 
                 curs.execute(cons_cuad_nm1)
                 lista_cuad_nm1 = curs.fetchall()
@@ -1777,7 +1943,7 @@ while i < len(li_dir2):
                 sentido_np1 = 'normal'
                 cons_cuad_np1 = "SELECT gid from " + tabla_vias +" where "\
                    + col_nombre_via + cad_nombre + "' and "\
-                   + col_num_via + " = '"+ str(int(cuadra)+1)+ "';"
+                   + col_num_via + " = '"+ unicode(int(cuadra)+1)+ "';"
 
                 curs.execute(cons_cuad_np1)
                 lista_cuad_np1 = curs.fetchall()
@@ -1790,10 +1956,10 @@ while i < len(li_dir2):
                     lista_intersec = ['GEOMETRYCOLLECTION EMPTY']
                     #id_cuad_nm1 = -1
                     while t <len(lista_cuad_nm1) and lista_intersec == ['GEOMETRYCOLLECTION EMPTY']:
-                        #print 'avance = ', str(t)+'/'+ str(len(lista_cuad_nm1))
+                        #print 'avance = ', unicode(t)+'/'+ unicode(len(lista_cuad_nm1))
                         cons_intersec = "SELECT st_astext(st_intersection(g1, g2)) from \
-                              (select the_geom as g1 from " + tabla_vias +" where " + col_id_via +" = "+str(lista_via[5])+ \
-                              ") as sel1 , (select the_geom as g2 from " + tabla_vias +" where " + col_id_via +" = "+ str(lista_cuad_nm1[t])+\
+                              (select the_geom as g1 from " + tabla_vias +" where " + col_id_via +" = "+unicode(lista_via[5])+ \
+                              ") as sel1 , (select the_geom as g2 from " + tabla_vias +" where " + col_id_via +" = "+ unicode(lista_cuad_nm1[t])+\
                               ") as sel2"
                         curs.execute(cons_intersec)
                         lista_intersec = curs.fetchall()
@@ -1815,10 +1981,10 @@ while i < len(li_dir2):
                     lista_intersecp = ['GEOMETRYCOLLECTION EMPTY']
                     #id_cuad_np1 = -1
                     while tp <len(lista_cuad_np1) and lista_intersecp == ['GEOMETRYCOLLECTION EMPTY']:
-                        #print 'avance = ', str(t)+'/'+ str(len(lista_cuad_nm1))
+                        #print 'avance = ', unicode(t)+'/'+ unicode(len(lista_cuad_nm1))
                         cons_intersecp = "SELECT st_astext(st_intersection(g1, g2)) from \
-                              (select the_geom as g1 from " + tabla_vias +" where " + col_id_via +" = "+str(lista_via[5])+ \
-                              ") as sel1 , (select the_geom as g2 from " + tabla_vias +" where " + col_id_via +" = "+ str(lista_cuad_np1[tp])+\
+                              (select the_geom as g1 from " + tabla_vias +" where " + col_id_via +" = "+unicode(lista_via[5])+ \
+                              ") as sel1 , (select the_geom as g2 from " + tabla_vias +" where " + col_id_via +" = "+ unicode(lista_cuad_np1[tp])+\
                               ") as sel2"
                         curs.execute(cons_intersecp)
                         lista_intersecp = curs.fetchall()
@@ -1840,7 +2006,7 @@ while i < len(li_dir2):
                 if id_cuad_nm1 <> -1: # en este caso tengo una cuadra vecina n-1 a la cuadra n. Busco el buen sentido
                     # Abajo extraigo todas las coordenadas de n-1
                     cons_coord_nm1 = "SELECT st_astext(st_startpoint(the_geom)), st_astext(st_endpoint(the_geom)), \
-                    st_astext(the_geom) from "  + tabla_vias + " where " + col_id_via + " = "+ str(id_cuad_nm1)+ ";"
+                    st_astext(the_geom) from "  + tabla_vias + " where " + col_id_via + " = "+ unicode(id_cuad_nm1)+ ";"
                     curs.execute(cons_coord_nm1)
                     lista_coord_nm1 = curs.fetchall()
                     lista_coord_nm1 = lista_coord_nm1[0] # Las coordenadas start y end de la cuadra n-1 no procesadas
@@ -1881,7 +2047,7 @@ while i < len(li_dir2):
                     # Abajo extraigo todas las coordenadas de n+1
                     cons_coord_np1 = "SELECT  st_astext(st_startpoint(the_geom)), st_astext(st_endpoint(the_geom)), \
                     st_astext(the_geom)  from " \
-                                    + tabla_vias + " where " + col_id_via + " = "+ str(id_cuad_np1)+ ";"
+                                    + tabla_vias + " where " + col_id_via + " = "+ unicode(id_cuad_np1)+ ";"
                     curs.execute(cons_coord_np1)
                     lista_coord_np1 = curs.fetchall()
                     lista_coord_np1 = lista_coord_np1[0]
@@ -1921,15 +2087,15 @@ while i < len(li_dir2):
 
                 if sentido <> 'contrario':
 
-                    #cons_interpol = "SELECT st_astext(ST_Line_Interpolate_Point(the_geom,"+ str(fraccion)+ ")) from "  + tabla_vias + "\
-                    #where " + col_id_via + " = "+ str(lista_via[5])+ ";"
+                    #cons_interpol = "SELECT st_astext(ST_Line_Interpolate_Point(the_geom,"+ unicode(fraccion)+ ")) from "  + tabla_vias + "\
+                    #where " + col_id_via + " = "+ unicode(lista_via[5])+ ";"
                     #curs.execute(cons_interpol)
                     #lista_interpol = curs.fetchall()
                     #print 'resultat de linterpolation', lista_interpol
 
-                    cons_interpol = "SELECT st_X(st_astext(ST_Line_Interpolate_Point(the_geom,"+ str(fraccion)+ "))), \
-                    st_Y(st_astext(ST_Line_Interpolate_Point(the_geom,"+ str(fraccion)+ "))) from "  + tabla_vias + "\
-                    where " + col_id_via + " = "+ str(lista_via[5])+ ";"
+                    cons_interpol = "SELECT st_X(st_astext(ST_Line_Interpolate_Point(the_geom,"+ unicode(fraccion)+ "))), \
+                    st_Y(st_astext(ST_Line_Interpolate_Point(the_geom,"+ unicode(fraccion)+ "))) from "  + tabla_vias + "\
+                    where " + col_id_via + " = "+ unicode(lista_via[5])+ ";"
                     curs.execute(cons_interpol)
                     lista_interpol = curs.fetchall()
                     lista_interpol = lista_interpol[0]
@@ -1937,9 +2103,9 @@ while i < len(li_dir2):
                 else:
                     #interpolation 1-l
                     #print '.............................caso sentido contrario :', fraccion, 1-fraccion
-                    cons_interpol = "SELECT st_X(st_astext(ST_Line_Interpolate_Point(the_geom,"+ str(1-fraccion)+ "))), \
-                    st_Y(st_astext(ST_Line_Interpolate_Point(the_geom,"+ str(1-fraccion)+ "))) from "  + tabla_vias + "\
-                    where " + col_id_via + " = "+ str(lista_via[5])+ ";"
+                    cons_interpol = "SELECT st_X(st_astext(ST_Line_Interpolate_Point(the_geom,"+ unicode(1-fraccion)+ "))), \
+                    st_Y(st_astext(ST_Line_Interpolate_Point(the_geom,"+ unicode(1-fraccion)+ "))) from "  + tabla_vias + "\
+                    where " + col_id_via + " = "+ unicode(lista_via[5])+ ";"
                     curs.execute(cons_interpol)
                     lista_interpol = curs.fetchall()
                     lista_interpol = lista_interpol[0]
@@ -1951,8 +2117,8 @@ while i < len(li_dir2):
 
                     try:
 
-                        #remp_geom= "UPDATE "+ tabla_direcciones +" set the_geom = ST_PointFromText('"+"POINT("+str(lista_interpol[0])+' '+\
-                        #str(lista_interpol[1])+")', 32718) where "+col_id + " = "+str(i+1)+";"
+                        #remp_geom= "UPDATE "+ tabla_direcciones +" set the_geom = ST_PointFromText('"+"POINT("+unicode(lista_interpol[0])+' '+\
+                        #unicode(lista_interpol[1])+")', 32718) where "+col_id + " = "+unicode(i+1)+";"
                         #curs.execute(remp_geom)
                         #print 'avant :', lista_interpol
                         entre_puntos(lista_via[6], lista_interpol)
@@ -1961,26 +2127,26 @@ while i < len(li_dir2):
 
                         # La siguiente consulta pone un punto en el lugar de la interpolacion, sin movimiento al lado
 
-                        #remp_geom= "UPDATE "+ tabla_dir_geom +" set the_geom = ST_PointFromText('"+"POINT("+str(lista_interpol[0])+' '+\
-                        #str(lista_interpol[1])+")', 32718) where "+col_id + " = "+str(i+1)+";"
+                        #remp_geom= "UPDATE "+ tabla_dir_geom +" set the_geom = ST_PointFromText('"+"POINT("+unicode(lista_interpol[0])+' '+\
+                        #unicode(lista_interpol[1])+")', 32718) where "+col_id + " = "+unicode(i+1)+";"
                         #curs.execute(remp_geom)
                         #lista_remp_geom = curs.fetchall()
                         #print lista_remp_geom
 
 
 
-                        remp_geom= "UPDATE "+ tabla_dir_geom +" set the_geom = ST_PointFromText('"+"POINT("+str(X_decal)+' '+\
-                        str(Y_decal)+")', 32718) where "+col_id + " = "+str(i+1)+";"
+                        remp_geom= "UPDATE "+ tabla_dir_geom +" set the_geom = ST_PointFromText('"+"POINT("+unicode(X_decal)+' '+\
+                        unicode(Y_decal)+")', 32718) where "+col_id + " = "+unicode(i+1)+";"
                         curs.execute(remp_geom)
                         #print remp_geom
                         #print '*********************************************'
 
 
 
-                        cons_deletelineas_bug = "DELETE FROM "+ tabla_dir_bug +" WHERE "+col_id + " = "+str(i+1)+";"
+                        cons_deletelineas_bug = "DELETE FROM "+ tabla_dir_bug +" WHERE "+col_id + " = "+unicode(i+1)+";"
                         curs.execute(cons_deletelineas_bug)
 
-                        cons_deletelineas_multi = "DELETE FROM "+ tabla_dir_multi +" WHERE "+col_id + " = "+str(i+1)+";"
+                        cons_deletelineas_multi = "DELETE FROM "+ tabla_dir_multi +" WHERE "+col_id + " = "+unicode(i+1)+";"
                         curs.execute(cons_deletelineas_multi)
 
 
@@ -2027,7 +2193,7 @@ construc_lista(lista_busca_geom_vacio)
 lista_busca_geom_vacio.sort()
 
 for e in lista_busca_geom_vacio:
-    cons_deletelineas_vacias = "DELETE FROM "+ tabla_dir_geom +" WHERE "+col_id + " = "+str(e)+";"
+    cons_deletelineas_vacias = "DELETE FROM "+ tabla_dir_geom +" WHERE "+col_id + " = "+unicode(e)+";"
     curs.execute(cons_deletelineas_vacias)
 
 
@@ -2047,7 +2213,7 @@ lista_extra_id_multi.sort()
 
 for e in lista_extra_id_multi:
     if e in lista_extra_id_bug:
-        cons_deletelineas_multi = "DELETE FROM "+ tabla_dir_multi +" WHERE "+col_id + " = "+str(e)+";"
+        cons_deletelineas_multi = "DELETE FROM "+ tabla_dir_multi +" WHERE "+col_id + " = "+unicode(e)+";"
         curs.execute(cons_deletelineas_multi)
 
 
@@ -2060,7 +2226,7 @@ construc_lista(lista_delete_imposible)
 lista_delete_imposible.sort()
 
 for e in lista_delete_imposible:
-    cons_deletelineas_vacias = "DELETE FROM "+ tabla_dir_bug +" WHERE "+col_id + " = "+str(e)+";"
+    cons_deletelineas_vacias = "DELETE FROM "+ tabla_dir_bug +" WHERE "+col_id + " = "+unicode(e)+";"
     curs.execute(cons_deletelineas_vacias)
 
 
@@ -2130,9 +2296,9 @@ conn.commit()
 
 ## Ending program
 log.write(u'*** Resumen ***\n'.encode('latin1'))
-log.write(u'Sobre '.encode('latin1')+str(len(li_dir2))+ u' direcciones :\n'.encode('latin1'))
-log.write(u'- '.encode('latin1')+str(len(lista_busca_geom))+ u' han sido localizadas\n'.encode('latin1'))
-log.write(u'- '.encode('latin1')+str(len(lista_busca_multi))+ u' necesitan que se edite la tabla de vias para poder ser localizadas\n'.encode('latin1'))
-log.write(u'- '.encode('latin1')+str(len(lista_busca_bug))+ u' no tienen su equivalente en la tabla de vias\n'.encode('latin1'))
-log.write(u'- '.encode('latin1')+str(len(lista_busca_imposible))+ u' no tienen un nombre o un numero y no pueden ser localizadas con este programa\n'.encode('latin1'))
+log.write(u'Sobre '.encode('latin1')+unicode(len(li_dir2))+ u' direcciones :\n'.encode('latin1'))
+log.write(u'- '.encode('latin1')+unicode(len(lista_busca_geom))+ u' han sido localizadas\n'.encode('latin1'))
+log.write(u'- '.encode('latin1')+unicode(len(lista_busca_multi))+ u' necesitan que se edite la tabla de vias para poder ser localizadas\n'.encode('latin1'))
+log.write(u'- '.encode('latin1')+unicode(len(lista_busca_bug))+ u' no tienen su equivalente en la tabla de vias\n'.encode('latin1'))
+log.write(u'- '.encode('latin1')+unicode(len(lista_busca_imposible))+ u' no tienen un nombre o un numero y no pueden ser localizadas con este programa\n'.encode('latin1'))
 log.close()
