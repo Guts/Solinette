@@ -137,7 +137,7 @@ class SolinetteGUI(Tk):
         self.host.set('localhost')
         self.port.set('5432')
         self.usua.set('postgres')
-        self.mdpa.set('pacivur')
+        self.mdpa.set('')
         self.dbnb.set('solinette')
 
         # widgets placement

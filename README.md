@@ -1,7 +1,16 @@
 #Solinette
 =========
 
-Geolocalization tool dedicated to Lima and Callao.
+Geocoder dedicated to Lima and Callao.
+
+
+A windows executable is available in the folder ["download"](https://github.com/Guts/Solinette/tree/master/download)
+
+
+## Dependencies
+ * Postgresql 9.1.x
+ * PostGIS 1.5.x
+ * an adress database on Lima and Callao (typically Guía Calles)
 
 To do list:
 
@@ -13,9 +22,9 @@ To do list:
 - [X] récupérer les paramètres retournés par la classe graphique
 - [] système d'aide avec des infobulles
 - [] passer le script de la Solinette en classe
-- [] tester avec différents fichiers
-- [] GUI : tester si tabla_out existe déjà => suffixe date
+- [X] tester avec différents fichiers
+- [X] GUI : tester si tabla_out existe déjà => suffixe date
 - [] idem pr champs solinette
 - [] changer noms champs table geolocalizacion
 - [] nettoyer variables
-- [] fichier log
+- [X] fichier log

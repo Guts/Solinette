@@ -3,12 +3,19 @@
 from __future__ import unicode_literals
 #-------------------------------------------------------------------------------
 # Name :       Solinette
-# Purpose :
+#
+# Purpose :    Tool to geocode adresses in Lima and Callao (Peru), using an
+#              adress database (like Guía Calles).
+#
 # Authors :    Pierre Vernier et Julien M.
+#
 # Python :     2.7.x +
-# Encoding:    latin1
+
+# Encoding:    utf-8 (forced)
+
 # Created :    19/12/2011
 # Updated :    23/04/2013
+
 # Version :    1.5.1
 #-------------------------------------------------------------------------------
 
