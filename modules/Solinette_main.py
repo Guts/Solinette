@@ -178,8 +178,6 @@ class SolinetteGUI(Tk):
                             sticky = N+S+W+E, padx = 2, pady = 5)
         can.grid(row = 5, column = 0, sticky = N+S+W+E, padx = 2, pady = 5)
 
-                #### POUR TEST : VOIR LIGNE PRE RELLENO N 132 + 210/211 (licolumns)
-
     def setpathtarg(self):
         """ ...browse and insert the path of target folder """
         self.xls = askopenfilename(parent = self,
